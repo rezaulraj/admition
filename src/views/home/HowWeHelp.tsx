@@ -146,20 +146,21 @@ const services: Service[] = [
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /* Floating tag labels around the headline (position, colour, depth for parallax) */
-type FloatTag = { label?: string; icon?: ReactNode; pos: string; bg: string; fg: string; rot: number; depth: number; mobile?: boolean };
+/** `at` is an inline position (kept out of Tailwind so it always applies); tags sit in the empty space right of the headline */
+type FloatTag = { label?: string; icon?: ReactNode; at: CSSProperties; bg: string; fg: string; rot: number; depth: number; mobile?: boolean; desktopHidden?: boolean };
 const TAGS: FloatTag[] = [
-  { label: "Universities", pos: "left-[3%] top-[2%]", bg: "#FF8A3D", fg: "#14213D", rot: -5, depth: 1.2, mobile: true },
+  { label: "Universities", at: { left: "3%", top: "2%" }, bg: "#FF8A3D", fg: "#14213D", rot: -5, depth: 1.2, mobile: true },
   {
     icon: <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4Z" />,
-    pos: "right-[7%] top-[6%]", bg: "#9DB8FF", fg: "#fff", rot: 6, depth: 0.8, mobile: true,
+    at: { right: "7%", top: "6%" }, bg: "#9DB8FF", fg: "#fff", rot: 6, depth: 0.8, mobile: true,
   },
-  { label: "Scholarship", pos: "left-[50%] top-[36%]", bg: "#FDB52A", fg: "#14213D", rot: -3, depth: 1.5 },
+  { label: "Scholarship", at: { left: "50%", top: "36%" }, bg: "#FDB52A", fg: "#14213D", rot: -3, depth: 1.5 },
   {
     icon: <path d="M12 3 1 9l11 6 9-4.9V17h2V9L12 3Zm-6.8 9.2V16c0 1.9 3 3.8 6.8 3.8s6.8-1.9 6.8-3.8v-3.8L12 16l-6.8-3.8Z" />,
-    pos: "left-[15%] top-[58%]", bg: "#6366F1", fg: "#fff", rot: 4, depth: 1.1, mobile: true,
+    at: { left: "15%", top: "58%" }, bg: "#6366F1", fg: "#fff", rot: 4, depth: 1.1, mobile: true,
   },
-  { label: "Visa", pos: "right-[4%] top-[60%]", bg: "#4CC46B", fg: "#0E3B1C", rot: 5, depth: 1.3 },
-  { label: "IELTS Prep", pos: "left-[60%] bottom-[0%]", bg: "#2F6BFF", fg: "#fff", rot: -4, depth: 0.9 },
+  { label: "Visa", at: { right: "4%", top: "60%" }, bg: "#4CC46B", fg: "#0E3B1C", rot: 5, depth: 1.3 },
+  { label: "IELTS Prep", at: { left: "60%", bottom: "0%" }, bg: "#2F6BFF", fg: "#fff", rot: -4, depth: 0.9 },
 ];
 
 function Tag({ tag }: { tag: FloatTag }) {
@@ -168,7 +169,8 @@ function Tag({ tag }: { tag: FloatTag }) {
       data-tag
       data-depth={tag.depth}
       aria-hidden
-      className={`pointer-events-none absolute z-10 ${tag.pos} ${tag.mobile ? "flex" : "hidden sm:flex"}`}>
+      style={tag.at}
+      className={`pointer-events-none absolute z-10 ${tag.mobile ? "hwh-tag-m" : "hwh-tag"}`}>
       <span data-tag-float className="block">
         <span
           data-tag-pop
@@ -208,7 +210,6 @@ export default function HowWeHelp() {
         const { isDesktop, motionOK } = ctx.conditions as { isDesktop: boolean; motionOK: boolean };
         if (!motionOK) return;
         const cards = q("[data-card]") as HTMLElement[];
-
         // Heading
         gsap.fromTo(
           q("[data-intro]"),
@@ -273,6 +274,20 @@ export default function HowWeHelp() {
             0.45,
           );
 
+        // Scroll-driven headline: letters fill in one by one, lines glide together, "place." grows
+        const title = head.querySelector("h2")!;
+        const scrub = { trigger: title, start: "top 85%", end: "bottom 30%", scrub: 1 };
+        gsap.fromTo(q("[data-hchar]"), { opacity: 0.12 }, { opacity: 1, ease: "none", stagger: 0.08, scrollTrigger: scrub });
+        const lines = q("[data-hline]") as HTMLElement[];
+        lines.forEach((line, li) => {
+          const last = li === lines.length - 1;
+          gsap.fromTo(
+            line,
+            last ? { scale: 0.7, xPercent: 0 } : { xPercent: li % 2 ? 14 : -14 },
+            { scale: 1, xPercent: 0, ease: "power2.out", scrollTrigger: { ...scrub } },
+          );
+        });
+
         // Idle float, each tag on its own rhythm
         q("[data-tag-float]").forEach((f, i) =>
           gsap.to(f, {
@@ -330,52 +345,71 @@ export default function HowWeHelp() {
         @media (prefers-reduced-motion: no-preference) {
           .hwh [data-intro], .hwh [data-card], .hwh [data-hword], .hwh [data-tag-pop] { visibility: hidden; }
         }
+        /* Layout lives here so it never depends on Tailwind generating new class names */
+        .hwh { overflow-x: clip; }
+        .hwh .hwh-head { position: relative; max-width: 72rem; margin: 0 auto; text-align: center; }
+        .hwh .hwh-title { font-size: clamp(2.9rem, 9vw, 8.5rem); }
+        .hwh .hwh-tag { display: none; }
+        .hwh .hwh-tag-m { display: flex; }
+        .hwh .hwh-stack { display: flex; flex-direction: column; gap: 2rem; max-width: 72rem; margin: 3.5rem auto 0; }
+        @media (min-width: 640px) { .hwh .hwh-tag { display: flex; } }
+        @media (min-width: 1024px) {
+          .hwh .hwh-stack { gap: 2.5rem; padding-bottom: 8vh; }
+          .hwh .hwh-slot { position: sticky; }
+          .hwh .hwh-card { height: min(30rem, 72vh); grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+        }
       `}</style>
 
-      <div data-head className="relative mx-auto max-w-6xl text-center">
-        <span
-          data-intro
-          className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-[#2F6BFF]">
-          <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
-          How We Help
-        </span>
+      <div>
+        <div data-head className="hwh-head">
+          <span data-intro className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-[#2F6BFF]">
+            <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
+            How We Help
+          </span>
 
-        <div className="relative mt-4 py-6 sm:py-10">
-          {TAGS.map((tag, ti) => (
-            <Tag key={ti} tag={tag} />
-          ))}
-
-          <h2 className="font-display relative text-[clamp(2.9rem,9vw,8.5rem)] font-semibold leading-[0.95] tracking-[-0.045em] text-[#14213D]">
-            {HEADLINE.map((line, li) => (
-              <span key={li} className="block">
-                {line.map(({ word, accent }) => (
-                  <span key={word} className="mr-[0.22em] inline-block overflow-hidden pb-[0.1em] align-top last:mr-0">
-                    <span data-hword className={`inline-block ${accent ? "text-[#F7931E]" : ""}`}>
-                      {word}
-                    </span>
-                  </span>
-                ))}
-              </span>
+          <div className="relative mt-4 py-6 sm:py-10">
+            {TAGS.map((tag, ti) => (
+              <Tag key={ti} tag={tag} />
             ))}
-          </h2>
+            <h2
+              aria-label={HEADLINE.map((line) => line.map((w) => w.word).join(" ")).join(" ")}
+              className="hwh-title font-display relative font-semibold leading-[0.95] tracking-[-0.045em] text-[#14213D]">
+              {HEADLINE.map((line, li) => (
+                <span key={li} data-hline aria-hidden className="block origin-center will-change-transform">
+                  {line.map(({ word, accent }) => (
+                    <span key={word} className="mr-[0.22em] inline-block overflow-hidden pb-[0.1em] align-top last:mr-0">
+                      <span data-hword className={`inline-block ${accent ? "text-[#F7931E]" : ""}`}>
+                        {word.split("").map((ch, ci) => (
+                          <span key={ci} data-hchar className="inline-block">
+                            {ch}
+                          </span>
+                        ))}
+                      </span>
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </h2>
+          </div>
+
+          <p data-intro className="mx-auto mt-2 max-w-xl text-sm text-[#4A5268] sm:text-lg">
+            From admissions to visas, end-to-end support from our certified education specialists, every step of the way.
+          </p>
         </div>
 
-        <p data-intro className="mx-auto mt-2 max-w-xl text-sm text-[#4A5268] sm:text-lg">
-          From admissions to visas, end-to-end support from our certified education specialists, every step of the way.
-        </p>
-      </div>
-
-      <div className="mx-auto mt-14 flex max-w-6xl flex-col gap-8 lg:gap-10 lg:pb-[8vh]">
+        <div data-stack className="hwh-stack">
         {services.map((s, i) => {
           const t = TONES[s.tone];
           return (
             <div
               key={s.title}
-              className="lg:sticky lg:top-[var(--top)]"
-              style={{ "--top": `${110 + i * 18}px` } as CSSProperties}>
+              data-slot
+              className="hwh-slot"
+              style={{ top: `${110 + i * 18}px` } as CSSProperties}>
+              <div data-resolve className="origin-top will-change-transform">
               <article
                 data-card
-                className="group relative grid origin-top overflow-hidden rounded-[2rem] border border-white shadow-[0_30px_60px_-30px_rgba(20,33,61,0.35)] will-change-transform lg:h-[min(30rem,72vh)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
+                className="hwh-card group relative grid origin-top overflow-hidden rounded-[2rem] border border-white shadow-[0_30px_60px_-30px_rgba(20,33,61,0.35)] will-change-transform"
                 style={{ background: t.bg }}>
                 {/* Decorative corner blob + glow */}
                 <span
@@ -408,7 +442,7 @@ export default function HowWeHelp() {
                     </span>
                   </div>
 
-                  <h3 className="font-display mt-6 text-[clamp(1.75rem,3vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#14213D]">
+                  <h3 className="font-display mt-6 text-[clamp(1.6rem,2.3vw,2.3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#14213D]">
                     {s.title.split(" ").map((w, wi) => (
                       <span key={wi} className="mr-[0.25em] inline-block overflow-hidden pb-[0.08em] align-top last:mr-0">
                         <span data-word className="inline-block">
@@ -444,9 +478,11 @@ export default function HowWeHelp() {
                   {s.art}
                 </div>
               </article>
+              </div>
             </div>
           );
         })}
+        </div>
       </div>
     </section>
   );

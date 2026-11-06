@@ -8,16 +8,24 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jakarta);
-  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-mona);
+  --font-display: var(--font-mona);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-family: var(--font-mona), system-ui, sans-serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Display headings: Mona Sans slightly expanded for a confident, editorial look */
+.font-display {
+  font-stretch: 112%;
+  font-kerning: normal;
 }

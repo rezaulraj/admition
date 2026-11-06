@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
@@ -174,61 +174,71 @@ function mapsUrl(office: Office) {
   return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
-/** Airport-style codes + positions on the route map (viewBox 0 20 600 160) for every office we may list */
-const PLACES: Record<string, { code: string; x: number; y: number }> = {
-  "uk-london": { code: "LON", x: 70, y: 70 },
-  "bd-dhaka": { code: "DAC", x: 430, y: 130 },
-  "bd-dhaka-sector10": { code: "DAC", x: 430, y: 130 },
-  "bd-sylhet": { code: "ZYL", x: 470, y: 112 },
-  "india-office": { code: "DEL", x: 220, y: 100 },
-  "np-kathmandu": { code: "KTM", x: 330, y: 84 },
+/* ---------- South Asia dot map ----------
+ * Equirectangular projection of lon 60°E–100°E, lat 8°N–34.5°N onto a 600×300 viewBox.
+ * Land is a hand-simplified coastline; dots are laid on a grid wherever they fall on land.
+ */
+const MAP = { w: 600, h: 300, lon0: 60, lon1: 100, lat0: 8, lat1: 34.5 };
+const project = (lon: number, lat: number) => ({
+  x: ((lon - MAP.lon0) / (MAP.lon1 - MAP.lon0)) * MAP.w,
+  y: ((MAP.lat1 - lat) / (MAP.lat1 - MAP.lat0)) * MAP.h,
+});
+
+// [lon, lat] coastline of the mainland inside the window (top edge → east → around the peninsula → west edge)
+const MAINLAND: [number, number][] = [
+  [60, 34.5], [100, 34.5], [100, 14], [98.6, 14], [98, 16], [97.5, 16.6], [96.2, 16.8], [95.2, 15.8], [94.3, 16.1], [94.5, 18.4],
+  [93.6, 19.9], [92.4, 21], [91.8, 22.3], [91.1, 22.7], [90.5, 22.1], [89.5, 21.8], [88.2, 21.6], [87, 21.3], [86.5, 20.3],
+  [85.2, 19.4], [84, 18.2], [82.6, 17], [81.6, 16.1], [80.3, 15.6], [80.2, 13.2], [79.8, 11.1], [79.3, 10.3], [78.2, 8.9],
+  [77.5, 8], [76.6, 8.8], [76.1, 10], [75.6, 11.7], [74.8, 13], [74.1, 15], [73.3, 17], [72.8, 19], [72.7, 21], [72.3, 21.8],
+  [70.6, 20.8], [69.1, 22.3], [68.6, 23.4], [67.1, 24.7], [65, 25.3], [62.2, 25.1], [60, 25.4],
+];
+const SRI_LANKA: [number, number][] = [[79.8, 9.8], [80.3, 9.7], [81, 8.8], [81.3, 8], [79.9, 8], [79.8, 9]];
+
+function inside([x, y]: [number, number], poly: [number, number][]) {
+  let hit = false;
+  for (let a = 0, b = poly.length - 1; a < poly.length; b = a++) {
+    const [xa, ya] = poly[a];
+    const [xb, yb] = poly[b];
+    if (ya > y !== yb > y && x < ((xb - xa) * (y - ya)) / (yb - ya) + xa) hit = !hit;
+  }
+  return hit;
+}
+
+const DOT_STEP = 9;
+const LAND_DOTS: { x: number; y: number }[] = [];
+for (let y = DOT_STEP / 2; y < MAP.h; y += DOT_STEP) {
+  for (let x = DOT_STEP / 2; x < MAP.w; x += DOT_STEP) {
+    const lon = MAP.lon0 + (x / MAP.w) * (MAP.lon1 - MAP.lon0);
+    const lat = MAP.lat1 - (y / MAP.h) * (MAP.lat1 - MAP.lat0);
+    if (inside([lon, lat], MAINLAND) || inside([lon, lat], SRI_LANKA)) LAND_DOTS.push({ x, y });
+  }
+}
+
+const MAP_LABELS = [
+  { text: "INDIA", lon: 78.5, lat: 21.5, size: 15, spacing: "0.5em" },
+  { text: "NEPAL", lon: 84.2, lat: 27.2, size: 9, spacing: "0.3em" },
+  { text: "Arabian Sea", lon: 65.5, lat: 15.5, size: 11, spacing: "0.12em", sea: true },
+  { text: "Bay of Bengal", lon: 88.6, lat: 15.2, size: 11, spacing: "0.12em", sea: true },
+];
+
+/** Airport-style codes + real coordinates for every office we may list */
+const PLACES: Record<string, { code: string; lon: number; lat: number }> = {
+  "uk-london": { code: "LON", lon: 61, lat: 31 }, // off the map: parked in the north-west corner
+  "bd-dhaka": { code: "DAC", lon: 90.4, lat: 23.8 },
+  "bd-dhaka-sector10": { code: "DAC", lon: 90.4, lat: 23.8 },
+  "bd-sylhet": { code: "ZYL", lon: 91.9, lat: 24.9 },
+  "india-office": { code: "DEL", lon: 77.2, lat: 28.6 },
+  "np-kathmandu": { code: "KTM", lon: 85.3, lat: 27.7 },
 };
-const placeOf = (o: Office) => PLACES[o.id] ?? { code: o.city.slice(0, 3).toUpperCase(), x: 300, y: 120 };
+const placeOf = (o: Office) => {
+  const p = PLACES[o.id] ?? { code: o.city.slice(0, 3).toUpperCase(), lon: 80, lat: 22 };
+  return { code: p.code, ...project(p.lon, p.lat) };
+};
 
-/** Hour/minute in the office's time zone, for the analog clock */
-function clockParts(now: Date | null, timeZone: string) {
+/** Weekday in the office's time zone, e.g. "Thu" */
+function localDay(now: Date | null, timeZone: string) {
   if (!now) return null;
-  const parts = new Intl.DateTimeFormat("en-GB", { timeZone, hour: "numeric", minute: "numeric", hour12: false }).formatToParts(now);
-  const h = Number(parts.find((p) => p.type === "hour")?.value ?? 0) % 24;
-  const m = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
-  return { hourDeg: ((h % 12) + m / 60) * 30, minuteDeg: m * 6 };
-}
-
-function Clock({ now, office }: { now: Date | null; office: Office }) {
-  const c = clockParts(now, office.timeZone);
-  return (
-    <svg viewBox="0 0 40 40" className="size-10 shrink-0" aria-hidden>
-      <circle cx="20" cy="20" r="18" fill="#fff" stroke={office.accent} strokeWidth="2" />
-      {Array.from({ length: 12 }, (_, i) => (
-        <line key={i} x1="20" y1="4.5" x2="20" y2={i % 3 ? "6.5" : "8"} stroke="#14213D" strokeOpacity="0.35" strokeWidth="1.2" transform={`rotate(${i * 30} 20 20)`} />
-      ))}
-      {/* React sets the real angles; GSAP only spins this wrapper, so the two never fight */}
-      <g data-hands>
-        <g transform={`rotate(${c?.hourDeg ?? 0} 20 20)`}>
-          <line x1="20" y1="20" x2="20" y2="11" stroke="#14213D" strokeWidth="2.4" strokeLinecap="round" />
-        </g>
-        <g transform={`rotate(${c?.minuteDeg ?? 0} 20 20)`}>
-          <line x1="20" y1="20" x2="20" y2="7" stroke={office.accent} strokeWidth="1.8" strokeLinecap="round" />
-        </g>
-      </g>
-      <circle cx="20" cy="20" r="2" fill={office.accent} />
-    </svg>
-  );
-}
-
-/** Decorative barcode, stable per office */
-function Barcode({ seed }: { seed: string }) {
-  const bars = Array.from({ length: 34 }, (_, i) => {
-    const n = (seed.charCodeAt(i % seed.length) * (i + 7)) % 5;
-    return 1 + n * 0.6;
-  });
-  return (
-    <span aria-hidden className="flex h-9 items-end gap-[2px]">
-      {bars.map((w, i) => (
-        <span key={i} data-bar className="h-full origin-bottom rounded-[1px] bg-[#14213D]" style={{ width: `${w}px`, opacity: i % 7 === 0 ? 0.45 : 0.85 }} />
-      ))}
-    </span>
-  );
+  return new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short" }).format(now);
 }
 
 function RouteMap({ list }: { list: Office[] }) {
@@ -236,31 +246,65 @@ function RouteMap({ list }: { list: Office[] }) {
   const arcs = pts.slice(1).map((p, i) => {
     const a = pts[i];
     const mx = (a.x + p.x) / 2;
-    const my = Math.min(a.y, p.y) - 70;
+    const my = Math.min(a.y, p.y) - 60;
     return { id: `route-${i}`, d: `M${a.x} ${a.y} Q${mx} ${my} ${p.x} ${p.y}` };
   });
 
   return (
-    <div data-map className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[2rem] bg-[linear-gradient(150deg,#1E2F5C,#14213D_60%)] shadow-[0_40px_80px_-45px_rgba(20,33,61,0.7)]">
-      <div aria-hidden className="absolute -right-24 -top-24 size-72 rounded-full bg-[#2F6BFF]/30 blur-[90px]" />
-      <div aria-hidden className="absolute -bottom-24 -left-16 size-64 rounded-full bg-[#F7931E]/25 blur-[90px]" />
-      <div className="relative flex flex-wrap items-center justify-between gap-3 px-6 pt-6 sm:px-8">
+    <div data-map className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[2rem] bg-[radial-gradient(ellipse_at_30%_20%,#24386E,#14213D_55%,#0E1830)] shadow-[0_40px_80px_-45px_rgba(20,33,61,0.7)]">
+      <div aria-hidden className="absolute -right-24 -top-24 size-72 rounded-full bg-[#2F6BFF]/25 blur-[90px]" />
+      <div aria-hidden className="absolute -bottom-24 -left-16 size-64 rounded-full bg-[#F7931E]/20 blur-[90px]" />
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 px-6 pt-6 sm:px-8">
         <p className="font-display text-lg font-semibold text-white">Our network</p>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/50">
           {list.length} {list.length === 1 ? "office" : "offices"} · live local time
         </p>
       </div>
-      <svg viewBox="0 20 600 160" className="relative h-auto w-full" role="img" aria-label="Map of Admission OnBoard offices">
+      <svg viewBox={`0 0 ${MAP.w} ${MAP.h}`} className="relative mt-2 h-auto w-full" role="img" aria-label="Map of South Asia showing Admission OnBoard offices">
         <defs>
-          <pattern id="oo-dots" width="12" height="12" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.2" fill="#fff" fillOpacity="0.12" />
-          </pattern>
+          <radialGradient id="oo-glow">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.5" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </radialGradient>
         </defs>
-        <rect y="20" width="600" height="160" fill="url(#oo-dots)" />
+
+        {/* Land as dots */}
+        <g>
+          {LAND_DOTS.map((d, i) => (
+            <circle key={i} data-land cx={d.x} cy={d.y} r="1.6" fill="#BFD0FF" fillOpacity="0.32" />
+          ))}
+        </g>
+
+        {/* Map labels */}
+        {MAP_LABELS.map((l) => {
+          const { x, y } = project(l.lon, l.lat);
+          return (
+            <text
+              key={l.text}
+              data-map-label
+              x={x}
+              y={y}
+              textAnchor="middle"
+              fill="#fff"
+              fillOpacity={l.sea ? 0.28 : 0.22}
+              fontSize={l.size}
+              fontWeight={l.sea ? 500 : 700}
+              fontStyle={l.sea ? "italic" : "normal"}
+              letterSpacing={l.spacing}>
+              {l.text}
+            </text>
+          );
+        })}
+
+        {/* Soft light around each office */}
+        {pts.map((p) => (
+          <circle key={`glow-${p.o.id}`} cx={p.x} cy={p.y} r="46" fill="url(#oo-glow)" opacity="0.35" />
+        ))}
+
         {arcs.map((a) => (
           <g key={a.id}>
             <path d={a.d} fill="none" stroke="#fff" strokeOpacity="0.12" strokeWidth="6" strokeLinecap="round" />
-            <path id={a.id} data-route d={a.d} fill="none" stroke="#F7931E" strokeWidth="2" strokeDasharray="5 6" strokeLinecap="round" />
+            <path id={a.id} data-route d={a.d} fill="none" stroke="#F7931E" strokeWidth="2.2" strokeLinecap="round" />
           </g>
         ))}
         {arcs[0] && (
@@ -270,12 +314,12 @@ function RouteMap({ list }: { list: Office[] }) {
         )}
         {pts.map((p) => (
           <g key={p.o.id} transform={`translate(${p.x} ${p.y})`}>
-            <circle data-ping r="14" fill={p.o.accent} fillOpacity="0.35" />
+            <circle data-ping r="14" fill={p.o.accent} fillOpacity="0.4" />
             <circle r="6" fill={p.o.accent} stroke="#fff" strokeWidth="2.5" />
             <g data-pin-label>
-              <rect x="-30" y="-44" width="60" height="24" rx="12" fill="#fff" />
-              <text x="0" y="-27.5" textAnchor="middle" className="fill-[#14213D] text-[11px] font-bold tracking-[0.12em]">
-                {p.code}
+              <rect x="-50" y="-46" width="100" height="30" rx="15" fill="#fff" />
+              <text x="0" y="-26.5" textAnchor="middle" className="fill-[#14213D]" fontSize="11.5" fontWeight="700" letterSpacing="0.06em">
+                {p.code} · {p.o.city}
               </text>
             </g>
           </g>
@@ -326,8 +370,27 @@ export default function OurOffices() {
       gsap
         .timeline({ defaults: { ease: "expo.out" }, scrollTrigger: { trigger: map, start: "top 82%", once: true } })
         .fromTo(map, { autoAlpha: 0, y: 50, scale: 0.96 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.2 }, 0)
-        .fromTo(q("[data-route]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.6, ease: "power2.inOut" }, 0.4)
-        .fromTo(q("[data-pin-label]"), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.15, ease: "back.out(2)" }, 0.9);
+        .fromTo(
+          q("[data-land]"),
+          { opacity: 0, scale: 0, transformOrigin: "50% 50%" },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            // Ripple outward from the nearest office
+            stagger: (_i: number, dot: Element) => {
+              const cx = Number(dot.getAttribute("cx"));
+              const cy = Number(dot.getAttribute("cy"));
+              const d = Math.min(...offices.map((o) => Math.hypot(placeOf(o).x - cx, placeOf(o).y - cy)));
+              return d * 0.0035;
+            },
+          },
+          0.15,
+        )
+        .fromTo(q("[data-map-label]"), { opacity: 0 }, { opacity: 1, duration: 1, stagger: 0.1 }, 0.8)
+        .fromTo(q("[data-route]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.6, ease: "power2.inOut" }, 0.9)
+        .fromTo(q("[data-pin-label]"), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.15, ease: "back.out(2)" }, 1.5);
 
       // Pins pulse, the plane keeps flying the route
       gsap.fromTo(q("[data-ping]"), { scale: 0.6, opacity: 0.7 }, { scale: 2, opacity: 0, duration: 2, repeat: -1, stagger: 0.5, ease: "power1.out", transformOrigin: "50% 50%" });
@@ -345,7 +408,7 @@ export default function OurOffices() {
     return () => mm.revert();
   }, []);
 
-  /* ---------- Tickets: print in on scroll / when the filter changes, tilt on hover ---------- */
+  /* ---------- Office cards: rise in on scroll / when the filter changes, spotlight + tilt on hover ---------- */
   useLayoutEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -354,43 +417,29 @@ export default function OurOffices() {
     const first = !filteredOnce.current;
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const tickets = q("[data-ticket]");
-      const st = first ? { scrollTrigger: { trigger: q("[data-tickets]")[0], start: "top 82%", once: true } } : {};
+      const st = first ? { scrollTrigger: { trigger: q("[data-cards]")[0], start: "top 82%", once: true } } : {};
       gsap
         .timeline({ defaults: { ease: "expo.out" }, ...st })
-        .fromTo(
-          tickets,
-          { clipPath: "inset(0% 0% 100% 0% round 28px)", y: -30 },
-          { clipPath: "inset(0% 0% 0% 0% round 28px)", y: 0, duration: 1.3, stagger: 0.15, ease: "power4.out", clearProps: "clipPath" },
-          0,
-        )
-        .fromTo(q("[data-code]"), { autoAlpha: 0, yPercent: 60 }, { autoAlpha: 1, yPercent: 0, duration: 0.9, stagger: 0.15 }, 0.35)
-        .fromTo(q("[data-bar]"), { scaleY: 0 }, { scaleY: 1, duration: 0.5, stagger: 0.008, ease: "power2.out" }, 0.6)
-        .fromTo(q("[data-detail]"), { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: 0.7, stagger: 0.06 }, 0.5);
-
-      // Clock hands spin a full turn and land on the real local time
-      gsap.fromTo(
-        q("[data-hands]"),
-        { rotation: -360 },
-        {
-          rotation: 0,
-          duration: 1.6,
-          ease: "power3.out",
-          svgOrigin: "20 20",
-          ...(first ? { scrollTrigger: { trigger: q("[data-tickets]")[0], start: "top 82%", once: true } } : {}),
-        },
-      );
+        .fromTo(q("[data-office]"), { autoAlpha: 0, y: 60, scale: 0.96 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.1, stagger: 0.14 }, 0)
+        .fromTo(q("[data-city]"), { autoAlpha: 0, yPercent: 70 }, { autoAlpha: 1, yPercent: 0, duration: 0.9, stagger: 0.14 }, 0.2)
+        .fromTo(q("[data-row]"), { autoAlpha: 0, x: -18 }, { autoAlpha: 1, x: 0, duration: 0.7, stagger: 0.06 }, 0.4)
+        .fromTo(q("[data-actions]"), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.14 }, 0.7);
     });
 
     mm.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
-      const offs = (q("[data-ticket]") as HTMLElement[]).map((card) => {
-        const rx = gsap.quickTo(card, "rotationX", { duration: 0.6, ease: "power3.out" });
-        const ry = gsap.quickTo(card, "rotationY", { duration: 0.6, ease: "power3.out" });
-        gsap.set(card, { transformPerspective: 1100 });
+      const offs = (q("[data-office]") as HTMLElement[]).map((card) => {
+        const rx = gsap.quickTo(card, "rotationX", { duration: 0.7, ease: "power3.out" });
+        const ry = gsap.quickTo(card, "rotationY", { duration: 0.7, ease: "power3.out" });
+        gsap.set(card, { transformPerspective: 1200 });
         const move = (e: PointerEvent) => {
           const r = card.getBoundingClientRect();
-          ry(((e.clientX - r.left) / r.width - 0.5) * 8);
-          rx((0.5 - (e.clientY - r.top) / r.height) * 6);
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          ry((px - 0.5) * 6);
+          rx((0.5 - py) * 4);
+          // Spotlight follows the pointer (read by the card's CSS)
+          card.style.setProperty("--mx", `${px * 100}%`);
+          card.style.setProperty("--my", `${py * 100}%`);
         };
         const leave = () => {
           rx(0);
@@ -407,7 +456,6 @@ export default function OurOffices() {
     });
 
     return () => mm.revert();
-    // `now` only changes the clock angles; re-running would replay the print animation
   }, [active]);
 
   return (
@@ -416,13 +464,21 @@ export default function OurOffices() {
         @media (prefers-reduced-motion: no-preference) {
           .offices [data-eyebrow], .offices [data-word], .offices [data-sub], .offices [data-filters], .offices [data-map], .offices [data-pin-label] { visibility: hidden; }
         }
-        /* Ticket notches on the tear line */
-        .offices .ticket-notch::before, .offices .ticket-notch::after {
-          content: ""; position: absolute; top: 50%; width: 26px; height: 26px; margin-top: -13px; border-radius: 9999px; background: #FFFEFA;
-          box-shadow: inset 0 0 0 1px #ECECEC;
+        @media (prefers-reduced-motion: no-preference) {
+          .offices [data-office], .offices [data-row], .offices [data-actions] { visibility: hidden; }
         }
-        .offices .ticket-notch::before { left: -13px; }
-        .offices .ticket-notch::after { right: -13px; }
+        /* Layout kept here so it never depends on Tailwind generating new class names */
+        .offices .office-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.75rem; margin: 2.5rem auto 0; perspective: 1400px; }
+        .offices .office-grid.is-two { max-width: 64rem; }
+        .offices .office-grid.is-one { max-width: 32rem; }
+        @media (min-width: 768px) { .offices .office-grid.is-two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .offices .office-card { --mx: 50%; --my: 0%; }
+        .offices .office-card::before {
+          content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+          background: radial-gradient(420px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%);
+        }
+        .offices .office-card:hover::before { opacity: 1; }
+        .offices .office-city { font-size: clamp(2.4rem, 4.2vw, 3.4rem); }
       `}</style>
 
       <div className="mx-auto max-w-3xl text-center">
@@ -489,70 +545,70 @@ export default function OurOffices() {
 
       <RouteMap list={offices} />
 
-      {/* Boarding-pass cards (a lone card is centred) */}
-      <div data-tickets key={active} className={`mx-auto mt-10 grid grid-cols-1 gap-8 [perspective:1400px] ${filtered.length === 1 ? "max-w-lg" : "max-w-5xl md:grid-cols-2"}`}>
+      {/* Office cards (a lone card is centred) */}
+      <div data-cards key={active} className={`office-grid ${filtered.length === 1 ? "is-one" : "is-two"}`}>
         {filtered.map((office) => {
           const time = localTime(now, office.timeZone);
-          const place = placeOf(office);
+          const day = localDay(now, office.timeZone);
           const tel = `tel:${office.phone.replace(/[\s-]+/g, "")}`;
           return (
             <article
               key={office.id}
-              data-ticket
-              className="relative flex flex-col rounded-[28px] border border-[#ECECEC] bg-white shadow-[0_30px_60px_-38px_rgba(20,33,61,0.55)] transition-shadow duration-500 hover:shadow-[0_40px_70px_-36px_rgba(20,33,61,0.6)]">
-              {/* Stub */}
-              <header
-                className="relative overflow-hidden rounded-t-[28px] px-6 pb-6 pt-5 sm:px-7"
-                style={{ background: `linear-gradient(135deg, ${office.accent}1F 0%, ${office.accent}08 100%)` }}>
-                <span aria-hidden className="absolute -right-10 -top-10 size-40 rounded-full opacity-20 blur-2xl" style={{ background: office.accent }} />
-                <div className="relative flex items-center justify-between gap-3">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#14213D]/50">Admission OnBoard · Office pass</span>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-white py-1 pl-1.5 pr-3 shadow-sm ring-1 ring-[#ECECEC]">
-                    <Flag country={office.country} className="h-4 w-6" />
-                    <span className="text-xs font-semibold text-[#14213D]">{office.countryLabel}</span>
+              data-office
+              className="office-card group relative flex flex-col overflow-hidden rounded-[2rem] border border-black/[0.06] bg-white p-6 shadow-[0_24px_60px_-40px_rgba(20,33,61,0.5)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-38px_rgba(20,33,61,0.55)] sm:p-8"
+              style={{ "--accent": office.accent } as CSSProperties}>
+              {/* Soft accent glow + faint flag */}
+              <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full opacity-25 blur-3xl" style={{ background: office.accent }} />
+              <span aria-hidden className="pointer-events-none absolute -right-6 w-32 rotate-6 opacity-[0.07]" style={{ top: "4.75rem" }}>
+                <Flag country={office.country} className="h-auto w-full" />
+              </span>
+
+              {/* Top row */}
+              <div className="relative flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-2 rounded-full bg-[#F5F7FB] py-1.5 pl-1.5 pr-3.5 ring-1 ring-black/[0.04]">
+                  <Flag country={office.country} className="h-4 w-6" />
+                  <span className="text-xs font-semibold text-[#14213D]">{office.countryLabel}</span>
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full bg-[#14213D] px-3.5 py-1.5 text-xs font-semibold text-white">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full opacity-70" style={{ background: office.accent }} />
+                    <span className="relative inline-flex size-2 rounded-full" style={{ background: office.accent }} />
                   </span>
-                </div>
-
-                <div className="relative mt-5 flex items-end justify-between gap-4">
-                  <div className="overflow-hidden">
-                    <p data-code className="font-display text-[3.6rem] font-semibold leading-none tracking-[-0.03em] sm:text-7xl" style={{ color: office.accent }}>
-                      {place.code}
-                    </p>
-                    <h3 className="font-display mt-2 text-2xl font-semibold tracking-tight text-[#14213D]">{office.city}</h3>
-                    <p className="text-sm text-[#4A5268]">{office.name}</p>
-                  </div>
-                  <div className="flex items-center gap-2.5 rounded-2xl bg-white/85 py-2 pl-2 pr-3.5 shadow-sm ring-1 ring-[#ECECEC] backdrop-blur">
-                    <Clock now={now} office={office} />
-                    <span className="leading-tight">
-                      <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-[#14213D]/45">Local time</span>
-                      <span className="block text-sm font-semibold tabular-nums text-[#14213D]">{time ?? "--:--"}</span>
-                    </span>
-                  </div>
-                </div>
-              </header>
-
-              {/* Tear line */}
-              <div aria-hidden className="ticket-notch relative h-0">
-                <span className="absolute inset-x-6 top-0 border-t-2 border-dashed border-[#E4E7EE]" />
+                  <span className="tabular-nums">{time ?? "--:--"}</span>
+                  {day && <span className="text-white/50">· {day}</span>}
+                </span>
               </div>
 
-              {/* Details */}
-              <div className="flex flex-1 flex-col gap-4 px-6 py-6 text-sm sm:px-7">
-                <div data-detail className="flex items-start gap-3">
+              {/* City */}
+              <div className="relative mt-7 overflow-hidden">
+                <h3 data-city className="office-city font-display font-semibold leading-none tracking-[-0.035em] text-[#14213D]">
+                  {office.city}
+                  <span style={{ color: office.accent }}>.</span>
+                </h3>
+              </div>
+              <p className="relative mt-2 text-sm font-medium text-[#4A5268]">{office.name}</p>
+
+              {/* Contact rows */}
+              <div className="relative mt-7 flex flex-col gap-1.5 border-t border-black/[0.06] pt-5 text-sm">
+                <a
+                  data-row
+                  href={mapsUrl(office)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/row flex items-start gap-3 rounded-2xl p-2.5 transition-colors duration-300 hover:bg-[#F5F7FB]">
                   <IconTile accent={office.accent}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 21c-4.5-4.5-7-8.25-7-11.5A7 7 0 0 1 12 2.5a7 7 0 0 1 7 7c0 3.25-2.5 7-7 11.5Z" />
                     <circle cx="12" cy="9.5" r="2.3" />
                   </IconTile>
-                  <address className="not-italic leading-relaxed text-[#4A4A4A]">
+                  <address className="flex-1 not-italic leading-relaxed text-[#4A4A4A]">
                     {office.addressLines.map((line) => (
                       <span key={line} className="block">
                         {line}
                       </span>
                     ))}
                   </address>
-                </div>
-
-                <a data-detail href={tel} className="group flex items-center gap-3 rounded-xl font-medium text-[#14213D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6BFF]">
+                </a>
+                <a data-row href={tel} className="group/row flex items-center gap-3 rounded-2xl p-2.5 font-medium text-[#14213D] transition-colors duration-300 hover:bg-[#F5F7FB]">
                   <IconTile accent={office.accent}>
                     <path
                       strokeLinecap="round"
@@ -560,43 +616,40 @@ export default function OurOffices() {
                       d="M3.5 5.5c0-1 .8-1.8 1.8-1.8H8l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v2.7c0 1-.8 1.8-1.8 1.8C10.5 18.7 5.3 13.5 3.5 7.3V5.5Z"
                     />
                   </IconTile>
-                  <span className="transition-colors group-hover:text-[#2F6BFF]">{office.phone}</span>
+                  <span className="flex-1">{office.phone}</span>
+                  <svg viewBox="0 0 24 24" className="size-4 -translate-x-1 text-[#14213D]/40 opacity-0 transition-all duration-300 group-hover/row:translate-x-0 group-hover/row:opacity-100" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+                    <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </a>
-
-                <a data-detail href={`mailto:${office.email}`} className="group flex items-center gap-3 rounded-xl font-medium text-[#2F5DA8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6BFF]">
+                <a data-row href={`mailto:${office.email}`} className="group/row flex items-center gap-3 rounded-2xl p-2.5 font-medium text-[#14213D] transition-colors duration-300 hover:bg-[#F5F7FB]">
                   <IconTile accent={office.accent}>
                     <rect x="3" y="5" width="18" height="14" rx="2" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="m4 7 8 6 8-6" />
                   </IconTile>
-                  <span className="break-all transition-colors group-hover:text-[#2F6BFF]">{office.email}</span>
+                  <span className="flex-1 break-all">{office.email}</span>
+                  <svg viewBox="0 0 24 24" className="size-4 -translate-x-1 text-[#14213D]/40 opacity-0 transition-all duration-300 group-hover/row:translate-x-0 group-hover/row:opacity-100" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+                    <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </a>
-
-                <div data-detail className="mt-auto flex items-end justify-between gap-4 pt-3">
-                  <Barcode seed={office.id} />
-                  <span className="text-right text-[10px] font-bold uppercase leading-tight tracking-[0.16em] text-[#14213D]/40">
-                    Gate
-                    <span className="block font-display text-lg tracking-normal text-[#14213D]">{place.code}-01</span>
-                  </span>
-                </div>
               </div>
 
               {/* Actions */}
-              <footer className="grid grid-cols-2 overflow-hidden rounded-b-[28px] border-t border-[#F0F0F0]">
+              <div data-actions className="relative mt-6 grid grid-cols-2 gap-3">
                 <a
                   href={mapsUrl(office)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center gap-2 py-4 text-sm font-semibold text-[#14213D] transition-colors hover:bg-[#F7F8FB] focus:outline-none focus-visible:bg-[#F7F8FB]">
-                  <svg className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-black/10 py-3.5 text-sm font-semibold text-[#14213D] transition-[border-color,background-color] duration-300 hover:border-black/20 hover:bg-[#F5F7FB]">
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
                     <path strokeLinecap="round" strokeLinejoin="round" d="m9 4-6 2.5v13L9 17l6 2.5 6-2.5V4l-6 2.5L9 4Zm0 0v13m6-10.5v13" />
                   </svg>
-                  Get directions
+                  Directions
                 </a>
                 <a
                   href={tel}
-                  className="group flex items-center justify-center gap-2 py-4 text-sm font-semibold text-white transition-[filter] hover:brightness-110 focus:outline-none"
-                  style={{ backgroundColor: office.accent }}>
-                  <svg className="h-4 w-4 transition-transform group-hover:rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                  className="group/call flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-semibold text-white shadow-lg transition-[filter,translate] duration-300 hover:-translate-y-0.5 hover:brightness-110"
+                  style={{ backgroundColor: office.accent, boxShadow: `0 14px 28px -14px ${office.accent}` }}>
+                  <svg className="h-4 w-4 transition-transform duration-300 group-hover/call:rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -605,7 +658,7 @@ export default function OurOffices() {
                   </svg>
                   Call {office.city}
                 </a>
-              </footer>
+              </div>
             </article>
           );
         })}

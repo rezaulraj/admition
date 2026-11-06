@@ -241,6 +241,14 @@ const universities: University[] = [
     color: "#F58B0F",
     logo: "/univercity-logo/learnkeyinstutie.png",
   },
+  {
+    slug: "malta-leadership-institute",
+    name: "Malta Leadership Institute",
+    country: "Malta",
+    initials: "ML",
+    color: "#E4572E",
+    logo: "/univercity-logo/mli.svg",
+  },
 ];
 
 /** How many cards to show before the "Explore more" button */

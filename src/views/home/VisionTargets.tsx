@@ -133,7 +133,7 @@ const targets: Target[] = [
     art: <GlobeArt />,
   },
   {
-    count: 1000,
+    count: 10000,
     suffix: "+",
     label: "Global Partners",
     gradient: "linear-gradient(150deg,#FFB25E 0%,#F7931E 50%,#EE6A1A 100%)",

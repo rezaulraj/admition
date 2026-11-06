@@ -121,18 +121,16 @@ const destinations: Destination[] = [
  * masonry wall. Passed as CSS variables so they never depend on Tailwind picking up generated class names.
  */
 const HEIGHTS: [number, number][][] = [
-  [[17, 24], [13, 17], [15, 21]],
-  [[13, 18], [17, 25], [14, 19]],
-  [[15, 21], [13, 17], [17, 24]],
-  [[14, 19], [16, 23], [13, 18]],
+  [[16, 34], [16, 24], [16, 29], [16, 22]],
+  [[16, 24], [16, 36], [16, 22], [16, 28]],
+  [[16, 30], [16, 22], [16, 34], [16, 24]],
 ];
 
 /** How far each column drifts while the grid passes through the screen (px, desktop / mobile) */
 const COLUMN_SPEED = [
-  { lg: 140, sm: 50 },
-  { lg: -90, sm: -50 },
-  { lg: 180, sm: 50 },
-  { lg: -120, sm: -50 },
+  { lg: 120, sm: 0 },
+  { lg: -150, sm: 0 },
+  { lg: 170, sm: 0 },
 ];
 
 const ArrowIcon = ({ className = "size-4" }: { className?: string }) => (
@@ -148,7 +146,7 @@ function DestinationCard({ d, index, height }: { d: Destination; index: number; 
       data-dest
       title={d.description}
       style={{ "--h": `${height[0]}rem`, "--h-lg": `${height[1]}rem` } as CSSProperties}
-      className="group relative block h-[var(--h)] overflow-hidden rounded-[1.75rem] bg-[#EEF3FF] shadow-[0_24px_50px_-30px_rgba(20,33,61,0.55)] lg:h-[var(--h-lg)]">
+      className="dd-card group relative block overflow-hidden rounded-[2rem] bg-[#EEF3FF] shadow-[0_30px_60px_-34px_rgba(20,33,61,0.6)]">
       {/* Photo with its own inner parallax */}
       <div className="absolute inset-0 overflow-hidden">
         <div data-parallax className="absolute inset-x-0 -inset-y-[6%]">
@@ -156,12 +154,14 @@ function DestinationCard({ d, index, height }: { d: Destination; index: number; 
             src={d.image}
             alt={`Study in ${d.name}`}
             fill
-            sizes="(max-width: 1024px) 50vw, 25vw"
+            sizes="(max-width: 1024px) 50vw, 33vw"
             quality={90}
             className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
           />
         </div>
       </div>
+      {/* Light gradient so the label always reads */}
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0F1B3D]/45 to-transparent" />
       {/* Number + arrow */}
       <span className="absolute left-4 top-4 z-10 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-bold text-[#14213D] shadow-sm backdrop-blur">
         {String(index + 1).padStart(2, "0")}
@@ -170,23 +170,27 @@ function DestinationCard({ d, index, height }: { d: Destination; index: number; 
         <ArrowIcon />
       </span>
 
-      {/* Name + description (slides up on hover) */}
-      <div className="absolute inset-x-3 bottom-3 z-10 rounded-2xl bg-white/85 px-3.5 py-2.5 text-[#14213D] shadow-[0_10px_30px_-12px_rgba(20,33,61,0.45)] backdrop-blur-md sm:inset-x-4 sm:bottom-4 sm:px-4 sm:py-3">
-        <span className="flex items-center gap-2 font-display text-base font-semibold sm:text-lg">
-          <span className="flex shrink-0 overflow-hidden rounded-[4px] shadow-sm ring-1 ring-black/10">
+      {/* Name + description (description opens on hover) */}
+      <div className="dd-label absolute z-10 rounded-[1.4rem] bg-white/90 text-[#14213D] shadow-[0_14px_34px_-14px_rgba(20,33,61,0.5)] backdrop-blur-md">
+        <span className="flex items-center gap-3">
+          <span className="flex shrink-0 overflow-hidden rounded-[5px] shadow-sm ring-1 ring-black/10">
             <ReactCountryFlag
               countryCode={d.flagCode}
               svg
               title={d.name}
               aria-label={`Flag of ${d.name}`}
-              style={{ width: "1.6em", height: "1.15em", display: "block", objectFit: "cover" }}
+              style={{ width: "1.9em", height: "1.35em", display: "block", objectFit: "cover" }}
             />
           </span>
-          <span className="truncate">{d.name}</span>
+          <span className="dd-name min-w-0 flex-1 truncate font-display font-semibold tracking-[-0.02em]">{d.name}</span>
+          <span className="hidden shrink-0 items-center gap-1 text-xs font-semibold text-[#2F6BFF] transition-transform duration-300 group-hover:translate-x-0.5 sm:inline-flex">
+            Explore
+            <ArrowIcon className="size-3.5" />
+          </span>
         </span>
         <span className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr]">
           <span className="overflow-hidden">
-            <span className="mt-1.5 block text-sm leading-relaxed text-[#4A5268]">{d.description}</span>
+            <span className="mt-2 block text-sm leading-relaxed text-[#4A5268]">{d.description}</span>
           </span>
         </span>
       </div>
@@ -197,8 +201,8 @@ function DestinationCard({ d, index, height }: { d: Destination; index: number; 
 export default function DreamDestinations() {
   const root = useRef<HTMLElement>(null);
 
-  // Deal the destinations round-robin into 4 columns (2 on small screens via CSS)
-  const columns = [0, 1, 2, 3].map((c) => destinations.map((d, i) => ({ d, i })).filter(({ i }) => i % 4 === c));
+  // Deal the destinations round-robin into 3 big columns (phones flow them into a 2-up grid via CSS)
+  const columns = [0, 1, 2].map((c) => destinations.map((d, i) => ({ d, i })).filter(({ i }) => i % 3 === c));
 
   useLayoutEffect(() => {
     const el = root.current;
@@ -220,9 +224,10 @@ export default function DreamDestinations() {
           .fromTo(q("[data-word]"), { autoAlpha: 0, yPercent: 110, rotate: 4 }, { autoAlpha: 1, yPercent: 0, rotate: 0, duration: 1.1, stagger: 0.06 }, 0.1)
           .fromTo(q("[data-cta]"), { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.45);
 
-        // Columns drift at different speeds and directions → layered parallax wall
+        // Columns drift at different speeds and directions → layered parallax wall (desktop only)
         (q("[data-col]") as HTMLElement[]).forEach((col, c) => {
           const speed = isDesktop ? COLUMN_SPEED[c].lg : COLUMN_SPEED[c].sm;
+          if (!speed) return;
           gsap.fromTo(
             col,
             { y: speed },
@@ -255,6 +260,15 @@ export default function DreamDestinations() {
             }),
         });
 
+        // Giant outlined words slide in opposite directions behind the wall
+        (q("[data-bigword]") as HTMLElement[]).forEach((w, k) =>
+          gsap.fromTo(
+            w,
+            { xPercent: k % 2 ? -30 : 10 },
+            { xPercent: k % 2 ? 0 : -25, ease: "none", scrollTrigger: { trigger: grid, start: "top bottom", end: "bottom top", scrub: 1.4 } },
+          ),
+        );
+
         // Banner
         gsap.fromTo(
           q("[data-banner]"),
@@ -274,6 +288,25 @@ export default function DreamDestinations() {
         @media (prefers-reduced-motion: no-preference) {
           .dd [data-eyebrow], .dd [data-word], .dd [data-cta], .dd [data-banner] { visibility: hidden; }
         }
+        /* Layout kept here so it never depends on Tailwind generating new class names */
+        .dd .dd-grid { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 3rem; }
+        .dd .dd-col { display: contents; }
+        .dd .dd-card { height: var(--h); }
+        .dd .dd-label { left: 0.6rem; right: 0.6rem; bottom: 0.6rem; padding: 0.65rem 0.8rem; }
+        .dd .dd-name { font-size: 1rem; }
+        .dd .dd-title { font-size: clamp(2.3rem, 7vw, 3rem); }
+        .dd .dd-bigwords { display: none; }
+        @media (min-width: 1024px) {
+          .dd .dd-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.75rem; margin-top: 4rem; padding: 7rem 0; }
+          .dd .dd-col { display: flex; flex-direction: column; gap: 1.75rem; will-change: transform; }
+          .dd .dd-col:nth-child(2) { padding-top: 6rem; }
+          .dd .dd-card { height: var(--h-lg); }
+          .dd .dd-label { left: 1.1rem; right: 1.1rem; bottom: 1.1rem; padding: 1rem 1.25rem; }
+          .dd .dd-name { font-size: 1.5rem; }
+          .dd .dd-title { font-size: clamp(3rem, 5vw, 4.75rem); }
+          .dd .dd-bigwords { display: block; }
+        }
+        .dd .dd-outline { -webkit-text-stroke: 1.5px rgba(20, 33, 61, 0.09); color: transparent; }
       `}</style>
 
       {/* Soft background accents */}
@@ -290,7 +323,7 @@ export default function DreamDestinations() {
               <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
               Destinations
             </span>
-            <h2 className="font-display mt-3 text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#14213D] sm:text-5xl lg:text-[3.6rem]">
+            <h2 className="dd-title font-display mt-3 font-semibold leading-[1.02] tracking-[-0.04em] text-[#14213D]">
               {["Explore", "top", "study"].map((w) => (
                 <span key={w} className="mr-[0.24em] inline-block overflow-hidden pb-[0.08em] align-top">
                   <span data-word className="inline-block">
@@ -316,11 +349,20 @@ export default function DreamDestinations() {
         </div>
 
         {/* Parallax masonry wall */}
-        <div data-grid className="mt-14 grid grid-cols-2 gap-4 py-10 sm:gap-5 lg:mt-16 lg:grid-cols-4 lg:py-24">
+        <div data-grid className="dd-grid">
+          {/* Giant outlined words drifting behind the cards (desktop) */}
+          <div aria-hidden className="dd-bigwords pointer-events-none absolute inset-0 overflow-hidden">
+            <p data-bigword className="dd-outline font-display absolute left-0 whitespace-nowrap font-bold leading-none tracking-[-0.04em]" style={{ top: "18%", fontSize: "14vw" }}>
+              Study abroad · Study abroad
+            </p>
+            <p data-bigword className="dd-outline font-display absolute left-0 whitespace-nowrap font-bold leading-none tracking-[-0.04em]" style={{ top: "62%", fontSize: "14vw" }}>
+              Your future · Your future
+            </p>
+          </div>
           {columns.map((col, c) => (
-            <div key={c} data-col className={`flex flex-col gap-4 will-change-transform sm:gap-5 ${c % 2 ? "pt-12 lg:pt-20" : ""}`}>
+            <div key={c} data-col className="dd-col">
               {col.map(({ d, i }, row) => (
-                <DestinationCard key={d.slug} d={d} index={i} height={HEIGHTS[c][row % 3]} />
+                <DestinationCard key={d.slug} d={d} index={i} height={HEIGHTS[c][row % 4]} />
               ))}
             </div>
           ))}

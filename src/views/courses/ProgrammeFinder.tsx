@@ -28,6 +28,10 @@ type Programme = {
   duration: string;
   /** Award type shown on the card, e.g. "Level 5 Diploma" */
   award?: string;
+  /** Tuition for the programme, e.g. "€9,000" */
+  tuition?: string;
+  /** Upcoming start dates */
+  intakes?: string[];
 };
 
 /** Flag codes for the destination filter */
@@ -204,6 +208,11 @@ const universityInfo: Record<string, UniInfo> = {
     logo: "/univercity-logo/learnkeyinstutie.png",
     initials: "LK",
     color: "#F58B0F",
+  },
+  "Malta Leadership Institute": {
+    logo: "/univercity-logo/mli.svg",
+    initials: "ML",
+    color: "#E4572E",
   },
 };
 
@@ -693,6 +702,87 @@ const programmes: Programme[] = [
     award: "Masters (Level 7)",
     level: "Postgraduate",
     duration: "18 months",
+  },
+  // ── Malta Leadership Institute (Malta) · intakes for international students, academic year 2026–2027 ──
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Master of Education in Inclusive Education",
+    award: "Master's degree · Education",
+    level: "Postgraduate",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€8,000",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "6 Jul 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Master of Business Administration (MBA)",
+    award: "Master's degree · Management",
+    level: "Postgraduate",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€9,000",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "6 Jul 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Bachelor of Arts (Hons) in Business Leadership",
+    award: "Bachelor's degree · Management",
+    level: "Undergraduate",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€9,000",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "6 Jul 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Diploma in Business Leadership",
+    award: "Diploma · Management",
+    level: "Diploma",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€5,500",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "6 Jul 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Postgraduate Diploma in Business Leadership",
+    award: "Postgraduate Diploma · Management",
+    level: "Postgraduate",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€6,000",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "6 Jul 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Master of Science in Applied Nutrition",
+    award: "Master's degree · Health & Holistic Wellbeing",
+    level: "Postgraduate",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€16,000",
+    intakes: ["21 Jan 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Certificate for the Caring of the Elderly Person",
+    award: "Certificate · Health & Holistic Wellbeing",
+    level: "Professional",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€5,000",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "6 Jul 2027", "17 Sep 2027"],
+  },
+  {
+    university: "Malta Leadership Institute",
+    country: "Malta",
+    title: "Master of Science in Nursing",
+    award: "Master's degree · Health & Holistic Wellbeing",
+    level: "Postgraduate",
+    duration: "Full-time · Mon–Fri",
+    tuition: "€10,000",
+    intakes: ["21 Jan 2027", "20 Apr 2027", "17 Sep 2027"],
   },
 ];
 
@@ -1317,6 +1407,22 @@ function ProgrammeFinderInner() {
                     <p className="mt-2 text-xs text-[#9A9A9A]">
                       {programme.award}
                     </p>
+                  )}
+                  {(programme.tuition || programme.intakes) && (
+                    <div className="mt-3 flex flex-col gap-1.5 rounded-xl bg-[#F7F8FB] px-3 py-2.5 text-xs">
+                      {programme.tuition && (
+                        <p className="flex items-center justify-between gap-2">
+                          <span className="text-[#6B6B6B]">Tuition</span>
+                          <span className="font-semibold text-[#1B1B1B]">{programme.tuition}</span>
+                        </p>
+                      )}
+                      {programme.intakes && (
+                        <p className="flex items-start justify-between gap-2">
+                          <span className="shrink-0 text-[#6B6B6B]">Intakes</span>
+                          <span className="text-right font-medium text-[#1B1B1B]">{programme.intakes.join(" · ")}</span>
+                        </p>
+                      )}
+                    </div>
                   )}
 
                   <div className="min-h-5 flex-1" aria-hidden />

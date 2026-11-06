@@ -1,30 +1,12 @@
+"use client";
+
+import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const explore = [
-  { name: "Courses", slug: "courses", active: true },
-  { name: "Universities", slug: "universities", active: true },
-  { name: "Study Destination", slug: "countries", active: true },
-];
-
-const companyLinks = [
-  { label: "About Us", href: "/our-story" },
-  { label: "Our Services", href: "/services" },
-  { label: "Careers", href: "/careers" },
-  { label: "Success Stories", href: "/success-stories" },
-  { label: "Contact Us", href: "/contact" },
-];
-
-const resource = [
-  { label: "Our Blogs", href: "/our-blogs" },
-  { label: "Frequently Asked Questions", href: "/frequently-asked-questions" },
-];
-const legalLinks = [
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms of Use", href: "/terms" },
-  { label: "Cookies", href: "/cookies" },
-];
+gsap.registerPlugin(ScrollTrigger);
 
 const socials = [
   {
@@ -53,159 +35,260 @@ const socials = [
     path: "M12 2c2.7 0 3.1 0 4.1.1 1.1 0 1.8.2 2.5.5.7.3 1.2.6 1.8 1.2.6.6.9 1.1 1.2 1.8.3.7.5 1.4.5 2.5.1 1 .1 1.4.1 4.1s0 3.1-.1 4.1c0 1.1-.2 1.8-.5 2.5-.3.7-.6 1.2-1.2 1.8-.6.6-1.1.9-1.8 1.2-.7.3-1.4.5-2.5.5-1 .1-1.4.1-4.1.1s-3.1 0-4.1-.1c-1.1 0-1.8-.2-2.5-.5-.7-.3-1.2-.6-1.8-1.2-.6-.6-.9-1.1-1.2-1.8-.3-.7-.5-1.4-.5-2.5C2 15.1 2 14.7 2 12s0-3.1.1-4.1c0-1.1.2-1.8.5-2.5.3-.7.6-1.2 1.2-1.8.6-.6 1.1-.9 1.8-1.2.7-.3 1.4-.5 2.5-.5C8.9 2 9.3 2 12 2Zm0 1.8c-2.6 0-3 0-4 .1-.9 0-1.4.2-1.7.3-.4.2-.7.3-1 .6-.3.3-.5.6-.6 1-.1.3-.3.8-.3 1.7-.1 1-.1 1.4-.1 4s0 3 .1 4c0 .9.2 1.4.3 1.7.2.4.3.7.6 1 .3.3.6.5 1 .6.3.1.8.3 1.7.3 1 .1 1.4.1 4 .1s3 0 4-.1c.9 0 1.4-.2 1.7-.3.4-.2.7-.3 1-.6.3-.3.5-.6.6-1 .1-.3.3-.8.3-1.7.1-1 .1-1.4.1-4s0-3-.1-4c0-.9-.2-1.4-.3-1.7-.2-.4-.3-.7-.6-1-.3-.3-.6-.5-1-.6-.3-.1-.8-.3-1.7-.3-1-.1-1.4-.1-4-.1Zm0 3.5a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4Zm0 1.8a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8Zm4.9-2a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z",
   },
 ];
+const columns: { title: string; links: { label: string; href: string }[] }[] = [
+  {
+    title: "Explore",
+    links: [
+      { label: "Courses", href: "/courses" },
+      { label: "Universities", href: "/universities" },
+      { label: "Study Destinations", href: "/countries" },
+      { label: "Services", href: "/services" },
+    ],
+  },
+  {
+    title: "About",
+    links: [
+      { label: "About Us", href: "/our-story" },
+      { label: "Success Stories", href: "/success-stories" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact Us", href: "/contact" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Our Blogs", href: "/our-blogs" },
+      { label: "FAQs", href: "/frequently-asked-questions" },
+      { label: "Recruitment Partner", href: "/recruitment-partner" },
+      { label: "Institution Partner", href: "/institution-partner" },
+    ],
+  },
+];
 
-function BranchItem({ name, slug, active }: (typeof explore)[number]) {
-  if (active) {
-    return (
-      <Link
-        href={`/${slug}`}
-        className="text-[#5B5B5B] transition-colors hover:text-[#1366E0]"
-      >
-        {name}
-      </Link>
-    );
-  }
+const legalLinks = [
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms of Use", href: "/terms" },
+  { label: "Cookies", href: "/cookies" },
+];
 
-  return (
-    <span className="cursor-default text-[#B5B5B5]" aria-disabled="true">
-      {name}
-    </span>
-  );
-}
+const WHATSAPP = "https://wa.me/8801906499741";
+const EMAIL = "aob@admissiononboard.com";
+const WORDMARK = "Admission OnBoard";
+
+const ArrowIcon = ({ className = "size-4" }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
 
 export default function Footer() {
+  const root = useRef<HTMLElement>(null);
   const year = new Date().getFullYear();
 
+  useLayoutEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const q = gsap.utils.selector(el);
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      // CTA card + columns rise in
+      gsap
+        .timeline({ defaults: { ease: "expo.out" }, scrollTrigger: { trigger: el, start: "top 88%", once: true } })
+        .fromTo(q("[data-f-cta]"), { autoAlpha: 0, y: 50, scale: 0.97 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.1 }, 0)
+        .fromTo(q("[data-f-cta-text] > *"), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.08 }, 0.2)
+        .fromTo(q("[data-f-col]"), { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.08 }, 0.35);
+
+      // Giant wordmark: letters rise up as you reach the bottom of the page
+      gsap.fromTo(
+        q("[data-f-char]"),
+        { yPercent: 105 },
+        {
+          yPercent: 0,
+          ease: "power3.out",
+          stagger: 0.04,
+          scrollTrigger: { trigger: q("[data-f-wordmark]")[0], start: "top bottom", end: "bottom bottom", scrub: 1 },
+        },
+      );
+
+      // CTA glow drifts slowly
+      gsap.to(q("[data-f-glow]"), { xPercent: 20, yPercent: -10, duration: 6, ease: "sine.inOut", yoyo: true, repeat: -1 });
+    });
+
+    return () => mm.revert();
+  }, []);
+
   return (
-    <footer className="mx-auto container rounded-4xl bg-[#F5F5F3] px-6 py-14">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.1fr_1fr_1fr_1fr_1fr]">
-        {/* Brand */}
-        <div className="md:col-span-1">
-          <Link href="/" className="inline-block">
-            <Image
-              src="/logo.png"
-              alt="Admission OnBoard"
-              width={170}
-              height={38}
-            />
-          </Link>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#5B5B5B]">
-            Admission OnBoard connects students to top global universities.
-            Headquartered in Dhaka, we specialise across fields like
-            engineering, business, and healthcare.
-          </p>
-        </div>
+    <footer ref={root} className="site-footer px-4 pb-6 sm:px-6">
+      <style>{`
+        @media (prefers-reduced-motion: no-preference) {
+          .site-footer [data-f-cta], .site-footer [data-f-col] { visibility: hidden; }
+        }
+        /* Layout kept here so it never depends on Tailwind generating new class names */
+        .site-footer .f-shell { max-width: 84rem; margin: 0 auto; border-radius: 2.5rem; background: #F4F6FA; padding: 1rem; overflow: hidden; }
+        .site-footer .f-cta { border-radius: 2rem; padding: 2.25rem 1.75rem; }
+        .site-footer .f-cta-title { font-size: clamp(2rem, 5vw, 3.6rem); }
+        .site-footer .f-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding: 3rem 1rem 1rem; }
+        .site-footer .f-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+        .site-footer .f-wordmark { font-size: min(9.4vw, 8.6rem); }
+        @media (min-width: 768px) {
+          .site-footer .f-cta { padding: 3.5rem; }
+          .site-footer .f-links { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.35fr); }
+        }
+        @media (min-width: 1024px) {
+          .site-footer .f-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 2.3fr); gap: 4rem; padding: 4rem 2.5rem 1.5rem; }
+        }
+      `}</style>
 
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wide text-[#1B1B1B]">
-            Explore
-          </h3>
-          <div className="mt-4 grid grid-cols-1 gap-x-2 gap-y-3 text-sm">
-            {explore.map((branch) => (
-              <BranchItem key={branch.slug} {...branch} />
-            ))}
-          </div>
-        </div>
+      <div className="f-shell">
+        {/* ---------- CTA card ---------- */}
+        <div data-f-cta className="f-cta relative overflow-hidden bg-[linear-gradient(135deg,#0B1533_0%,#14213D_45%,#1E3A8A_100%)] text-white">
+          <span data-f-glow aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-[#F7931E]/30 blur-[90px]" />
+          <span aria-hidden className="pointer-events-none absolute -bottom-32 left-1/4 size-80 rounded-full bg-[#2F6BFF]/30 blur-[100px]" />
+          <span aria-hidden className="pointer-events-none absolute -bottom-20 -right-10 size-72 rounded-full border-[40px] border-white/[0.05]" />
 
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wide text-[#1B1B1B]">
-            About
-          </h3>
-          <div className="mt-4 flex flex-col gap-3 text-sm">
-            {companyLinks.map((link) => (
+          <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+            <div data-f-cta-text className="max-w-2xl">
+              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#FFB25E]">
+                <span className="h-3 w-3.5 bg-[#F7931E] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
+                Free consultation
+              </p>
+              <h2 className="f-cta-title font-display mt-4 font-semibold leading-[1.02] tracking-[-0.035em]">
+                Ready to start your <span className="text-[#F7931E]">journey?</span>
+              </h2>
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-base">
+                Tell us your goals. Our counsellors will match you with the right course, country and scholarship, at no cost.
+              </p>
+            </div>
+
+            <div data-f-cta-text className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <Link
-                key={link.href}
-                href={link.href}
-                className="text-[#5B5B5B] transition-colors hover:text-[#1366E0]"
-              >
-                {link.label}
+                href="/auth/register"
+                className="group inline-flex items-center justify-between gap-4 rounded-2xl bg-white py-2.5 pl-5 pr-2.5 text-sm font-semibold text-[#14213D] transition-[translate] duration-300 hover:-translate-y-0.5">
+                Register as a student
+                <span className="grid size-9 place-items-center rounded-xl bg-[#F7931E] text-white transition-transform duration-300 group-hover:-rotate-45">
+                  <ArrowIcon />
+                </span>
               </Link>
-            ))}
-          </div>
-        </div>
-        {/* Resource */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wide text-[#1B1B1B]">
-            Resource
-          </h3>
-          <div className="mt-4 flex flex-col gap-3 text-sm">
-            {resource.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-[#5B5B5B] transition-colors hover:text-[#1366E0]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Get in Touch */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wide text-[#1B1B1B]">
-            Get In Touch
-          </h3>
-          <div className="mt-4 flex flex-col gap-3 text-sm text-[#5B5B5B]">
-            {/* <p>
-              {" "}
-              New Naikap - 6, Orchid Colony; just infront to cold store
-              building, Kathmandu, Nepal
-            </p> */}
-            <a
-              href="mailto:aob@admissiononboard.com"
-              className="hover:text-[#1366E0]"
-            >
-              aob@admissiononboard.com
-            </a>
-            {/* <a href="tel:+447465268767" className="hover:text-[#1366E0]">
-              +44 7465 268767
-            </a> */}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div className="mt-12 border-t border-black/[.08] pt-6">
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-sm text-[#5B5B5B]">
-            &copy; {year} Admission OnBoard. All Rights Reserved.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[#5B5B5B]">
-            {legalLinks.map((link, i) => (
-              <React.Fragment key={link.href}>
-                <Link href={link.href} className="hover:text-[#1366E0]">
-                  {link.label}
-                </Link>
-                {i < legalLinks.length - 1 && (
-                  <span className="text-[#C9C9C9]">&middot;</span>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-
-          <div className="flex gap-3">
-            {socials.map((social) => (
               <a
-                key={social.name}
-                href={social.href}
+                href={WHATSAPP}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.name}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1B1B1B] text-white transition-colors hover:bg-[#1366E0]"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d={social.path} />
-                </svg>
+                className="group inline-flex items-center justify-between gap-4 rounded-2xl border border-white/20 bg-white/[0.06] py-2.5 pl-5 pr-2.5 text-sm font-semibold text-white backdrop-blur transition-[translate,background-color] duration-300 hover:-translate-y-0.5 hover:bg-white/[0.12]">
+                Chat on WhatsApp
+                <span className="grid size-9 place-items-center rounded-xl bg-[#25D366] text-white">
+                  <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
+                    <path d={socials.find((s) => s.name === "WhatsApp")!.path} />
+                  </svg>
+                </span>
               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* ---------- Links ---------- */}
+        <div className="f-grid">
+          <div data-f-col>
+            <Link href="/" className="inline-block">
+              <Image src="/logo.png" alt="Admission OnBoard" width={190} height={42} className="h-auto w-[170px]" />
+            </Link>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-[#4A5268]">
+              Admission OnBoard connects students to top universities worldwide, from first consultation to the day you arrive.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {socials.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                  className="grid size-10 place-items-center rounded-full bg-white text-[#14213D] shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#14213D] hover:text-white">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d={social.path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="f-links">
+            {columns.map((col) => (
+              <div key={col.title} data-f-col>
+                <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#14213D]/50">{col.title}</h3>
+                <ul className="mt-5 flex flex-col gap-3 text-sm">
+                  {col.links.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className="group inline-flex items-center gap-1.5 font-medium text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+                        <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat transition-[background-size] duration-300 group-hover:bg-[length:100%_1.5px]">
+                          {link.label}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            <div data-f-col>
+              <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#14213D]/50">Get in touch</h3>
+              <div className="mt-5 flex flex-col gap-3 text-sm">
+                <a href={`mailto:${EMAIL}`} className="break-words font-medium text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+                  {EMAIL}
+                </a>
+                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="font-medium text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+                  WhatsApp us
+                </a>
+                <Link href="/contact" className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#14213D] shadow-sm ring-1 ring-black/5 transition-colors hover:text-[#2F6BFF]">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#3BAA35] opacity-60" />
+                    <span className="relative inline-flex size-2 rounded-full bg-[#3BAA35]" />
+                  </span>
+                  Dhaka &amp; Delhi offices
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ---------- Giant wordmark ---------- */}
+        <div data-f-wordmark aria-hidden className="overflow-hidden px-2 pt-6 sm:px-6">
+          <p className="f-wordmark font-display select-none whitespace-nowrap text-center font-bold leading-[0.85] tracking-[-0.05em]">
+            {WORDMARK.split("").map((ch, i) => (
+              <span
+                key={i}
+                data-f-char
+                className="inline-block bg-[linear-gradient(180deg,#14213D_0%,rgba(20,33,61,0.08)_100%)] bg-clip-text text-transparent">
+                {ch === " " ? "\u00A0" : ch}
+              </span>
+            ))}
+          </p>
+        </div>
+
+        {/* ---------- Bottom bar ---------- */}
+        <div className="mt-4 flex flex-col items-center justify-between gap-4 rounded-[1.5rem] bg-white px-5 py-4 text-sm text-[#4A5268] shadow-sm ring-1 ring-black/5 sm:flex-row">
+          <p>&copy; {year} Admission OnBoard. All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {legalLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="transition-colors hover:text-[#2F6BFF]">
+                {link.label}
+              </Link>
             ))}
           </div>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis;
+              if (lenis) lenis.scrollTo(0, { duration: 1.6 });
+              else window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="group inline-flex items-center gap-2 font-semibold text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+            Back to top
+            <span className="grid size-8 place-items-center rounded-full bg-[#14213D] text-white transition-transform duration-300 group-hover:-translate-y-0.5">
+              <ArrowIcon className="size-3.5 -rotate-90" />
+            </span>
+          </a>
         </div>
       </div>
     </footer>

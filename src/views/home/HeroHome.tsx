@@ -19,7 +19,7 @@ const ORANGE = "#F7931E";
 const STEPS = [
   { label: "Find the right universities", scatter: [0.68, 0.22] },
   { label: "Prepare for exams", scatter: [0.07, 0.8] },
-  { label: "Unlock scholarships", scatter: [0.2, 0.91] },
+  { label: "Unlock scholarships", scatter: [0.15, 0.91] },
   { label: "Plan your finances", scatter: [0.73, 0.5] },
   { label: "Get visa ready", scatter: [0.66, 0.86] },
 ] as const;
@@ -127,14 +127,19 @@ export default function HeroHome() {
           .fromTo(q("[data-strike]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.12, ease: "power2.inOut" }, 0.14)
           .fromTo(q("[data-plan-fill]"), { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.28, ease: "power2.inOut" }, 0.26)
           .fromTo(q("[data-underline]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.12 }, 0.52)
-          // Floating labels gather into a timeline list
-          .fromTo(
-            steps,
-            {
-              x: (i: number) => STEPS[i].scatter[0] * stage.clientWidth - (list.offsetLeft + steps[i].offsetLeft),
-              y: (i: number) => STEPS[i].scatter[1] * stage.clientHeight - (list.offsetTop + steps[i].offsetTop),
-            },
-            { x: 0, y: 0, duration: 0.34, stagger: 0.035, ease: "power3.inOut" },
+          // Floating labels gather into a timeline list.
+          // One tween per label (not a single staggered tween), so every label starts in its scattered spot.
+          .add(
+            steps.map((step, i) =>
+              gsap.fromTo(
+                step,
+                {
+                  x: () => STEPS[i].scatter[0] * stage.clientWidth - (list.offsetLeft + step.offsetLeft),
+                  y: () => STEPS[i].scatter[1] * stage.clientHeight - (list.offsetTop + step.offsetTop),
+                },
+                { x: 0, y: 0, duration: 0.34, delay: i * 0.035, ease: "power3.inOut" },
+              ),
+            ),
             0.2,
           )
           .fromTo(q("[data-panel]"), { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 0.44)
@@ -310,7 +315,7 @@ export default function HeroHome() {
             data-copy
             data-intro
             className="mt-6 max-w-[30rem] text-[1.05rem] leading-relaxed text-[#4A5268] lg:text-[clamp(1rem,1.15vw,1.2rem)]">
-            Find the right university, get expert guidance, and turn your global education goals into reality.
+            We connect students, universities and education partners worldwide, using smart technology, trusted networks and personal support to make studying abroad simple.
           </p>
 
           {/* Appears once the list has formed */}

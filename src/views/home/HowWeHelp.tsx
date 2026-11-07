@@ -154,10 +154,10 @@ const TAGS: FloatTag[] = [
     icon: <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4Z" />,
     at: { right: "7%", top: "6%" }, bg: "#9DB8FF", fg: "#fff", rot: 6, depth: 0.8, mobile: true,
   },
-  { label: "Scholarship", at: { left: "50%", top: "36%" }, bg: "#FDB52A", fg: "#14213D", rot: -3, depth: 1.5 },
+  { label: "Scholarship", at: { left: "18%", top: "84%" }, bg: "#FDB52A", fg: "#14213D", rot: -3, depth: 1.5 },
   {
     icon: <path d="M12 3 1 9l11 6 9-4.9V17h2V9L12 3Zm-6.8 9.2V16c0 1.9 3 3.8 6.8 3.8s6.8-1.9 6.8-3.8v-3.8L12 16l-6.8-3.8Z" />,
-    at: { left: "15%", top: "58%" }, bg: "#6366F1", fg: "#fff", rot: 4, depth: 1.1, mobile: true,
+    at: { left: "3%", top: "52%" }, bg: "#6366F1", fg: "#fff", rot: 4, depth: 1.1, mobile: true,
   },
   { label: "Visa", at: { right: "4%", top: "60%" }, bg: "#4CC46B", fg: "#0E3B1C", rot: 5, depth: 1.3 },
   { label: "IELTS Prep", at: { left: "60%", bottom: "0%" }, bg: "#2F6BFF", fg: "#fff", rot: -4, depth: 0.9 },
@@ -225,7 +225,7 @@ export default function HowWeHelp() {
           },
         );
 
-        cards.forEach((card, i) => {
+        cards.forEach((card) => {
           const c = gsap.utils.selector(card);
 
           // Card rises in, then its content plays in
@@ -244,22 +244,45 @@ export default function HowWeHelp() {
             { yPercent: -6, ease: "none", scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: 1 } },
           );
 
-          // Desktop: as the next card slides over, this one sinks back into the stack
-          if (isDesktop && i < cards.length - 1) {
-            const sink = {
-              trigger: cards[i + 1],
-              start: "top bottom",
-              end: () => `top ${110 + (i + 1) * 18}px`,
-              scrub: 1.2,
-              invalidateOnRefresh: true,
-            };
-            gsap.fromTo(card, { scale: 1, y: 0 }, { scale: 0.92 + i * 0.01, y: -10, ease: "power1.inOut", immediateRender: false, scrollTrigger: sink });
-            // Very light veil instead of a CSS filter (no dark flash, cheaper to animate)
-            gsap.fromTo(c("[data-veil]"), { opacity: 0 }, { opacity: 1, ease: "power1.inOut", immediateRender: false, scrollTrigger: sink });
-          }
         });
 
         gsap.to(q("[data-float]"), { y: -12, rotate: -4, duration: 2.4, ease: "sine.inOut", yoyo: true, repeat: -1 });
+
+        if (isDesktop) {
+          const headEl = q("[data-head]")[0] as HTMLElement;
+          const shrinkEl = q("[data-shrink]")[0] as HTMLElement;
+          const titleBox = q("[data-titlebox]")[0] as HTMLElement;
+          // Where the shrunk title ends → where the cards stop
+          const stackTop = () => 96 + (titleBox.offsetTop + titleBox.offsetHeight) * 0.32 + 10;
+          const setStackTop = () => el.style.setProperty("--stack-top", `${Math.round(stackTop())}px`);
+          setStackTop();
+          const ro = new ResizeObserver(() => {
+            setStackTop();
+            ScrollTrigger.refresh();
+          });
+          ro.observe(titleBox);
+          ctx.add(() => () => ro.disconnect());
+
+          // Title shrinks smoothly into a compact sticky header
+          const shrink = { trigger: headEl, start: "top 96px", end: "+=440", scrub: 0.8 };
+          gsap.fromTo(shrinkEl, { scale: 1 }, { scale: 0.32, ease: "power2.inOut", scrollTrigger: shrink });
+          gsap.fromTo(q("[data-shrink-fade]"), { opacity: 1, y: 0 }, { opacity: 0, y: -20, ease: "power1.out", scrollTrigger: { ...shrink, end: "+=200" } });
+          gsap.fromTo(q("[data-tag]"), { opacity: 1 }, { opacity: 0, ease: "power1.out", scrollTrigger: { ...shrink, end: "+=260" } });
+
+          // As the next card slides over, the one underneath eases back
+          cards.forEach((card, i) => {
+            if (i === cards.length - 1) return;
+            const sink = {
+              trigger: cards[i + 1],
+              start: "top bottom",
+              end: () => `top ${stackTop() + (i + 1) * 14}px`,
+              scrub: 1,
+              invalidateOnRefresh: true,
+            };
+            gsap.fromTo(card, { scale: 1 }, { scale: 0.93 + i * 0.01, ease: "power1.inOut", immediateRender: false, scrollTrigger: sink });
+            gsap.fromTo(gsap.utils.selector(card)("[data-veil]"), { opacity: 0 }, { opacity: 1, ease: "power1.inOut", immediateRender: false, scrollTrigger: sink });
+          });
+        }
 
         /* Big headline + floating tags */
         const head = q("[data-head]")[0] as HTMLElement;
@@ -274,20 +297,6 @@ export default function HowWeHelp() {
             0.45,
           );
 
-        // Scroll-driven headline: letters fill in one by one, lines glide together, "place." grows
-        const title = head.querySelector("h2")!;
-        const scrub = { trigger: title, start: "top 85%", end: "bottom 30%", scrub: 1 };
-        gsap.fromTo(q("[data-hchar]"), { opacity: 0.12 }, { opacity: 1, ease: "none", stagger: 0.08, scrollTrigger: scrub });
-        const lines = q("[data-hline]") as HTMLElement[];
-        lines.forEach((line, li) => {
-          const last = li === lines.length - 1;
-          gsap.fromTo(
-            line,
-            last ? { scale: 0.7, xPercent: 0 } : { xPercent: li % 2 ? 14 : -14 },
-            { scale: 1, xPercent: 0, ease: "power2.out", scrollTrigger: { ...scrub } },
-          );
-        });
-
         // Idle float, each tag on its own rhythm
         q("[data-tag-float]").forEach((f, i) =>
           gsap.to(f, {
@@ -301,8 +310,8 @@ export default function HowWeHelp() {
           }),
         );
 
-        // Scroll parallax: deeper tags drift further
-        tags.forEach((tag) =>
+        // Scroll parallax: deeper tags drift further (desktop fades them out instead)
+        if (!isDesktop) tags.forEach((tag) =>
           gsap.fromTo(
             tag,
             { y: () => 60 * Number(tag.dataset.depth) },
@@ -354,20 +363,25 @@ export default function HowWeHelp() {
         .hwh .hwh-stack { display: flex; flex-direction: column; gap: 2rem; max-width: 72rem; margin: 3.5rem auto 0; }
         @media (min-width: 640px) { .hwh .hwh-tag { display: flex; } }
         @media (min-width: 1024px) {
-          .hwh .hwh-stack { gap: 2.5rem; padding-bottom: 8vh; }
+          /* Title pins under the site header and shrinks; cards stack just below it */
+          .hwh .hwh-head { position: sticky; top: 96px; z-index: 1; }
+          .hwh .hwh-stack { position: relative; z-index: 2; gap: 2.5rem; padding-bottom: 8vh; }
           .hwh .hwh-slot { position: sticky; }
-          .hwh .hwh-card { height: min(30rem, 72vh); grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+          .hwh .hwh-card { height: clamp(28rem, calc(100svh - var(--stack-top, 300px) - 2rem), 34rem); grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
         }
       `}</style>
 
       <div>
         <div data-head className="hwh-head">
-          <span data-intro className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-[#2F6BFF]">
-            <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
-            How We Help
-          </span>
+          <div data-shrink className="origin-top will-change-transform">
+          <div data-shrink-fade>
+            <span data-intro className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-[#2F6BFF]">
+              <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
+              How We Help
+            </span>
+          </div>
 
-          <div className="relative mt-4 py-6 sm:py-10">
+          <div data-titlebox className="relative mt-4 py-6 sm:py-10">
             {TAGS.map((tag, ti) => (
               <Tag key={ti} tag={tag} />
             ))}
@@ -392,9 +406,12 @@ export default function HowWeHelp() {
             </h2>
           </div>
 
-          <p data-intro className="mx-auto mt-2 max-w-xl text-sm text-[#4A5268] sm:text-lg">
-            From admissions to visas, end-to-end support from our certified education specialists, every step of the way.
-          </p>
+          <div data-shrink-fade>
+            <p data-intro className="mx-auto mt-2 max-w-xl text-sm text-[#4A5268] sm:text-lg">
+              From admissions to visas, end-to-end support from our certified education specialists, every step of the way.
+            </p>
+          </div>
+          </div>
         </div>
 
         <div data-stack className="hwh-stack">
@@ -405,7 +422,7 @@ export default function HowWeHelp() {
               key={s.title}
               data-slot
               className="hwh-slot"
-              style={{ top: `${110 + i * 18}px` } as CSSProperties}>
+              style={{ top: `calc(var(--stack-top, 300px) + ${i * 14}px)` } as CSSProperties}>
               <div data-resolve className="origin-top will-change-transform">
               <article
                 data-card

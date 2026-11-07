@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import ReactCountryFlag from "react-country-flag";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
@@ -22,6 +23,8 @@ type Office = {
   phone: string;
   email: string;
   accent: string;
+  /** Main office / headquarters */
+  hq?: boolean;
 };
 
 const offices: Office[] = [
@@ -64,8 +67,9 @@ const offices: Office[] = [
     country: "bangladesh",
     countryLabel: "Bangladesh",
     flag: "🇧🇩",
-    name: "Dhaka Office",
+    name: "Head Office · Uttara",
     city: "Dhaka",
+    hq: true,
     timeZone: "Asia/Dhaka",
     addressLines: [
       "Plot-34, H M Plaza, 4th Floor",
@@ -174,159 +178,174 @@ function mapsUrl(office: Office) {
   return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
-/* ---------- South Asia dot map ----------
- * Equirectangular projection of lon 60°E–100°E, lat 8°N–34.5°N onto a 600×300 viewBox.
- * Land is a hand-simplified coastline; dots are laid on a grid wherever they fall on land.
+/* ---------- Recruitment network (hub-and-spoke from the Dhaka head office) ----------
+ * Positions live in a 100 × 75 space (the map keeps a 4:3 shape), loosely following real
+ * directions from Dhaka: South Asia close by, Southeast Asia east, Africa far west.
  */
-const MAP = { w: 600, h: 300, lon0: 60, lon1: 100, lat0: 8, lat1: 34.5 };
-const project = (lon: number, lat: number) => ({
-  x: ((lon - MAP.lon0) / (MAP.lon1 - MAP.lon0)) * MAP.w,
-  y: ((MAP.lat1 - lat) / (MAP.lat1 - MAP.lat0)) * MAP.h,
-});
-
-// [lon, lat] coastline of the mainland inside the window (top edge → east → around the peninsula → west edge)
-const MAINLAND: [number, number][] = [
-  [60, 34.5], [100, 34.5], [100, 14], [98.6, 14], [98, 16], [97.5, 16.6], [96.2, 16.8], [95.2, 15.8], [94.3, 16.1], [94.5, 18.4],
-  [93.6, 19.9], [92.4, 21], [91.8, 22.3], [91.1, 22.7], [90.5, 22.1], [89.5, 21.8], [88.2, 21.6], [87, 21.3], [86.5, 20.3],
-  [85.2, 19.4], [84, 18.2], [82.6, 17], [81.6, 16.1], [80.3, 15.6], [80.2, 13.2], [79.8, 11.1], [79.3, 10.3], [78.2, 8.9],
-  [77.5, 8], [76.6, 8.8], [76.1, 10], [75.6, 11.7], [74.8, 13], [74.1, 15], [73.3, 17], [72.8, 19], [72.7, 21], [72.3, 21.8],
-  [70.6, 20.8], [69.1, 22.3], [68.6, 23.4], [67.1, 24.7], [65, 25.3], [62.2, 25.1], [60, 25.4],
+type Node = { name: string; code: string; x: number; y: number; region: "asia" | "africa"; future?: boolean };
+const HUB = { x: 60, y: 38 };
+const NETWORK: Node[] = [
+  { name: "India", code: "IN", x: 40, y: 30, region: "asia" },
+  { name: "Nepal", code: "NP", x: 56, y: 11, region: "asia" },
+  { name: "Pakistan", code: "PK", x: 33, y: 10, region: "asia" },
+  { name: "Sri Lanka", code: "LK", x: 46, y: 61, region: "asia" },
+  { name: "Philippines", code: "PH", x: 87, y: 50, region: "asia" },
+  { name: "Morocco", code: "MA", x: 11, y: 14, region: "africa" },
+  { name: "Algeria", code: "DZ", x: 13, y: 34, region: "africa" },
+  { name: "Ghana", code: "GH", x: 12, y: 54, region: "africa" },
+  { name: "South Africa", code: "ZA", x: 27, y: 68, region: "africa" },
 ];
-const SRI_LANKA: [number, number][] = [[79.8, 9.8], [80.3, 9.7], [81, 8.8], [81.3, 8], [79.9, 8], [79.8, 9]];
+const EXPANDING = [
+  { label: "Southeast Asia", x: 86, y: 20 },
+  { label: "More of Africa", x: 64, y: 68 },
+];
+/** Gentle curve from the hub to a node */
+const spoke = (n: { x: number; y: number }) => {
+  const mx = (HUB.x + n.x) / 2;
+  const my = (HUB.y + n.y) / 2 - Math.abs(n.x - HUB.x) * 0.18;
+  return `M${HUB.x} ${HUB.y} Q${mx} ${my} ${n.x} ${n.y}`;
+};
 
-function inside([x, y]: [number, number], poly: [number, number][]) {
-  let hit = false;
-  for (let a = 0, b = poly.length - 1; a < poly.length; b = a++) {
-    const [xa, ya] = poly[a];
-    const [xb, yb] = poly[b];
-    if (ya > y !== yb > y && x < ((xb - xa) * (y - ya)) / (yb - ya) + xa) hit = !hit;
-  }
-  return hit;
+function NetFlag({ code, name, size = 1 }: { code: string; name: string; size?: number }) {
+  return (
+    <span className="flex shrink-0 overflow-hidden rounded-[3px] ring-1 ring-black/10">
+      <ReactCountryFlag
+        countryCode={code}
+        svg
+        aria-label={`Flag of ${name}`}
+        style={{ width: `${1.35 * size}em`, height: `${1 * size}em`, display: "block", objectFit: "cover" }}
+      />
+    </span>
+  );
 }
 
-const DOT_STEP = 9;
-const LAND_DOTS: { x: number; y: number }[] = [];
-for (let y = DOT_STEP / 2; y < MAP.h; y += DOT_STEP) {
-  for (let x = DOT_STEP / 2; x < MAP.w; x += DOT_STEP) {
-    const lon = MAP.lon0 + (x / MAP.w) * (MAP.lon1 - MAP.lon0);
-    const lat = MAP.lat1 - (y / MAP.h) * (MAP.lat1 - MAP.lat0);
-    if (inside([lon, lat], MAINLAND) || inside([lon, lat], SRI_LANKA)) LAND_DOTS.push({ x, y });
-  }
+function NetworkMap() {
+  return (
+    <div data-net className="net-panel relative mx-auto mt-12 max-w-6xl overflow-hidden rounded-[2.25rem] bg-[radial-gradient(ellipse_at_70%_40%,#24386E_0%,#14213D_55%,#0B1430_100%)] text-white shadow-[0_40px_90px_-45px_rgba(20,33,61,0.75)]">
+      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_65%_45%,black,transparent_75%)]" />
+      <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 size-80 rounded-full bg-[#F7931E]/20 blur-[100px]" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-24 right-10 size-80 rounded-full bg-[#2F6BFF]/25 blur-[110px]" />
+
+      <div className="net-grid relative">
+        {/* Copy */}
+        <div className="net-copy">
+          <p data-net-text className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#FFB25E]">
+            <span className="h-3 w-3.5 bg-[#F7931E] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
+            Our recruitment network
+          </p>
+          <h3 data-net-text className="font-display mt-4 text-[clamp(1.9rem,3vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
+            Headquartered in <span className="text-[#F7931E]">Bangladesh</span>, connected worldwide.
+          </h3>
+          <p data-net-text className="mt-4 text-sm leading-relaxed text-white/70 sm:text-base">
+            From our head office in Dhaka, our recruitment network covers India, Nepal, Pakistan, Sri Lanka, Ghana, Morocco, the
+            Philippines, Algeria and South Africa, with expanding connections across Africa and Southeast Asia.
+          </p>
+
+          <div data-net-text className="mt-7 grid grid-cols-3 gap-3">
+            {[
+              { value: "1", label: "Head office" },
+              { value: String(NETWORK.length), label: "Network countries" },
+              { value: "2", label: "Regions growing" },
+            ].map((st) => (
+              <div key={st.label} className="rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-3 backdrop-blur">
+                <p className="font-display text-2xl font-semibold tabular-nums">{st.value}</p>
+                <p className="mt-0.5 text-[11px] font-medium leading-tight text-white/60">{st.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Compact chip list (phones, where the map is hidden) */}
+          <div className="net-chips mt-6 flex-wrap gap-2">
+            {NETWORK.map((n) => (
+              <span key={n.code} className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold ring-1 ring-white/15">
+                <NetFlag code={n.code} name={n.name} />
+                {n.name}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Map */}
+        <div className="net-map relative" aria-label="Network map: Dhaka head office linked to nine countries" role="img">
+          <svg viewBox="0 0 100 75" className="absolute inset-0 size-full overflow-visible" aria-hidden>
+            {/* orbit rings around the hub */}
+            {[14, 24, 36].map((r, i) => (
+              <circle
+                key={r}
+                data-orbit
+                cx={HUB.x}
+                cy={HUB.y}
+                r={r}
+                fill="none"
+                stroke="#fff"
+                strokeOpacity={0.12 - i * 0.025}
+                strokeWidth="0.25"
+                strokeDasharray={i === 1 ? "0.8 1.4" : undefined}
+              />
+            ))}
+            {NETWORK.map((n, i) => (
+              <g key={n.code}>
+                <path d={spoke(n)} fill="none" stroke="#fff" strokeOpacity="0.08" strokeWidth="1.2" strokeLinecap="round" />
+                <path
+                  id={`net-spoke-${i}`}
+                  data-spoke
+                  d={spoke(n)}
+                  fill="none"
+                  stroke={n.region === "asia" ? "#F7931E" : "#7FA2FF"}
+                  strokeWidth="0.45"
+                  strokeLinecap="round"
+                />
+                <circle data-pulse-dot r="0.8" fill="#fff" />
+              </g>
+            ))}
+            {EXPANDING.map((e) => (
+              <path key={e.label} d={spoke(e)} fill="none" stroke="#fff" strokeOpacity="0.3" strokeWidth="0.35" strokeDasharray="0.9 1.2" />
+            ))}
+          </svg>
+
+          {/* Hub */}
+          <div className="absolute z-20 -translate-x-1/2 -translate-y-1/2" style={{ left: `${HUB.x}%`, top: `${(HUB.y / 75) * 100}%` }}>
+            <span data-hub-ring aria-hidden className="absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F7931E]/30" />
+            <span data-hub-ring aria-hidden className="absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F7931E]/25" />
+            <div data-hub className="relative flex items-center gap-2.5 rounded-2xl bg-white py-2 pl-2 pr-4 text-[#14213D] shadow-[0_18px_40px_-12px_rgba(247,147,30,0.7)]">
+              <span className="grid size-9 place-items-center rounded-xl bg-[#F7931E]">
+                <NetFlag code="BD" name="Bangladesh" />
+              </span>
+              <span className="leading-tight">
+                <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-[#E07B0A]">Head office</span>
+                <span className="font-display block text-base font-semibold">Dhaka, Bangladesh</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Network countries */}
+          {NETWORK.map((n) => (
+            <div key={n.code} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: `${n.x}%`, top: `${(n.y / 75) * 100}%` }}>
+              <span
+                data-node
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/[0.12] py-1 pl-1 pr-2.5 text-xs font-semibold text-white ring-1 ring-white/20 backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-[#14213D]">
+                <NetFlag code={n.code} name={n.name} />
+                {n.name}
+              </span>
+            </div>
+          ))}
+          {EXPANDING.map((e) => (
+            <div key={e.label} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: `${e.x}%`, top: `${(e.y / 75) * 100}%` }}>
+              <span data-node className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-dashed border-white/40 px-2.5 py-1 text-[11px] font-semibold text-white/75">
+                <span className="text-[#F7931E]">+</span> {e.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
-
-const MAP_LABELS = [
-  { text: "INDIA", lon: 78.5, lat: 21.5, size: 15, spacing: "0.5em" },
-  { text: "NEPAL", lon: 84.2, lat: 27.2, size: 9, spacing: "0.3em" },
-  { text: "Arabian Sea", lon: 65.5, lat: 15.5, size: 11, spacing: "0.12em", sea: true },
-  { text: "Bay of Bengal", lon: 88.6, lat: 15.2, size: 11, spacing: "0.12em", sea: true },
-];
-
-/** Airport-style codes + real coordinates for every office we may list */
-const PLACES: Record<string, { code: string; lon: number; lat: number }> = {
-  "uk-london": { code: "LON", lon: 61, lat: 31 }, // off the map: parked in the north-west corner
-  "bd-dhaka": { code: "DAC", lon: 90.4, lat: 23.8 },
-  "bd-dhaka-sector10": { code: "DAC", lon: 90.4, lat: 23.8 },
-  "bd-sylhet": { code: "ZYL", lon: 91.9, lat: 24.9 },
-  "india-office": { code: "DEL", lon: 77.2, lat: 28.6 },
-  "np-kathmandu": { code: "KTM", lon: 85.3, lat: 27.7 },
-};
-const placeOf = (o: Office) => {
-  const p = PLACES[o.id] ?? { code: o.city.slice(0, 3).toUpperCase(), lon: 80, lat: 22 };
-  return { code: p.code, ...project(p.lon, p.lat) };
-};
 
 /** Weekday in the office's time zone, e.g. "Thu" */
 function localDay(now: Date | null, timeZone: string) {
   if (!now) return null;
   return new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short" }).format(now);
-}
-
-function RouteMap({ list }: { list: Office[] }) {
-  const pts = list.map((o) => ({ o, ...placeOf(o) }));
-  const arcs = pts.slice(1).map((p, i) => {
-    const a = pts[i];
-    const mx = (a.x + p.x) / 2;
-    const my = Math.min(a.y, p.y) - 60;
-    return { id: `route-${i}`, d: `M${a.x} ${a.y} Q${mx} ${my} ${p.x} ${p.y}` };
-  });
-
-  return (
-    <div data-map className="relative mx-auto mt-10 max-w-5xl overflow-hidden rounded-[2rem] bg-[radial-gradient(ellipse_at_30%_20%,#24386E,#14213D_55%,#0E1830)] shadow-[0_40px_80px_-45px_rgba(20,33,61,0.7)]">
-      <div aria-hidden className="absolute -right-24 -top-24 size-72 rounded-full bg-[#2F6BFF]/25 blur-[90px]" />
-      <div aria-hidden className="absolute -bottom-24 -left-16 size-64 rounded-full bg-[#F7931E]/20 blur-[90px]" />
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 px-6 pt-6 sm:px-8">
-        <p className="font-display text-lg font-semibold text-white">Our network</p>
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/50">
-          {list.length} {list.length === 1 ? "office" : "offices"} · live local time
-        </p>
-      </div>
-      <svg viewBox={`0 0 ${MAP.w} ${MAP.h}`} className="relative mt-2 h-auto w-full" role="img" aria-label="Map of South Asia showing Admission OnBoard offices">
-        <defs>
-          <radialGradient id="oo-glow">
-            <stop offset="0" stopColor="#fff" stopOpacity="0.5" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-
-        {/* Land as dots */}
-        <g>
-          {LAND_DOTS.map((d, i) => (
-            <circle key={i} data-land cx={d.x} cy={d.y} r="1.6" fill="#BFD0FF" fillOpacity="0.32" />
-          ))}
-        </g>
-
-        {/* Map labels */}
-        {MAP_LABELS.map((l) => {
-          const { x, y } = project(l.lon, l.lat);
-          return (
-            <text
-              key={l.text}
-              data-map-label
-              x={x}
-              y={y}
-              textAnchor="middle"
-              fill="#fff"
-              fillOpacity={l.sea ? 0.28 : 0.22}
-              fontSize={l.size}
-              fontWeight={l.sea ? 500 : 700}
-              fontStyle={l.sea ? "italic" : "normal"}
-              letterSpacing={l.spacing}>
-              {l.text}
-            </text>
-          );
-        })}
-
-        {/* Soft light around each office */}
-        {pts.map((p) => (
-          <circle key={`glow-${p.o.id}`} cx={p.x} cy={p.y} r="46" fill="url(#oo-glow)" opacity="0.35" />
-        ))}
-
-        {arcs.map((a) => (
-          <g key={a.id}>
-            <path d={a.d} fill="none" stroke="#fff" strokeOpacity="0.12" strokeWidth="6" strokeLinecap="round" />
-            <path id={a.id} data-route d={a.d} fill="none" stroke="#F7931E" strokeWidth="2.2" strokeLinecap="round" />
-          </g>
-        ))}
-        {arcs[0] && (
-          <g data-plane>
-            <path d="M-9 -6 L10 0 L-9 6 L-5 0 Z" fill="#fff" />
-          </g>
-        )}
-        {pts.map((p) => (
-          <g key={p.o.id} transform={`translate(${p.x} ${p.y})`}>
-            <circle data-ping r="14" fill={p.o.accent} fillOpacity="0.4" />
-            <circle r="6" fill={p.o.accent} stroke="#fff" strokeWidth="2.5" />
-            <g data-pin-label>
-              <rect x="-50" y="-46" width="100" height="30" rx="15" fill="#fff" />
-              <text x="0" y="-26.5" textAnchor="middle" className="fill-[#14213D]" fontSize="11.5" fontWeight="700" letterSpacing="0.06em">
-                {p.code} · {p.o.city}
-              </text>
-            </g>
-          </g>
-        ))}
-      </svg>
-    </div>
-  );
 }
 
 export default function OurOffices() {
@@ -366,43 +385,36 @@ export default function OurOffices() {
         .fromTo(q("[data-word]"), { autoAlpha: 0, yPercent: 110, rotate: 4 }, { autoAlpha: 1, yPercent: 0, rotate: 0, duration: 1.1, stagger: 0.07 }, 0.1)
         .fromTo(q("[data-sub], [data-filters]"), { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.1 }, 0.4);
 
-      const map = q("[data-map]")[0];
+      // Network panel: rises in, spokes draw out from Dhaka, countries pop in, signals flow along the links
+      const net = q("[data-net]")[0];
       gsap
-        .timeline({ defaults: { ease: "expo.out" }, scrollTrigger: { trigger: map, start: "top 82%", once: true } })
-        .fromTo(map, { autoAlpha: 0, y: 50, scale: 0.96 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.2 }, 0)
-        .fromTo(
-          q("[data-land]"),
-          { opacity: 0, scale: 0, transformOrigin: "50% 50%" },
+        .timeline({ defaults: { ease: "expo.out" }, scrollTrigger: { trigger: net, start: "top 80%", once: true } })
+        .fromTo(net, { autoAlpha: 0, y: 60, scale: 0.97 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.2 }, 0)
+        .fromTo(q("[data-net-text]"), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.1 }, 0.25)
+        .fromTo(q("[data-hub]"), { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.9, ease: "back.out(2)" }, 0.4)
+        .fromTo(q("[data-orbit]"), { scale: 0.3, opacity: 0, svgOrigin: `${HUB.x} ${HUB.y}` }, { scale: 1, opacity: 1, duration: 1.4, stagger: 0.12 }, 0.45)
+        .fromTo(q("[data-spoke]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 1, stagger: 0.08, ease: "power2.inOut" }, 0.7)
+        .fromTo(q("[data-node]"), { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1, duration: 0.7, stagger: 0.08, ease: "back.out(2.2)" }, 1.1);
+
+      // Signals travel from the head office to every country, on a loop
+      q("[data-pulse-dot]").forEach((dot, i) =>
+        gsap.fromTo(
+          dot,
+          { opacity: 0 },
           {
             opacity: 1,
-            scale: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            // Ripple outward from the nearest office
-            stagger: (_i: number, dot: Element) => {
-              const cx = Number(dot.getAttribute("cx"));
-              const cy = Number(dot.getAttribute("cy"));
-              const d = Math.min(...offices.map((o) => Math.hypot(placeOf(o).x - cx, placeOf(o).y - cy)));
-              return d * 0.0035;
-            },
+            motionPath: { path: `#net-spoke-${i}`, align: `#net-spoke-${i}`, alignOrigin: [0.5, 0.5] },
+            duration: 2.4,
+            delay: 1.8 + i * 0.25,
+            repeat: -1,
+            repeatDelay: 1.2,
+            ease: "power1.inOut",
           },
-          0.15,
-        )
-        .fromTo(q("[data-map-label]"), { opacity: 0 }, { opacity: 1, duration: 1, stagger: 0.1 }, 0.8)
-        .fromTo(q("[data-route]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.6, ease: "power2.inOut" }, 0.9)
-        .fromTo(q("[data-pin-label]"), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.15, ease: "back.out(2)" }, 1.5);
-
-      // Pins pulse, the plane keeps flying the route
-      gsap.fromTo(q("[data-ping]"), { scale: 0.6, opacity: 0.7 }, { scale: 2, opacity: 0, duration: 2, repeat: -1, stagger: 0.5, ease: "power1.out", transformOrigin: "50% 50%" });
-      if (q("#route-0").length) {
-        gsap.to(q("[data-plane]"), {
-          motionPath: { path: "#route-0", align: "#route-0", alignOrigin: [0.5, 0.5], autoRotate: true },
-          duration: 4,
-          ease: "power1.inOut",
-          repeat: -1,
-          yoyo: true,
-        });
-      }
+        ),
+      );
+      // Head office pulses; middle orbit slowly turns
+      gsap.fromTo(q("[data-hub-ring]"), { scale: 0.6, opacity: 0.8 }, { scale: 1.9, opacity: 0, duration: 2.4, repeat: -1, stagger: 1.2, ease: "power1.out" });
+      gsap.to(q("[data-orbit]")[1], { rotation: 360, svgOrigin: `${HUB.x} ${HUB.y}`, duration: 60, ease: "none", repeat: -1 });
     });
 
     return () => mm.revert();
@@ -462,7 +474,7 @@ export default function OurOffices() {
     <section ref={root} className="offices relative w-full overflow-hidden bg-[#FFFEFA] px-6 py-20 sm:py-24">
       <style>{`
         @media (prefers-reduced-motion: no-preference) {
-          .offices [data-eyebrow], .offices [data-word], .offices [data-sub], .offices [data-filters], .offices [data-map], .offices [data-pin-label] { visibility: hidden; }
+          .offices [data-eyebrow], .offices [data-word], .offices [data-sub], .offices [data-filters], .offices [data-net], .offices [data-node], .offices [data-hub] { visibility: hidden; }
         }
         @media (prefers-reduced-motion: no-preference) {
           .offices [data-office], .offices [data-row], .offices [data-actions] { visibility: hidden; }
@@ -479,6 +491,15 @@ export default function OurOffices() {
         }
         .offices .office-card:hover::before { opacity: 1; }
         .offices .office-city { font-size: clamp(2.4rem, 4.2vw, 3.4rem); }
+        .offices .net-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; padding: 2rem 1.5rem; }
+        .offices .net-map { display: none; aspect-ratio: 4 / 3; }
+        .offices .net-chips { display: flex; }
+        @media (min-width: 1024px) {
+          .offices .net-grid { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr); align-items: center; gap: 2.5rem; padding: 3rem 3rem 3rem 3.25rem; }
+          .offices .net-map { display: block; }
+          .offices .net-chips { display: none; }
+        }
+        .offices .office-card.is-hq { box-shadow: 0 0 0 2px #F7931E, 0 30px 60px -36px rgba(247,147,30,0.6); }
       `}</style>
 
       <div className="mx-auto max-w-3xl text-center">
@@ -499,8 +520,8 @@ export default function OurOffices() {
           </span>
         </h2>
         <p data-sub className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[#4A5268] sm:text-base">
-          {offices.length} {offices.length === 1 ? "office" : "offices"} across {countryCount} {countryCount === 1 ? "country" : "countries"}. Visit,
-          call or email the Admission OnBoard team nearest to you.
+          Our head office is in Dhaka, Bangladesh, with a regional office in Delhi. Visit, call or email the Admission OnBoard team nearest to
+          you.
         </p>
 
         {/* Filter pills (hidden when only one country is left) */}
@@ -543,7 +564,7 @@ export default function OurOffices() {
         </div>
       </div>
 
-      <RouteMap list={offices} />
+      <NetworkMap />
 
       {/* Office cards (a lone card is centred) */}
       <div data-cards key={active} className={`office-grid ${filtered.length === 1 ? "is-one" : "is-two"}`}>
@@ -555,8 +576,13 @@ export default function OurOffices() {
             <article
               key={office.id}
               data-office
-              className="office-card group relative flex flex-col overflow-hidden rounded-[2rem] border border-black/[0.06] bg-white p-6 shadow-[0_24px_60px_-40px_rgba(20,33,61,0.5)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-38px_rgba(20,33,61,0.55)] sm:p-8"
+              className={`office-card group relative flex flex-col${office.hq ? " is-hq" : ""} overflow-hidden rounded-[2rem] border border-black/[0.06] bg-white p-6 shadow-[0_24px_60px_-40px_rgba(20,33,61,0.5)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-38px_rgba(20,33,61,0.55)] sm:p-8`}
               style={{ "--accent": office.accent } as CSSProperties}>
+              {office.hq && (
+                <span className="absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-b-xl bg-[#F7931E] px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white shadow-md">
+                  ★ Head office
+                </span>
+              )}
               {/* Soft accent glow + faint flag */}
               <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full opacity-25 blur-3xl" style={{ background: office.accent }} />
               <span aria-hidden className="pointer-events-none absolute -right-6 w-32 rotate-6 opacity-[0.07]" style={{ top: "4.75rem" }}>

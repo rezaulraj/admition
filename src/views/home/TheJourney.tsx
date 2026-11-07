@@ -42,13 +42,26 @@ function Card({ className = "", children }: { className?: string; children: Reac
   );
 }
 
-function StepPill({ n, light = false }: { n: string; light?: boolean }) {
+/** Big step-number watermark, pinned inside the card's top-right corner */
+function StepPill({ n, light = false, size = "6.5rem" }: { n: string; light?: boolean; size?: string }) {
   return (
     <span
-      className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] ${
-        light ? "bg-white/15 text-white ring-1 ring-white/25" : "bg-[#14213D]/[0.07] text-[#14213D]"
-      }`}>
-      Step {n}
+      data-stepmark
+      aria-label={`Step ${n}`}
+      className="pointer-events-none absolute flex select-none flex-col items-end"
+      style={{ top: "1.25rem", right: "1.5rem", zIndex: 0 }}>
+      <span className="text-[11px] font-bold uppercase tracking-[0.22em]" style={{ color: light ? "rgba(255,255,255,0.6)" : "rgba(20,33,61,0.45)" }}>
+        Step
+      </span>
+      <span
+        className="font-display font-bold leading-[0.85] tracking-[-0.05em]"
+        style={{
+          fontSize: size,
+          color: light ? "rgba(255,255,255,0.1)" : "rgba(20,33,61,0.07)",
+          WebkitTextStroke: light ? "1.5px rgba(255,255,255,0.45)" : "1.5px rgba(20,33,61,0.2)",
+        }}>
+        {n}
+      </span>
     </span>
   );
 }
@@ -78,7 +91,7 @@ function SmallCard({
             {ICONS[icon]}
           </svg>
         </span>
-        {step && <StepPill n={step} light={light} />}
+        {step && <StepPill n={step} light={light} size="4.75rem" />}
       </div>
       <div>
         <h3 className="font-display text-2xl font-semibold leading-[1.1] tracking-tight">{title}</h3>
@@ -121,10 +134,11 @@ export default function TheJourney() {
         );
 
         if (isDesktop) {
-          // Scroll deals the cards out of one fanned deck in the middle into their places
+          // When the grid comes into view, the cards are dealt once out of a fanned deck into their places,
+          // so they are never left overlapping while you read them
           const deal = gsap.timeline({
-            defaults: { ease: "power2.inOut" },
-            scrollTrigger: { trigger: grid, start: "top 92%", end: "top 12%", scrub: 0.7, invalidateOnRefresh: true },
+            defaults: { ease: "expo.out" },
+            scrollTrigger: { trigger: grid, start: "top 78%", once: true, invalidateOnRefresh: true },
           });
           const mid = (cards.length - 1) / 2;
           cards.forEach((card, i) => {
@@ -136,8 +150,8 @@ export default function TheJourney() {
                 rotation: (i - mid) * 7,
                 scale: 0.62,
               },
-              { x: 0, y: 0, rotation: 0, scale: 1, duration: 1 },
-              (cards.length - 1 - i) * 0.07,
+              { x: 0, y: 0, rotation: 0, scale: 1, duration: 1.3, clearProps: "transform" },
+              (cards.length - 1 - i) * 0.08,
             );
           });
         } else {
@@ -150,6 +164,39 @@ export default function TheJourney() {
             ),
           );
         }
+
+        // Step numbers glide up into their corner
+        gsap.fromTo(
+          q("[data-stepmark]"),
+          { autoAlpha: 0, yPercent: 30 },
+          {
+            autoAlpha: 1,
+            yPercent: 0,
+            duration: 1.1,
+            stagger: 0.1,
+            delay: 0.6,
+            ease: "expo.out",
+            scrollTrigger: { trigger: grid, start: "top 78%", once: true },
+          },
+        );
+
+        // Step 01 chips pop in one by one, then float
+        gsap.fromTo(
+          q("[data-chip]"),
+          { autoAlpha: 0, scale: 0.5, y: 16 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.18,
+            ease: "back.out(2)",
+            scrollTrigger: { trigger: q("[data-chip]")[0], start: "top 85%", once: true },
+          },
+        );
+        q("[data-chip-float]").forEach((c, i) =>
+          gsap.to(c, { y: i % 2 ? 7 : -7, duration: 2.2 + i * 0.4, ease: "sine.inOut", yoyo: true, repeat: -1 }),
+        );
 
         // Each student steps up inside their card
         (q("[data-student]") as HTMLElement[]).forEach((el) => {
@@ -205,21 +252,58 @@ export default function TheJourney() {
         <div data-deal-grid className="relative mt-14 grid auto-rows-[minmax(250px,auto)] gap-4 md:grid-cols-12">
           {/* Step 01 */}
           <Card className="min-h-[480px] bg-[linear-gradient(160deg,#FFE3CC_0%,#F7924F_100%)] text-[#14213D] md:col-span-5 md:row-span-2">
-            <StepPill n="01" />
-            <h3 className="font-display mt-4 text-3xl font-semibold leading-[1.05] tracking-[-0.02em]">Free profile assessment</h3>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#14213D]/70">
+            <StepPill n="01" size="8.5rem" />
+            <h3 className="font-display relative z-10 text-3xl font-semibold leading-[1.05] tracking-[-0.02em]" style={{ maxWidth: "15rem" }}>
+              Free profile assessment
+            </h3>
+            <p className="relative z-10 mt-3 text-sm leading-relaxed text-[#14213D]/70" style={{ maxWidth: "15rem" }}>
               Share your goals with us. We evaluate your academic and financial profile right from day one.
             </p>
-            <div className="absolute inset-x-0 bottom-0 h-[64%]">
+            {/* Visual: glowing stage + student + what the assessment covers */}
+            <div className="absolute inset-x-0 bottom-0" style={{ height: "66%" }}>
+              <span
+                aria-hidden
+                className="absolute left-1/2 -translate-x-1/2 rounded-full bg-white/35 blur-[2px]"
+                style={{ bottom: "-18%", width: "86%", aspectRatio: "1" }}
+              />
+              <span
+                aria-hidden
+                className="absolute left-1/2 -translate-x-1/2 rounded-full border border-white/60"
+                style={{ bottom: "-30%", width: "104%", aspectRatio: "1" }}
+              />
+              <span
+                aria-hidden
+                className="absolute left-1/2 -translate-x-1/2 rounded-full border border-dashed border-white/50"
+                style={{ bottom: "-42%", width: "122%", aspectRatio: "1" }}
+              />
               <div data-student className="relative h-full">
                 <Image
                   src="/herotransparent.png"
                   alt="Smiling student holding a laptop"
                   fill
                   sizes="(min-width: 768px) 40vw, 90vw"
-                  className="object-contain object-bottom transition-transform duration-700 group-hover:scale-105"
+                  className="object-contain object-bottom drop-shadow-[0_24px_30px_rgba(20,33,61,0.25)] transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
+
+              {[
+                { label: "Academic profile", style: { left: "6%", top: "22%" } },
+                { label: "Budget plan", style: { right: "6%", top: "40%" } },
+                { label: "Goals mapped", style: { left: "8%", top: "62%" } },
+              ].map((chip) => (
+                <span key={chip.label} data-chip className="absolute z-10" style={chip.style}>
+                  <span
+                    data-chip-float
+                    className="inline-flex items-center gap-2 rounded-full bg-white/90 py-1.5 pl-1.5 pr-3.5 text-xs font-semibold text-[#14213D] shadow-[0_12px_26px_-12px_rgba(20,33,61,0.55)] backdrop-blur">
+                    <span className="grid size-5 place-items-center rounded-full bg-[#3BAA35] text-white">
+                      <svg viewBox="0 0 24 24" className="size-3" fill="none" aria-hidden>
+                        <path d="M5 12.5 10 17 19 7" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    {chip.label}
+                  </span>
+                </span>
+              ))}
             </div>
           </Card>
 
@@ -227,7 +311,7 @@ export default function TheJourney() {
           <Card className="flex flex-col justify-between gap-8 bg-[#14213D] text-white md:col-span-7">
             <div aria-hidden className="absolute -right-20 -top-24 -z-10 h-72 w-72 rounded-full bg-[#F7931E]/40 blur-[90px]" />
             <div className="flex items-start justify-between gap-4">
-              <div data-flags className="flex flex-wrap gap-2.5">
+              <div data-flags className="flex flex-wrap gap-2.5" style={{ paddingRight: "8.5rem" }}>
                 {DESTINATIONS.map((c) => (
                   <span
                     key={c.code}

@@ -188,7 +188,7 @@ export default function FaqSection() {
         @media (min-width: 640px) { .faq .faq-answer { padding-left: 5rem; } }
         @media (min-width: 1024px) {
           .faq .faq-grid { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 3.5rem; margin-top: 3.5rem; }
-          .faq .faq-photo-col { position: sticky; top: 7rem; max-width: none; }
+          .faq .faq-photo-col { max-width: none; }
         }
         @media (prefers-reduced-motion: no-preference) {
           .faq [data-eyebrow], .faq [data-word], .faq [data-sub], .faq [data-photo-card], .faq [data-chip], .faq [data-faq] { visibility: hidden; }

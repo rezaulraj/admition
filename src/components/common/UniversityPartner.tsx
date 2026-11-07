@@ -483,7 +483,7 @@ export default function UniversityPartner({
             <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
             Trusted partners
           </span>
-          <h2 className="font-display mt-4 text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.035em] text-[#14213D] sm:text-5xl lg:text-[3.6rem]">
+          <h2 className="font-display mt-4 text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.035em] text-[#350C0E] sm:text-5xl lg:text-[3.6rem]">
             {headline.map((w) => (
               <span key={w} className="mr-[0.24em] inline-block overflow-hidden pb-[0.08em] align-top">
                 <span data-word className="inline-block">
@@ -564,7 +564,7 @@ export default function UniversityPartner({
                   className={`relative inline-flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3.5 text-sm font-semibold transition-[color,border-color,background-color,translate] duration-300 ${
                     isActive
                       ? "border-transparent bg-transparent text-white"
-                      : "border-[#E5E5E5] bg-white text-[#14213D] hover:-translate-y-0.5 hover:border-[#2F6BFF]/50 hover:shadow-md"
+                      : "border-[#E5E5E5] bg-white text-[#350C0E] hover:-translate-y-0.5 hover:border-[#2F6BFF]/50 hover:shadow-md"
                   }`}>
                   <span className={`flex h-6 w-6 shrink-0 overflow-hidden rounded-full ${isActive ? "ring-2 ring-white" : "ring-1 ring-black/10"}`}>
                     <Flag code={c.code} />
@@ -632,7 +632,7 @@ export default function UniversityPartner({
                           </>
                         )}
 
-                        <span className="absolute left-4 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-[#14213D] shadow-sm backdrop-blur-md">
+                        <span className="absolute left-4 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-[#350C0E] shadow-sm backdrop-blur-md">
                           <span className="relative flex size-1.5">
                             <span className="absolute inline-flex size-full animate-ping rounded-full opacity-60" style={{ background: uni.color }} />
                             <span className="relative inline-flex size-1.5 rounded-full" style={{ background: uni.color }} />
@@ -650,7 +650,7 @@ export default function UniversityPartner({
 
                       {/* Body */}
                       <div className={`flex flex-1 flex-col items-center px-6 pb-6 text-center ${uni.image ? "pt-14" : "pt-6"}`}>
-                        <h3 className="font-display text-lg font-semibold leading-snug tracking-[-0.01em] text-[#14213D] sm:text-xl">{uni.name}</h3>
+                        <h3 className="font-display text-lg font-semibold leading-snug tracking-[-0.01em] text-[#350C0E] sm:text-xl">{uni.name}</h3>
                         <p className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium text-[#6B6B6B]">
                           <span className="flex h-4 w-4 overflow-hidden rounded-full ring-1 ring-black/10">
                             <Flag code={activeCountry.code} />
@@ -662,7 +662,7 @@ export default function UniversityPartner({
                           <p className="mt-3 rounded-full bg-[#2F6BFF]/10 px-3 py-1 text-[11px] font-semibold text-[#2F6BFF]">{uni.note}</p>
                         )}
 
-                        <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-[#14213D] transition-colors group-hover:text-[#2F6BFF]">
+                        <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-[#350C0E] transition-colors group-hover:text-[#2F6BFF]">
                           View courses
                           <span className="grid size-7 place-items-center rounded-full bg-[#14213D] text-white transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[#2F6BFF]">
                             <ArrowIcon className="h-3.5 w-3.5" />
@@ -691,7 +691,7 @@ export default function UniversityPartner({
               <span className="flex h-14 w-14 overflow-hidden rounded-full shadow-md ring-4 ring-[#FFFEFA]">
                 <Flag code={activeCountry.code} />
               </span>
-              <h3 className="font-display mt-5 text-xl font-semibold text-[#14213D]">{active} partners coming soon</h3>
+              <h3 className="font-display mt-5 text-xl font-semibold text-[#350C0E]">{active} partners coming soon</h3>
               <p className="mt-2 max-w-sm text-sm leading-relaxed text-[#6B6B6B]">
                 We&apos;re adding our {active} universities here. Our counsellors can already help you find the right course and apply.
               </p>
@@ -705,7 +705,7 @@ export default function UniversityPartner({
                 </a>
                 <Link
                   href="/universities"
-                  className="inline-flex items-center justify-center rounded-full border border-[#14213D] px-6 py-3 text-sm font-semibold text-[#14213D] transition-colors hover:bg-[#14213D] hover:text-white">
+                  className="inline-flex items-center justify-center rounded-full border border-[#14213D] px-6 py-3 text-sm font-semibold text-[#350C0E] transition-colors hover:bg-[#14213D] hover:text-white">
                   See all universities
                 </Link>
               </div>

@@ -34,14 +34,25 @@ export default function GlobalEducationCta() {
     <section className="w-full px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         {/* Main Card Container */}
-        <div className="relative isolate overflow-hidden rounded-[2rem] bg-[#012b4e] shadow-xl">
+                <style>{`
+          .cta-card { background: linear-gradient(125deg, #FFF4E6 0%, #FDF8F2 38%, #EEF3FF 72%, #E3EAFF 100%); border: 1px solid rgba(53,12,14,0.08); box-shadow: 0 30px 60px -34px rgba(53,12,14,0.35); }
+          .cta-card .cta-blob-l { background: radial-gradient(circle at 50% 50%, rgba(247,147,30,0.28), rgba(247,147,30,0.08) 60%, transparent 72%); }
+          .cta-card .cta-blob-r { background: radial-gradient(circle at 50% 50%, rgba(47,107,255,0.22), rgba(47,107,255,0.06) 60%, transparent 72%); }
+          .cta-card .cta-title { color: #350C0E; }
+          .cta-card .cta-text { color: #6B5556; }
+          .cta-card .cta-btn { background: #350C0E; color: #fff; transition: background-color .3s ease, transform .3s ease; }
+          .cta-card .cta-btn:hover, .cta-card .cta-btn:focus-visible { background: #F7931E; transform: translateY(-2px); }
+          .cta-card .cta-social { background: #fff; color: #350C0E; box-shadow: 0 8px 20px -12px rgba(53,12,14,0.45); transition: background-color .3s ease, color .3s ease; }
+          .cta-card .cta-social:hover, .cta-card .cta-social:focus-visible { background: #350C0E; color: #fff; }
+        `}</style>
+        <div className="cta-card relative isolate overflow-hidden rounded-[2rem]">
           {/* Decorative Background Shapes */}
           <div className="absolute inset-0 -z-10">
             {/* Left Circle Shape */}
-            <div className="absolute -left-16 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[#1366E0] opacity-90 sm:-left-12 sm:h-80 sm:w-80 md:h-[28rem] md:w-[28rem]" />
+            <div className="absolute -left-16 top-1/2 h-72 w-72 -translate-y-1/2 cta-blob-l rounded-full sm:-left-12 sm:h-80 sm:w-80 md:h-[28rem] md:w-[28rem]" />
 
             {/* Right Shape */}
-            <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#1366E0] opacity-90 sm:-right-12 sm:h-72 sm:w-72" />
+            <div className="absolute -right-20 -top-20 h-56 w-56 cta-blob-r rounded-full sm:-right-12 sm:h-72 sm:w-72" />
           </div>
 
           <div className="flex flex-col items-center justify-between md:flex-row">
@@ -62,16 +73,16 @@ export default function GlobalEducationCta() {
             <div className="flex w-full flex-col items-center justify-between md:flex-row md:items-end">
               {/* Text & CTA */}
               <div className="flex w-full flex-col items-center px-6 pb-10 pt-8 text-center md:items-start md:px-10 md:pb-14 md:pt-14 md:text-left lg:px-14 lg:pr-10">
-                <h2 className="max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-[2.5rem]">
+                <h2 className="max-w-3xl text-3xl cta-title font-bold leading-tight sm:text-4xl lg:text-[2.5rem]">
                   Start Your Global Education Journey
                 </h2>
-                <p className="mt-4 max-w-sm text-sm font-medium text-white/80 sm:text-base">
+                <p className="mt-4 max-w-sm cta-text text-sm font-medium sm:text-base">
                   Find your course, choose your country, start your journey.
                 </p>
 
                 <Link
                   href="/contact"
-                  className="mt-8 inline-flex items-center justify-center rounded-full bg-black px-14 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4A9B6E]"
+                  className="mt-8 inline-flex items-center justify-center cta-btn rounded-full px-14 py-3.5 text-base font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4A9B6E]"
                 >
                   Start Your Journey
                 </Link>
@@ -87,7 +98,7 @@ export default function GlobalEducationCta() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.name}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white hover:text-[#012b4e] sm:h-11 sm:w-11"
+                    className="flex h-10 w-10 items-center justify-center cta-social rounded-full sm:h-11 sm:w-11"
                   >
                     <svg
                       width="18"

@@ -221,7 +221,7 @@ function NetFlag({ code, name, size = 1 }: { code: string; name: string; size?: 
 
 function NetworkMap() {
   return (
-    <div data-net className="net-panel relative mx-auto mt-12 max-w-6xl overflow-hidden rounded-[2.25rem] bg-[radial-gradient(ellipse_at_70%_40%,#24386E_0%,#14213D_55%,#0B1430_100%)] text-white shadow-[0_40px_90px_-45px_rgba(20,33,61,0.75)]">
+    <div data-net className="net-panel relative mx-auto mt-16 max-w-6xl sm:mt-20 overflow-hidden rounded-[2.25rem] bg-[radial-gradient(ellipse_at_70%_40%,#24386E_0%,#14213D_55%,#0B1430_100%)] text-white shadow-[0_40px_90px_-45px_rgba(20,33,61,0.75)]">
       <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_65%_45%,black,transparent_75%)]" />
       <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 size-80 rounded-full bg-[#F7931E]/20 blur-[100px]" />
       <div aria-hidden className="pointer-events-none absolute -bottom-24 right-10 size-80 rounded-full bg-[#2F6BFF]/25 blur-[110px]" />
@@ -307,7 +307,7 @@ function NetworkMap() {
           <div className="absolute z-20 -translate-x-1/2 -translate-y-1/2" style={{ left: `${HUB.x}%`, top: `${(HUB.y / 75) * 100}%` }}>
             <span data-hub-ring aria-hidden className="absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F7931E]/30" />
             <span data-hub-ring aria-hidden className="absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F7931E]/25" />
-            <div data-hub className="relative flex items-center gap-2.5 rounded-2xl bg-white py-2 pl-2 pr-4 text-[#14213D] shadow-[0_18px_40px_-12px_rgba(247,147,30,0.7)]">
+            <div data-hub className="relative flex items-center gap-2.5 rounded-2xl bg-white py-2 pl-2 pr-4 text-[#350C0E] shadow-[0_18px_40px_-12px_rgba(247,147,30,0.7)]">
               <span className="grid size-9 place-items-center rounded-xl bg-[#F7931E]">
                 <NetFlag code="BD" name="Bangladesh" />
               </span>
@@ -323,7 +323,7 @@ function NetworkMap() {
             <div key={n.code} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: `${n.x}%`, top: `${(n.y / 75) * 100}%` }}>
               <span
                 data-node
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/[0.12] py-1 pl-1 pr-2.5 text-xs font-semibold text-white ring-1 ring-white/20 backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-[#14213D]">
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/[0.12] py-1 pl-1 pr-2.5 text-xs font-semibold text-white ring-1 ring-white/20 backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-[#350C0E]">
                 <NetFlag code={n.code} name={n.name} />
                 {n.name}
               </span>
@@ -507,7 +507,7 @@ export default function OurOffices() {
           <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
           Visit us
         </span>
-        <h2 className="font-display mt-3 text-[2.4rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#14213D] sm:text-5xl lg:text-[3.6rem]">
+        <h2 className="font-display mt-3 text-[2.4rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#350C0E] sm:text-5xl lg:text-[3.6rem]">
           <span className="mr-[0.24em] inline-block overflow-hidden pb-[0.08em] align-top">
             <span data-word className="inline-block">
               Our
@@ -544,7 +544,7 @@ export default function OurOffices() {
                   setActive(f.key);
                 }}
                 className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6BFF] focus-visible:ring-offset-2 ${
-                  isActive ? "bg-[#14213D] text-white shadow-md" : "text-[#6B6B6B] hover:bg-[#EEF4FE] hover:text-[#14213D]"
+                  isActive ? "bg-[#14213D] text-white shadow-md" : "text-[#6B6B6B] hover:bg-[#EEF4FE] hover:text-[#350C0E]"
                 }`}>
                 {f.key === "all" ? (
                   <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
@@ -563,8 +563,6 @@ export default function OurOffices() {
           })}
         </div>
       </div>
-
-      <NetworkMap />
 
       {/* Office cards (a lone card is centred) */}
       <div data-cards key={active} className={`office-grid ${filtered.length === 1 ? "is-one" : "is-two"}`}>
@@ -593,7 +591,7 @@ export default function OurOffices() {
               <div className="relative flex flex-wrap items-center justify-between gap-3">
                 <span className="inline-flex items-center gap-2 rounded-full bg-[#F5F7FB] py-1.5 pl-1.5 pr-3.5 ring-1 ring-black/[0.04]">
                   <Flag country={office.country} className="h-4 w-6" />
-                  <span className="text-xs font-semibold text-[#14213D]">{office.countryLabel}</span>
+                  <span className="text-xs font-semibold text-[#350C0E]">{office.countryLabel}</span>
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full bg-[#14213D] px-3.5 py-1.5 text-xs font-semibold text-white">
                   <span className="relative flex size-2">
@@ -607,7 +605,7 @@ export default function OurOffices() {
 
               {/* City */}
               <div className="relative mt-7 overflow-hidden">
-                <h3 data-city className="office-city font-display font-semibold leading-none tracking-[-0.035em] text-[#14213D]">
+                <h3 data-city className="office-city font-display font-semibold leading-none tracking-[-0.035em] text-[#350C0E]">
                   {office.city}
                   <span style={{ color: office.accent }}>.</span>
                 </h3>
@@ -634,7 +632,7 @@ export default function OurOffices() {
                     ))}
                   </address>
                 </a>
-                <a data-row href={tel} className="group/row flex items-center gap-3 rounded-2xl p-2.5 font-medium text-[#14213D] transition-colors duration-300 hover:bg-[#F5F7FB]">
+                <a data-row href={tel} className="group/row flex items-center gap-3 rounded-2xl p-2.5 font-medium text-[#350C0E] transition-colors duration-300 hover:bg-[#F5F7FB]">
                   <IconTile accent={office.accent}>
                     <path
                       strokeLinecap="round"
@@ -643,17 +641,17 @@ export default function OurOffices() {
                     />
                   </IconTile>
                   <span className="flex-1">{office.phone}</span>
-                  <svg viewBox="0 0 24 24" className="size-4 -translate-x-1 text-[#14213D]/40 opacity-0 transition-all duration-300 group-hover/row:translate-x-0 group-hover/row:opacity-100" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+                  <svg viewBox="0 0 24 24" className="size-4 -translate-x-1 text-[#350C0E]/40 opacity-0 transition-all duration-300 group-hover/row:translate-x-0 group-hover/row:opacity-100" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
                     <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
-                <a data-row href={`mailto:${office.email}`} className="group/row flex items-center gap-3 rounded-2xl p-2.5 font-medium text-[#14213D] transition-colors duration-300 hover:bg-[#F5F7FB]">
+                <a data-row href={`mailto:${office.email}`} className="group/row flex items-center gap-3 rounded-2xl p-2.5 font-medium text-[#350C0E] transition-colors duration-300 hover:bg-[#F5F7FB]">
                   <IconTile accent={office.accent}>
                     <rect x="3" y="5" width="18" height="14" rx="2" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="m4 7 8 6 8-6" />
                   </IconTile>
                   <span className="flex-1 break-all">{office.email}</span>
-                  <svg viewBox="0 0 24 24" className="size-4 -translate-x-1 text-[#14213D]/40 opacity-0 transition-all duration-300 group-hover/row:translate-x-0 group-hover/row:opacity-100" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+                  <svg viewBox="0 0 24 24" className="size-4 -translate-x-1 text-[#350C0E]/40 opacity-0 transition-all duration-300 group-hover/row:translate-x-0 group-hover/row:opacity-100" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
                     <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
@@ -665,7 +663,7 @@ export default function OurOffices() {
                   href={mapsUrl(office)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-black/10 py-3.5 text-sm font-semibold text-[#14213D] transition-[border-color,background-color] duration-300 hover:border-black/20 hover:bg-[#F5F7FB]">
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-black/10 py-3.5 text-sm font-semibold text-[#350C0E] transition-[border-color,background-color] duration-300 hover:border-black/20 hover:bg-[#F5F7FB]">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
                     <path strokeLinecap="round" strokeLinejoin="round" d="m9 4-6 2.5v13L9 17l6 2.5 6-2.5V4l-6 2.5L9 4Zm0 0v13m6-10.5v13" />
                   </svg>
@@ -689,6 +687,9 @@ export default function OurOffices() {
           );
         })}
       </div>
+
+      {/* Then the whole recruitment network around the head office */}
+      <NetworkMap />
     </section>
   );
 }

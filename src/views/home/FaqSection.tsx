@@ -207,7 +207,7 @@ export default function FaqSection() {
             <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
             FAQ
           </span>
-          <h2 className="font-display mt-3 text-[2.2rem] font-semibold leading-[1.04] tracking-[-0.035em] text-[#14213D] sm:text-5xl lg:text-[3.4rem]">
+          <h2 className="font-display mt-3 text-[2.2rem] font-semibold leading-[1.04] tracking-[-0.035em] text-[#350C0E] sm:text-5xl lg:text-[3.4rem]">
             {["Answers", "to", "your", "common"].map((w) => (
               <span key={w} className="mr-[0.24em] inline-block overflow-hidden pb-[0.08em] align-top">
                 <span data-word className="inline-block">
@@ -246,7 +246,7 @@ export default function FaqSection() {
                 data-photo-card
                 className="absolute inset-x-4 bottom-4 flex flex-col gap-3 rounded-3xl border border-white/80 bg-white/80 p-4 shadow-[0_20px_40px_-20px_rgba(20,33,61,0.45)] backdrop-blur-xl sm:inset-x-5 sm:bottom-5 sm:flex-row sm:items-center sm:justify-between sm:p-5">
                 <div>
-                  <p className="font-display text-lg font-semibold text-[#14213D]">Still have questions?</p>
+                  <p className="font-display text-lg font-semibold text-[#350C0E]">Still have questions?</p>
                   <p className="text-sm text-[#4A5268]">Talk to a counsellor for free.</p>
                 </div>
                 <Link
@@ -262,14 +262,14 @@ export default function FaqSection() {
             <span
               data-chip
               aria-hidden
-              className="absolute -left-3 top-[18%] hidden items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-sm font-semibold text-[#14213D] shadow-[0_16px_32px_-16px_rgba(20,33,61,0.5)] sm:flex lg:-left-6">
+              className="absolute -left-3 top-[18%] hidden items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-sm font-semibold text-[#350C0E] shadow-[0_16px_32px_-16px_rgba(20,33,61,0.5)] sm:flex lg:-left-6">
               <span className="grid size-7 place-items-center rounded-full bg-[#3BAA35]/15 text-[#2E8A29]">✓</span>
               Free consultation
             </span>
             <span
               data-chip
               aria-hidden
-              className="absolute -right-3 top-[42%] hidden items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-sm font-semibold text-[#14213D] shadow-[0_16px_32px_-16px_rgba(20,33,61,0.5)] sm:flex lg:-right-6">
+              className="absolute -right-3 top-[42%] hidden items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 text-sm font-semibold text-[#350C0E] shadow-[0_16px_32px_-16px_rgba(20,33,61,0.5)] sm:flex lg:-right-6">
               <span className="grid size-7 place-items-center rounded-full bg-[#F7931E]/15 text-[#E07B0A]">?</span>
               {faqs.length} top questions
             </span>
@@ -310,13 +310,13 @@ export default function FaqSection() {
                       </svg>
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-bold tracking-[0.14em] text-[#14213D]/35">{String(index + 1).padStart(2, "0")}</span>
-                      <span className="font-display block text-[0.98rem] font-semibold leading-snug text-[#14213D] sm:text-lg">{faq.question}</span>
+                      <span className="block text-[11px] font-bold tracking-[0.14em] text-[#350C0E]/35">{String(index + 1).padStart(2, "0")}</span>
+                      <span className="font-display block text-[0.98rem] font-semibold leading-snug text-[#350C0E] sm:text-lg">{faq.question}</span>
                     </span>
                     <span
                       data-open={open || undefined}
                       className={`faq-toggle grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-500 ${
-                        open ? "border-transparent text-white" : "border-[#E2E8F0] text-[#14213D]"
+                        open ? "border-transparent text-white" : "border-[#E2E8F0] text-[#350C0E]"
                       }`}
                       style={open ? { backgroundColor: faq.color } : undefined}>
                       <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden>

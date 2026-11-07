@@ -134,7 +134,7 @@ export default function LatestBlogs() {
               <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
               From the blog
             </span>
-            <h2 className="font-display mt-3 text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#14213D] sm:text-5xl lg:text-[3.4rem]">
+            <h2 className="font-display mt-3 text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.035em] text-[#350C0E] sm:text-5xl lg:text-[3.4rem]">
               {["Study", "abroad"].map((w) => (
                 <span key={w} className="mr-[0.24em] inline-block overflow-hidden pb-[0.08em] align-top">
                   <span data-word className="inline-block">
@@ -187,13 +187,13 @@ export default function LatestBlogs() {
               <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${categoryStyles[featured.category]}`}>
                 {featured.category}
               </span>
-              <h3 className="font-display mt-3 text-2xl font-semibold leading-[1.15] tracking-[-0.02em] text-[#14213D] sm:text-3xl">
+              <h3 className="font-display mt-3 text-2xl font-semibold leading-[1.15] tracking-[-0.02em] text-[#350C0E] sm:text-3xl">
                 <span className={hoverTitle}>{featured.title}</span>
               </h3>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#4A5268]">{featured.excerpt}</p>
               <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
                 <Meta blog={featured} />
-                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#14213D]">
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#350C0E]">
                   Read article
                   <span className="grid size-9 place-items-center rounded-full bg-[#14213D] text-white transition-all duration-300 group-hover:-rotate-45 group-hover:bg-[#F7931E]">
                     <ArrowIcon />
@@ -222,12 +222,12 @@ export default function LatestBlogs() {
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-display text-sm font-semibold text-[#14213D]/30">{String(i + 2).padStart(2, "0")}</span>
+                    <span className="font-display text-sm font-semibold text-[#350C0E]/30">{String(i + 2).padStart(2, "0")}</span>
                     <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${categoryStyles[blog.category]}`}>
                       {blog.category}
                     </span>
                   </div>
-                  <h3 className="font-display mt-2 line-clamp-2 text-base font-semibold leading-snug text-[#14213D] sm:text-lg">
+                  <h3 className="font-display mt-2 line-clamp-2 text-base font-semibold leading-snug text-[#350C0E] sm:text-lg">
                     <span className={hoverTitle}>{blog.title}</span>
                   </h3>
                   <div className="mt-2">
@@ -243,10 +243,10 @@ export default function LatestBlogs() {
               href="/our-blogs"
               className="group mt-5 flex items-center justify-between gap-4 rounded-[22px] border-0 bg-[linear-gradient(120deg,#EEF3FF,#FFF3E6)] px-5 py-4">
               <span>
-                <span className="block font-display text-base font-semibold text-[#14213D]">More guides on the blog</span>
+                <span className="block font-display text-base font-semibold text-[#350C0E]">More guides on the blog</span>
                 <span className="block text-sm text-[#4A5268]">Visas, scholarships, destinations and more.</span>
               </span>
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-[#14213D] shadow-sm transition-all duration-300 group-hover:-rotate-45 group-hover:bg-[#2F6BFF] group-hover:text-white">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-[#350C0E] shadow-sm transition-all duration-300 group-hover:-rotate-45 group-hover:bg-[#2F6BFF] group-hover:text-white">
                 <ArrowIcon />
               </span>
             </Link>

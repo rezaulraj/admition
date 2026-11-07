@@ -164,7 +164,7 @@ export default function Footer() {
             <div data-f-cta-text className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <Link
                 href="/auth/register"
-                className="group inline-flex items-center justify-between gap-4 rounded-2xl bg-white py-2.5 pl-5 pr-2.5 text-sm font-semibold text-[#14213D] transition-[translate] duration-300 hover:-translate-y-0.5">
+                className="group inline-flex items-center justify-between gap-4 rounded-2xl bg-white py-2.5 pl-5 pr-2.5 text-sm font-semibold text-[#350C0E] transition-[translate] duration-300 hover:-translate-y-0.5">
                 Register as a student
                 <span className="grid size-9 place-items-center rounded-xl bg-[#F7931E] text-white transition-transform duration-300 group-hover:-rotate-45">
                   <ArrowIcon />
@@ -203,7 +203,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="grid size-10 place-items-center rounded-full bg-white text-[#14213D] shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#14213D] hover:text-white">
+                  className="grid size-10 place-items-center rounded-full bg-white text-[#350C0E] shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#14213D] hover:text-white">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                     <path d={social.path} />
                   </svg>
@@ -215,11 +215,11 @@ export default function Footer() {
           <div className="f-links">
             {columns.map((col) => (
               <div key={col.title} data-f-col>
-                <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#14213D]/50">{col.title}</h3>
+                <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#350C0E]/50">{col.title}</h3>
                 <ul className="mt-5 flex flex-col gap-3 text-sm">
                   {col.links.map((link) => (
                     <li key={link.href}>
-                      <Link href={link.href} className="group inline-flex items-center gap-1.5 font-medium text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+                      <Link href={link.href} className="group inline-flex items-center gap-1.5 font-medium text-[#350C0E] transition-colors hover:text-[#2F6BFF]">
                         <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat transition-[background-size] duration-300 group-hover:bg-[length:100%_1.5px]">
                           {link.label}
                         </span>
@@ -231,15 +231,15 @@ export default function Footer() {
             ))}
 
             <div data-f-col>
-              <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#14213D]/50">Get in touch</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[#350C0E]/50">Get in touch</h3>
               <div className="mt-5 flex flex-col gap-3 text-sm">
-                <a href={`mailto:${EMAIL}`} className="break-words font-medium text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+                <a href={`mailto:${EMAIL}`} className="break-words font-medium text-[#350C0E] transition-colors hover:text-[#2F6BFF]">
                   {EMAIL}
                 </a>
-                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="font-medium text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="font-medium text-[#350C0E] transition-colors hover:text-[#2F6BFF]">
                   WhatsApp us
                 </a>
-                <Link href="/contact" className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#14213D] shadow-sm ring-1 ring-black/5 transition-colors hover:text-[#2F6BFF]">
+                <Link href="/contact" className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#350C0E] shadow-sm ring-1 ring-black/5 transition-colors hover:text-[#2F6BFF]">
                   <span className="relative flex size-2">
                     <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#3BAA35] opacity-60" />
                     <span className="relative inline-flex size-2 rounded-full bg-[#3BAA35]" />
@@ -283,7 +283,7 @@ export default function Footer() {
               if (lenis) lenis.scrollTo(0, { duration: 1.6 });
               else window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="group inline-flex items-center gap-2 font-semibold text-[#14213D] transition-colors hover:text-[#2F6BFF]">
+            className="group inline-flex items-center gap-2 font-semibold text-[#350C0E] transition-colors hover:text-[#2F6BFF]">
             Back to top
             <span className="grid size-8 place-items-center rounded-full bg-[#14213D] text-white transition-transform duration-300 group-hover:-translate-y-0.5">
               <ArrowIcon className="size-3.5 -rotate-90" />

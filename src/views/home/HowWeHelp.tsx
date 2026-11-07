@@ -149,12 +149,12 @@ const pad = (n: number) => String(n).padStart(2, "0");
 /** `at` is an inline position (kept out of Tailwind so it always applies); tags sit in the empty space right of the headline */
 type FloatTag = { label?: string; icon?: ReactNode; at: CSSProperties; bg: string; fg: string; rot: number; depth: number; mobile?: boolean; desktopHidden?: boolean };
 const TAGS: FloatTag[] = [
-  { label: "Universities", at: { left: "3%", top: "2%" }, bg: "#FF8A3D", fg: "#14213D", rot: -5, depth: 1.2, mobile: true },
+  { label: "Universities", at: { left: "3%", top: "2%" }, bg: "#FF8A3D", fg: "#350C0E", rot: -5, depth: 1.2, mobile: true },
   {
     icon: <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4Z" />,
     at: { right: "7%", top: "6%" }, bg: "#9DB8FF", fg: "#fff", rot: 6, depth: 0.8, mobile: true,
   },
-  { label: "Scholarship", at: { left: "18%", top: "84%" }, bg: "#FDB52A", fg: "#14213D", rot: -3, depth: 1.5 },
+  { label: "Scholarship", at: { left: "18%", top: "84%" }, bg: "#FDB52A", fg: "#350C0E", rot: -3, depth: 1.5 },
   {
     icon: <path d="M12 3 1 9l11 6 9-4.9V17h2V9L12 3Zm-6.8 9.2V16c0 1.9 3 3.8 6.8 3.8s6.8-1.9 6.8-3.8v-3.8L12 16l-6.8-3.8Z" />,
     at: { left: "3%", top: "52%" }, bg: "#6366F1", fg: "#fff", rot: 4, depth: 1.1, mobile: true,
@@ -387,7 +387,7 @@ export default function HowWeHelp() {
             ))}
             <h2
               aria-label={HEADLINE.map((line) => line.map((w) => w.word).join(" ")).join(" ")}
-              className="hwh-title font-display relative font-semibold leading-[0.95] tracking-[-0.045em] text-[#14213D]">
+              className="hwh-title font-display relative font-semibold leading-[0.95] tracking-[-0.045em] text-[#350C0E]">
               {HEADLINE.map((line, li) => (
                 <span key={li} data-hline aria-hidden className="block origin-center will-change-transform">
                   {line.map(({ word, accent }) => (
@@ -459,7 +459,7 @@ export default function HowWeHelp() {
                     </span>
                   </div>
 
-                  <h3 className="font-display mt-6 text-[clamp(1.6rem,2.3vw,2.3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#14213D]">
+                  <h3 className="font-display mt-6 text-[clamp(1.6rem,2.3vw,2.3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#350C0E]">
                     {s.title.split(" ").map((w, wi) => (
                       <span key={wi} className="mr-[0.25em] inline-block overflow-hidden pb-[0.08em] align-top last:mr-0">
                         <span data-word className="inline-block">
@@ -477,7 +477,7 @@ export default function HowWeHelp() {
                     <Link
                       href="/services"
                       aria-label={`Learn more about ${s.title}`}
-                      className="inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-5 text-sm font-semibold text-[#14213D] transition-colors duration-300 hover:bg-white/70">
+                      className="inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-5 text-sm font-semibold text-[#350C0E] transition-colors duration-300 hover:bg-white/70">
                       <span
                         className="grid size-11 place-items-center rounded-full text-white transition-transform duration-300 group-hover:translate-x-1"
                         style={{ background: t.solid }}>

@@ -188,7 +188,7 @@ export default function ContactFooter() {
             <span className="h-3.5 w-4 bg-[#2F6BFF] [clip-path:polygon(0_0,65%_0,100%_50%,65%_100%,0_100%)]" />
             Work with us
           </span>
-          <h2 className="font-display mt-3 text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.035em] text-[#14213D] sm:text-5xl">
+          <h2 className="font-display mt-3 text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.035em] text-[#350C0E] sm:text-5xl">
             {["One", "team,", "built", "for"].map((w) => (
               <span key={w} className="mr-[0.24em] inline-block overflow-hidden pb-[0.08em] align-top">
                 <span data-word className="inline-block">
@@ -263,7 +263,7 @@ export default function ContactFooter() {
 
                   <ul className="mt-5 flex flex-col gap-2.5">
                     {card.points.map((pt) => (
-                      <li key={pt} data-point className="flex items-center gap-3 text-sm text-[#14213D]">
+                      <li key={pt} data-point className="flex items-center gap-3 text-sm text-[#350C0E]">
                         <span className="grid size-6 shrink-0 place-items-center rounded-full" style={{ background: `${card.accent}1A` }}>
                           <svg viewBox="0 0 24 24" className="size-3.5" fill="none" aria-hidden>
                             <path data-tick d="M5 12.5 10 17 19 7" stroke={card.accent} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />

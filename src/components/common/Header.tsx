@@ -543,13 +543,13 @@ export default function Header() {
           <div className="hidden shrink-0 items-center gap-2 lg:flex xl:gap-3">
             <Link
               href="/auth/login"
-              className="flex h-11 items-center justify-center whitespace-nowrap rounded-full border-[1.5px] border-[#0B1533] bg-white px-5 text-sm font-semibold text-[#0B1533] transition-colors duration-200 hover:border-[#0A4FE0] hover:text-[#0A4FE0] xl:px-6 xl:text-base 2xl:text-[17px]"
+              className="flex h-11 items-center justify-center whitespace-nowrap rounded-full border-[1.5px] border-[#350C0E] bg-white px-5 text-sm font-semibold text-[#350C0E] transition-colors duration-200 hover:border-[#F7931E] hover:text-[#F7931E] xl:px-6 xl:text-base 2xl:text-[17px]"
             >
               Login
             </Link>
             <Link
               href="/auth/register"
-              className="flex h-11 items-center justify-center whitespace-nowrap rounded-full bg-[#0A4FE0] px-5 text-sm font-semibold text-white shadow-md shadow-[#0A4FE0]/25 transition-colors duration-200 hover:bg-[#083FB5] xl:px-7 xl:text-base 2xl:px-8 2xl:text-[17px]"
+              className="flex h-11 items-center justify-center whitespace-nowrap rounded-full bg-[#350C0E] px-5 text-sm font-semibold text-white shadow-md shadow-[#350C0E]/25 transition-colors duration-200 hover:bg-[#F7931E] xl:px-7 xl:text-base 2xl:px-8 2xl:text-[17px]"
             >
               Register as a Student
             </Link>
@@ -632,14 +632,14 @@ export default function Header() {
               <Link
                 href="/auth/login"
                 onClick={closeMobile}
-                className="flex h-11 items-center justify-center rounded-full border border-black text-[15px] font-semibold tracking-wide text-black transition-colors duration-200 hover:border-[#1366E0] hover:text-[#1366E0]"
+                className="flex h-11 items-center justify-center rounded-full border border-[#350C0E] text-[15px] font-semibold tracking-wide text-[#350C0E] transition-colors duration-200 hover:border-[#F7931E] hover:text-[#F7931E]"
               >
                 Login
               </Link>
               <Link
                 href="/auth/register"
                 onClick={closeMobile}
-                className="flex h-11 items-center justify-center rounded-full bg-black text-[15px] font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-gray-950"
+                className="flex h-11 items-center justify-center rounded-full bg-[#350C0E] text-[15px] font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-[#F7931E]"
               >
                 Register as a Student
               </Link>

@@ -108,7 +108,7 @@ export default function SuccessStoriesGallery() {
                     Real students, real visas
                   </span>
 
-                  <h2 className="font-display mt-4 text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.03em] text-[#14213D] sm:text-5xl">
+                  <h2 className="font-display mt-4 text-[2.1rem] font-semibold leading-[1.05] tracking-[-0.03em] text-[#350C0E] sm:text-5xl">
                     <span className="mr-[0.25em] inline-block overflow-hidden pb-[0.1em] align-top">
                       <span data-word data-reveal className="inline-block origin-bottom-left">
                         Recent

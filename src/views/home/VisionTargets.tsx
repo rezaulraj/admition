@@ -281,7 +281,8 @@ export default function VisionTargets() {
       `}</style>
 
       <div className="container mx-auto">
-        <h2 className="font-display mx-auto max-w-3xl text-center text-[2rem] font-semibold leading-[1.12] tracking-[-0.03em] text-[#14213D] sm:text-[2.75rem]">
+        <h2 className="font-display mx-auto max-w-3xl text-center text-[2rem] font-semibold leading-[1.12] tracking-[-0.03em] sm:text-[2.75rem]"
+          style={{ color: "#350C0E" }}>
           {heading.map((w) => (
             <span key={w} className="mr-[0.25em] inline-block overflow-hidden pb-[0.08em] align-top">
               <span data-word className="inline-block">

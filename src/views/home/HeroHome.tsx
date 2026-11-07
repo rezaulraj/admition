@@ -24,7 +24,7 @@ const STEPS = [
   { label: "Get visa ready", scatter: [0.66, 0.86] },
 ] as const;
 
-const HEADLINE = [["Your", "Dream"], ["University"], ["isn't", "luck."]];
+const HEADLINE = [["Your", "Dream", "University"], ["Is", "Closer"]];
 
 export default function HeroHome() {
   const root = useRef<HTMLElement>(null);
@@ -80,12 +80,6 @@ export default function HeroHome() {
             0.6,
           )
           .fromTo(
-            q("[data-copy]"),
-            { autoAlpha: 0, y: 24 },
-            { autoAlpha: 1, y: 0, stagger: 0.1 },
-            0.7,
-          )
-          .fromTo(
             q("[data-card]"),
             { autoAlpha: 0, scale: 0.86, y: 60 },
             { autoAlpha: 1, scale: 1, y: 0, duration: 1.6, stagger: 0.08 },
@@ -128,12 +122,6 @@ export default function HeroHome() {
               1.2,
             )
             .fromTo(
-              q("[data-strike]"),
-              { drawSVG: "0%" },
-              { drawSVG: "100%", duration: 0.6, ease: "power2.inOut" },
-              1.4,
-            )
-            .fromTo(
               q("[data-plan-fill]"),
               { clipPath: "inset(0 100% 0 0)" },
               {
@@ -159,6 +147,12 @@ export default function HeroHome() {
               q("[data-dot]"),
               { backgroundColor: ORANGE, duration: 0.3, stagger: 0.32 },
               1.6,
+            )
+            .fromTo(
+              q("[data-copy]"),
+              { autoAlpha: 0, y: 24 },
+              { autoAlpha: 1, y: 0, duration: 0.9 },
+              2.2,
             )
             .fromTo(
               q("[data-cta]"),
@@ -291,13 +285,7 @@ export default function HeroHome() {
             0.3,
           )
           .to(q("[data-spark]"), { autoAlpha: 0, duration: 0.08 }, 0.48)
-          // "luck." gets crossed out, "It's a plan." fills in
-          .fromTo(
-            q("[data-strike]"),
-            { drawSVG: "0%" },
-            { drawSVG: "100%", duration: 0.12, ease: "power2.inOut" },
-            0.14,
-          )
+          // "Than You Think." fills in
           .fromTo(
             q("[data-plan-fill]"),
             { clipPath: "inset(0 100% 0 0)" },
@@ -390,18 +378,18 @@ export default function HeroHome() {
             },
             0.62,
           )
-          // Buttons slide in under the finished list
+          // Story finished: the paragraph rises in, then the button
+          .fromTo(
+            q("[data-copy]"),
+            { autoAlpha: 0, y: 26, filter: "blur(6px)" },
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.14, ease: "power3.out" },
+            0.7,
+          )
           .fromTo(
             q("[data-cta]"),
             { autoAlpha: 0, y: 34 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.12,
-              stagger: 0.04,
-              ease: "power3.out",
-            },
-            0.74,
+            { autoAlpha: 1, y: 0, duration: 0.12, ease: "power3.out" },
+            0.8,
           )
           // Route + paper plane travel
           .fromTo(
@@ -422,9 +410,7 @@ export default function HeroHome() {
               duration: 1,
             },
             0,
-          )
-          // Depth / parallax
-          .to(q("[data-copy-block]"), { y: -30, duration: 1 }, 0);
+          );
 
         if (document.fonts?.ready)
           document.fonts.ready.then(() => ScrollTrigger.refresh());
@@ -452,26 +438,10 @@ export default function HeroHome() {
         @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
           .hero [data-panel], .hero [data-rail], .hero [data-rail-fill], .hero [data-dot] { visibility: hidden; }
         }
-        .hero .plan-ghost { -webkit-text-stroke: 1.5px rgba(20,33,61,0.22); color: transparent; }
+        .hero .plan-ghost { -webkit-text-stroke: 1.5px rgba(53,12,14,0.22); color: transparent; }
+        /* Desktop: heading block sits a little in from the edge, clear of the navbar */
+        @media (min-width: 1024px) { .hero [data-copy-block] { left: 9.5vw; top: 21vh; max-width: 30vw; } }
 
-        /* Partner button: animated gradient border in the logo colours */
-        @property --hero-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-        @keyframes heroBorderSpin { to { --hero-angle: 360deg; } }
-        .hero .glow-btn {
-          --ring: conic-gradient(from var(--hero-angle), #F7931E, #FFD08A, #0A4FE0, #3BAA35, #F7931E);
-          position: relative; isolation: isolate; display: inline-flex; border-radius: 9999px; padding: 2px;
-          background: var(--ring);
-          animation: heroBorderSpin 4s linear infinite;
-        }
-        .hero .glow-btn::before {
-          content: ""; position: absolute; inset: -3px; z-index: -1; border-radius: inherit;
-          background: var(--ring); filter: blur(12px); opacity: 0.45; transition: opacity 0.4s ease;
-        }
-        .hero .glow-btn:hover::before, .hero .glow-btn:focus-visible::before { opacity: 0.85; }
-        .hero .glow-btn:hover { animation-duration: 1.6s; }
-        .hero .glow-btn > span { transition: background-color 0.4s ease, color 0.4s ease; }
-        .hero .glow-btn:hover > span, .hero .glow-btn:focus-visible > span { background-color: rgba(255,255,255,0); color: #fff; }
-        @media (prefers-reduced-motion: reduce) { .hero .glow-btn { animation: none; } }
       `}</style>
 
       <div
@@ -519,10 +489,10 @@ export default function HeroHome() {
         {/* ---------- Copy ---------- */}
         <div
           data-copy-block
-          className="relative z-30 px-4 pt-28 sm:px-8 lg:absolute lg:left-[5.4vw] lg:top-[15vh] lg:max-w-[38vw] lg:px-0 lg:pt-0"
+          className="relative z-30 px-4 pt-28 sm:px-8 lg:absolute lg:px-0 lg:pt-0"
         >
-          <h1 className="font-display font-semibold tracking-[-0.035em] text-[#14213D]">
-            <span className="block text-[clamp(2.6rem,4.4vw,5rem)] leading-[1.02]">
+          <h1 className="font-display font-semibold tracking-[-0.035em]" style={{ color: "#350C0E" }}>
+            <span className="block leading-[1.04]" style={{ fontSize: "clamp(2.1rem, 3.5vw, 4rem)" }}>
               {HEADLINE.map((line, li) => (
                 <span key={li} className="block">
                   {line.map((word) => (
@@ -535,25 +505,8 @@ export default function HeroHome() {
                         data-intro
                         className="relative inline-block origin-bottom-left"
                       >
-                        {word === "luck." ? (
-                          <span className="relative text-[#F7931E]">
-                            luck.
-                            <svg
-                              aria-hidden
-                              viewBox="0 0 160 40"
-                              preserveAspectRatio="none"
-                              className="absolute -left-[4%] top-[38%] h-[0.32em] w-[108%] overflow-visible"
-                            >
-                              <path
-                                data-strike
-                                d="M4 28 C 50 18, 100 22, 156 8"
-                                fill="none"
-                                stroke={INK}
-                                strokeWidth="6"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </span>
+                        {word === "Closer" ? (
+                          <span className="text-[#F7931E]">Closer</span>
                         ) : (
                           word
                         )}
@@ -568,18 +521,20 @@ export default function HeroHome() {
             <span
               data-plan
               data-intro
-              className="relative mt-[0.06em] block text-[clamp(3.1rem,5.6vw,6.4rem)] leading-[1]"
+              className="relative mt-[0.06em] block leading-[1.04]"
+              style={{ fontSize: "clamp(2.1rem, 3.5vw, 4rem)" }}
             >
               <span aria-hidden className="plan-ghost">
-                It&apos;s a plan.
+                Than You Think.
               </span>
               <span
                 data-plan-fill
-                className="absolute inset-0 bg-[linear-gradient(100deg,#14213D_10%,#0A4FE0_70%,#F7931E_100%)] bg-clip-text text-transparent"
+                className="absolute inset-0 bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(100deg, #350C0E 15%, #8A3414 65%, #F7931E 100%)" }}
               >
-                It&apos;s a{" "}
+                Than You{" "}
                 <span className="relative inline-block">
-                  plan.
+                  Think.
                   <svg
                     aria-hidden
                     viewBox="0 0 220 24"
@@ -603,11 +558,11 @@ export default function HeroHome() {
           <p
             data-copy
             data-intro
-            className="mt-6 max-w-[30rem] text-[1.05rem] leading-relaxed text-[#4A5268] lg:text-[clamp(1rem,1.15vw,1.2rem)]"
+            style={{ maxWidth: "26rem" }}
+            className="mt-6 text-[1.05rem] leading-relaxed text-[#4A5268] lg:text-[clamp(1rem,1.15vw,1.2rem)]"
           >
-            We connect students, universities and education partners worldwide,
-            using smart technology, trusted networks and personal support to
-            make studying abroad simple.
+            Find the right university, get expert guidance, and turn your global
+            education goals into reality.
           </p>
 
           {/* Appears once the list has formed */}
@@ -616,7 +571,7 @@ export default function HeroHome() {
               data-cta
               data-intro
               href="/auth/register"
-              className="group relative inline-flex h-14 items-center gap-3 bg-[#14213D] pl-7 pr-12 text-base font-semibold text-white transition-colors duration-300 [clip-path:polygon(0_0,calc(100%-22px)_0,100%_50%,calc(100%-22px)_100%,0_100%)] hover:bg-[#0A4FE0] focus:outline-none focus-visible:bg-[#0A4FE0]"
+              className="group relative inline-flex h-14 items-center gap-3 bg-[#350C0E] pl-7 pr-12 text-base font-semibold text-white transition-colors duration-300 [clip-path:polygon(0_0,calc(100%-22px)_0,100%_50%,calc(100%-22px)_100%,0_100%)] hover:bg-[#F7931E] focus:outline-none focus-visible:bg-[#F7931E]"
             >
               Register as a student
               <svg
@@ -768,7 +723,7 @@ export default function HeroHome() {
                     <span
                       data-pill
                       data-intro
-                      className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border border-white/90 bg-white/75 py-2 pl-2 pr-4 text-[0.78rem] font-semibold uppercase tracking-[0.1em] text-[#14213D] shadow-[0_12px_30px_-16px_rgba(20,33,61,0.5)] backdrop-blur-md"
+                      className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border border-white/90 bg-white/75 py-2 pl-2 pr-4 text-[0.78rem] font-semibold uppercase tracking-[0.1em] text-[#350C0E] shadow-[0_12px_30px_-16px_rgba(20,33,61,0.5)] backdrop-blur-md"
                     >
                       <span className="grid size-6 place-items-center rounded-full bg-[#F7931E]/15 text-[0.68rem] font-bold text-[#F7931E]">
                         {String(i + 1).padStart(2, "0")}
@@ -781,32 +736,6 @@ export default function HeroHome() {
             </ol>
           </div>
 
-          {/* Appears once the list has formed */}
-          <div className="mt-9">
-            <Link
-              data-cta
-              data-intro
-              href="/recruitment-partner"
-              className="glow-btn group transition-[translate] duration-300 hover:-translate-y-0.5 focus:outline-none"
-            >
-              <span className="inline-flex h-12 items-center gap-2.5 whitespace-nowrap rounded-full bg-white/90 px-6 text-[0.95rem] font-semibold text-[#14213D] backdrop-blur-md">
-                Join as a Recruitment Partner
-                <svg
-                  viewBox="0 0 24 24"
-                  className="size-4 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                >
-                  <path
-                    d="M5 12h14M13 6l6 6-6 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </Link>
-          </div>
         </div>
 
         {/* Scroll hint */}

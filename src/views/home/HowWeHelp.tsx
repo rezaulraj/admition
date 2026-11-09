@@ -195,6 +195,9 @@ const HEADLINE: { word: string; accent?: boolean }[][] = [
   [{ word: "place.", accent: true }],
 ];
 
+/** How many words sit on each line once the title has shrunk: "Everything you need." / "All in one place." */
+const COMPACT_ROWS = [3, 4];
+
 export default function HowWeHelp() {
   const root = useRef<HTMLElement>(null);
 
@@ -252,8 +255,39 @@ export default function HowWeHelp() {
           const headEl = q("[data-head]")[0] as HTMLElement;
           const shrinkEl = q("[data-shrink]")[0] as HTMLElement;
           const titleBox = q("[data-titlebox]")[0] as HTMLElement;
+          const lines = q("[data-hline]") as HTMLElement[];
+          // The compact title is one line shorter, so the cards can stop that much higher
+          const stackTop = () => 96 + (titleBox.offsetTop + titleBox.offsetHeight - lines[0].offsetHeight) * 0.32 + 10;
+
+          // Offset that moves each word from the three-line layout into the two-line one
+          const compactOffsets = () => {
+            const title = lines[0].parentElement as HTMLElement;
+            const gap = parseFloat(getComputedStyle(title).fontSize) * 0.22; // the words' mr-[0.22em]
+            const lineHeight = lines[0].offsetHeight;
+            const lefts = (widths: number[]) => {
+              const total = widths.reduce((sum, w) => sum + w, 0) + gap * (widths.length - 1);
+              let x = (title.offsetWidth - total) / 2;
+              return widths.map((w) => {
+                const left = x;
+                x += w + gap;
+                return left;
+              });
+            };
+            const from = lines.flatMap((line, row) => {
+              const slots = gsap.utils.toArray<HTMLElement>("[data-hslot]", line);
+              return lefts(slots.map((w) => w.offsetWidth)).map((left) => ({ left, row }));
+            });
+            const widths = (q("[data-hslot]") as HTMLElement[]).map((w) => w.offsetWidth);
+            let start = 0;
+            const to = COMPACT_ROWS.flatMap((count, row) => {
+              const placed = lefts(widths.slice(start, start + count)).map((left) => ({ left, row }));
+              start += count;
+              return placed;
+            });
+            return from.map((f, i) => ({ x: to[i].left - f.left, y: (to[i].row - f.row) * lineHeight }));
+          };
+
           // Where the shrunk title ends → where the cards stop
-          const stackTop = () => 96 + (titleBox.offsetTop + titleBox.offsetHeight) * 0.32 + 10;
           const setStackTop = () => el.style.setProperty("--stack-top", `${Math.round(stackTop())}px`);
           setStackTop();
           const ro = new ResizeObserver(() => {
@@ -266,6 +300,24 @@ export default function HowWeHelp() {
           // Title shrinks smoothly into a compact sticky header
           const shrink = { trigger: headEl, start: "top 96px", end: "+=440", scrub: 0.8 };
           gsap.fromTo(shrinkEl, { scale: 1 }, { scale: 0.32, ease: "power2.inOut", scrollTrigger: shrink });
+          // While it shrinks, the words glide from three lines into two
+          gsap.fromTo(
+            q("[data-hslot]"),
+            { x: 0, y: 0 },
+            {
+              x: (i: number) => compactOffsets()[i].x,
+              y: (i: number) => compactOffsets()[i].y,
+              ease: "power2.inOut",
+              scrollTrigger: { ...shrink, invalidateOnRefresh: true },
+            },
+          );
+          // The words changing line would cross the others, so they fade out on the way and back in on arrival
+          const offsets = compactOffsets();
+          const travellers = (q("[data-hslot]") as HTMLElement[]).filter((_, i) => offsets[i].y !== 0);
+          gsap
+            .timeline({ defaults: { ease: "none" }, scrollTrigger: shrink })
+            .fromTo(travellers, { opacity: 1 }, { opacity: 0, duration: 0.3 }, 0)
+            .to(travellers, { opacity: 1, duration: 0.28 }, 0.72);
           gsap.fromTo(q("[data-shrink-fade]"), { opacity: 1, y: 0 }, { opacity: 0, y: -20, ease: "power1.out", scrollTrigger: { ...shrink, end: "+=200" } });
           gsap.fromTo(q("[data-tag]"), { opacity: 1 }, { opacity: 0, ease: "power1.out", scrollTrigger: { ...shrink, end: "+=260" } });
 
@@ -391,7 +443,7 @@ export default function HowWeHelp() {
               {HEADLINE.map((line, li) => (
                 <span key={li} data-hline aria-hidden className="block origin-center will-change-transform">
                   {line.map(({ word, accent }) => (
-                    <span key={word} className="mr-[0.22em] inline-block overflow-hidden pb-[0.1em] align-top last:mr-0">
+                    <span key={word} data-hslot className="mr-[0.22em] inline-block overflow-hidden pb-[0.1em] align-top last:mr-0">
                       <span data-hword className={`inline-block ${accent ? "text-[#F7931E]" : ""}`}>
                         {word.split("").map((ch, ci) => (
                           <span key={ci} data-hchar className="inline-block">

@@ -141,7 +141,7 @@ const targets: Target[] = [
     art: <NetworkArt />,
   },
   {
-    count: 15,
+    count: 10,
     suffix: "+",
     label: "Years Experience",
     gradient: "linear-gradient(150deg,#B88AF5 0%,#8B5CF0 55%,#6A3BD1 100%)",

@@ -176,7 +176,7 @@ export default function ContactFooter() {
         /* Layout kept here so it never depends on Tailwind generating new class names */
         .cfoot .cfoot-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.75rem; margin-top: 3rem; perspective: 1400px; }
         @media (min-width: 768px) { .cfoot .cfoot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (min-width: 1280px) { .cfoot .cfoot-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1080px) { .cfoot .cfoot-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
         .cfoot .cfoot-media { position: relative; height: 15rem; overflow: hidden; border-radius: 22px; }
         .cfoot .cfoot-sticker { clip-path: polygon(2% 8%, 98% 0, 100% 88%, 3% 100%); }
       `}</style>

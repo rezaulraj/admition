@@ -1,7 +1,7 @@
 import { pageMetadata } from "@/lib/seo";
 import About from "@/views/our-story/About";
 import Branches from "@/views/our-story/Branches";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import HeroOurStory from "@/views/our-story/HeroOurStory";
 import OurMission from "@/views/our-story/OurMission";
 
@@ -18,7 +18,7 @@ export default function page() {
       <About />
       <Branches />
       <OurMission />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

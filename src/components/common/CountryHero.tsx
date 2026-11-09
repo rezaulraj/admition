@@ -14,7 +14,7 @@ const titleLines = [
 ];
 
 const stats = [
-  { value: "15+", label: "Years of experience" },
+  { value: "10+", label: "Years of experience" },
   { value: "5,000+", label: "Students placed" },
   { value: "100+", label: "University partners" },
 ];

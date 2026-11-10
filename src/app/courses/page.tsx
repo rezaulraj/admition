@@ -1,5 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import ProgrammeFinder from "@/views/courses/ProgrammeFinder";
 
 export const metadata = pageMetadata({
@@ -13,7 +13,7 @@ export default function page() {
   return (
     <div>
       <ProgrammeFinder />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

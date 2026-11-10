@@ -18,7 +18,7 @@ export default function page() {
       <PartnerExpand />
       <WhatYouWillGain />
       <RiseWithEveryStep />
-      <PartnerCta />
+      {/* <PartnerCta /> */}
     </div>
   );
 }

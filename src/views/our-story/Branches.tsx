@@ -2,12 +2,14 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Link from "next/link";
-import ReactCountryFlag from "react-country-flag";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import { WORLD_DOTS, WORLD_VIEWBOX } from "./worldDots";
 import { accentSerif } from "@/lib/fonts";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin, MotionPathPlugin);
 
 const stats = [
   { label: "Years of experience", value: "10+" },
@@ -16,12 +18,22 @@ const stats = [
   { label: "Students placed", value: "5,000+" },
 ];
 
-// Route order: outward from the head office
-const offices = [
-  { city: "Dhaka", country: "Bangladesh", code: "BD", hq: true },
-  { city: "Delhi", country: "India", code: "IN", hq: false },
-  { city: "London", country: "United Kingdom", code: "GB", hq: false },
+/* Unlabelled points on the dotted map (viewBox units): the home base and the places students go */
+const HOME = { x: 683, y: 252 };
+const POINTS = [
+  { x: 428, y: 154 },
+  { x: 517, y: 105 },
+  { x: 498, y: 180 },
+  { x: 480, y: 228 },
+  { x: 868, y: 449 },
+  { x: 160, y: 166 },
 ];
+/* Arcs that bow upwards between the home base and each point */
+const ROUTES = POINTS.map((t) => {
+  const mx = (HOME.x + t.x) / 2;
+  const my = Math.min(HOME.y, t.y) - Math.abs(HOME.x - t.x) * 0.28 - 20;
+  return `M${HOME.x} ${HOME.y} Q${mx} ${my} ${t.x} ${t.y}`;
+});
 
 export default function Branches() {
   const root = useRef<HTMLElement>(null);
@@ -35,7 +47,7 @@ export default function Branches() {
     mm.add(
       { isDesktop: "(min-width: 1024px)", motionOK: "(prefers-reduced-motion: no-preference)" },
       (ctx) => {
-        const { isDesktop, motionOK } = ctx.conditions as { isDesktop: boolean; motionOK: boolean };
+        const { motionOK } = ctx.conditions as { isDesktop: boolean; motionOK: boolean };
         if (!motionOK) return; // reduced motion: the markup already shows the finished state
 
         /* Heading */
@@ -45,37 +57,27 @@ export default function Branches() {
           .fromTo(q("[data-osb-word]"), { autoAlpha: 0, yPercent: 115, rotate: 4 }, { autoAlpha: 1, yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.12 }, 0.08)
           .fromTo(q("[data-osb-copy]"), { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.12 }, 0.35);
 
-        /* Route panel rises in */
+        /* The map card rises in, the dots appear, then the routes draw out from home */
         const panel = q("[data-osb-route]")[0];
-        gsap.fromTo(panel, { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: panel, start: "top 92%", once: true } });
+        gsap
+          .timeline({ defaults: { ease: "expo.out" }, scrollTrigger: { trigger: panel, start: "top 85%", once: true } })
+          .fromTo(panel, { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 1.2 }, 0)
+          .fromTo(q("[data-osb-dots]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.6 }, 0.15)
+          .fromTo(q("[data-osb-home]"), { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: 0.7, ease: "back.out(2.5)", svgOrigin: `${HOME.x} ${HOME.y}`, clearProps: "transform" }, 0.6)
+          .fromTo(q("[data-osb-arc]"), { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.3, stagger: 0.14, ease: "power2.inOut" }, 0.8)
+          .fromTo(q("[data-osb-pin]"), { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: 0.6, stagger: 0.14, ease: "back.out(2.5)", svgOrigin: (i: number) => `${POINTS[i].x} ${POINTS[i].y}`, clearProps: "transform" }, 1.5)
+          .add(() => flights.play(), 2.4);
 
-        /* On scroll: the route leaves Dhaka and lights up each city as the plane reaches it */
-        const rail = q("[data-osb-rail]")[0];
-        const fill = q("[data-osb-fill]");
-        const plane = q("[data-osb-plane]");
-        const stops = q("[data-osb-stop]");
-        gsap.set(plane, { autoAlpha: 1, rotate: isDesktop ? 0 : 90 });
-
-        const route = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: panel,
-            start: isDesktop ? "top 78%" : "top 70%",
-            end: isDesktop ? "top 28%" : "bottom 55%",
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-          },
+        /* The plane keeps flying out along each route in turn */
+        const arcs = q("[data-osb-path]") as unknown as SVGPathElement[];
+        const flights = gsap.timeline({ paused: true, repeat: -1 });
+        arcs.forEach((arc) => {
+          flights
+            .set(q("[data-osb-plane]"), { autoAlpha: 1 })
+            .to(q("[data-osb-plane]"), { duration: 2.4, ease: "power1.inOut", motionPath: { path: arc, align: arc, alignOrigin: [0.5, 0.5], autoRotate: true } })
+            .to(q("[data-osb-plane]"), { autoAlpha: 0, duration: 0.25 }, "-=0.25");
         });
-        route
-          .fromTo(fill, isDesktop ? { scaleX: 0 } : { scaleY: 0 }, { ...(isDesktop ? { scaleX: 1 } : { scaleY: 1 }), duration: 1 }, 0)
-          .fromTo(plane, { x: 0, y: 0 }, { x: () => (isDesktop ? rail.offsetWidth : 0), y: () => (isDesktop ? 0 : rail.offsetHeight), duration: 1 }, 0);
-        stops.forEach((stop, i) => {
-          const at = (i / stops.length) * 0.96;
-          const s = gsap.utils.selector(stop);
-          route
-            .fromTo(s("[data-osb-city]"), { opacity: 0.2, y: 14 }, { opacity: 1, y: 0, duration: 0.14, ease: "power1.out" }, at)
-            .fromTo(s("[data-osb-dot]"), { backgroundColor: "rgba(53,12,14,0.18)", scale: 0.7 }, { backgroundColor: "#F7931E", scale: 1, duration: 0.06 }, at);
-        });
+        ScrollTrigger.create({ trigger: panel, start: "top bottom", end: "bottom top", onToggle: (self) => (self.isActive ? flights.resume() : flights.pause()) });
 
         /* Stats rise in, then count up once */
         const statsEl = q("[data-osb-stats]")[0];
@@ -120,14 +122,10 @@ export default function Branches() {
         .osb .osb-btn { margin-top: 1.75rem; background: #350C0E; color: #fff; transition: background-color .3s ease, translate .3s ease; }
         .osb .osb-btn:hover, .osb .osb-btn:focus-visible { background: #F7931E; translate: 0 -2px; }
 
-        .osb .osb-route { margin-top: 3.5rem; padding: 2.5rem 1.75rem 3rem; border-radius: 2rem; background: linear-gradient(115deg, #FFF0E1 0%, #FFF8F0 52%, #FDE6CF 100%); }
-        .osb .osb-cities { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; padding-left: 2.5rem; }
-        .osb .osb-rail { position: absolute; left: 6px; top: 1rem; bottom: 0; width: 2px; background: rgba(53,12,14,0.12); }
-        .osb .osb-fill { position: absolute; inset: 0; background: #F7931E; transform-origin: 0 0; }
-        .osb .osb-plane { position: absolute; left: -11px; top: -11px; width: 24px; height: 24px; color: #350C0E; visibility: hidden; }
-        .osb .osb-stop { position: relative; }
-        .osb .osb-dot { position: absolute; left: -2.5rem; top: 0.5rem; width: 14px; height: 14px; border-radius: 50%; background: #F7931E; box-shadow: 0 0 0 5px rgba(247,147,30,0.16); }
-        .osb .osb-name { font-size: clamp(3.6rem, 18vw, 5rem); line-height: 1; letter-spacing: -0.02em; }
+        .osb .osb-route { position: relative; margin-top: 3.5rem; padding: 1.25rem; overflow: hidden; border-radius: 2rem; background: linear-gradient(115deg, #FFF4E8 0%, #FFFAF4 52%, #FDEBD9 100%); }
+        .osb .osb-map { display: block; width: 100%; height: auto; overflow: visible; }
+        .osb .osb-ping { transform-box: fill-box; transform-origin: center; animation: osb-ping 2.6s cubic-bezier(.22,1,.36,1) infinite; }
+        @keyframes osb-ping { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(3.2); opacity: 0; } }
 
         .osb .osb-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin-top: 1rem; overflow: hidden; border-radius: 2rem; background: #5A2B2E; }
         .osb .osb-stat { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 0.6rem; padding: 2rem 1.5rem; background: #350C0E; transition: background-color .4s ease; }
@@ -140,19 +138,17 @@ export default function Branches() {
           .osb .osb-wrap { padding: 1rem 5.4vw 7rem; }
           .osb .osb-head { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); align-items: end; gap: 4rem; }
           .osb .osb-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
-          .osb .osb-route { margin-top: 4.5rem; padding: 3.25rem 3.25rem 3.5rem; }
-          .osb .osb-cities { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; padding: 3rem 0 0; }
-          .osb .osb-rail { left: 0; right: 0; top: 6px; bottom: auto; width: auto; height: 2px; }
-          .osb .osb-plane { left: -12px; top: -11px; }
-          .osb .osb-dot { left: 0; top: -3rem; }
-          .osb .osb-name { font-size: clamp(4rem, 7vw, 7.25rem); }
+          .osb .osb-route { margin-top: 4.5rem; padding: 2.5rem 3rem; }
           .osb .osb-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
           .osb .osb-stat { padding: 2.75rem 2.5rem; }
           .osb .osb-value { font-size: clamp(3rem, 4.8vw, 5rem); }
           .osb .osb-label { font-size: 0.9375rem; }
         }
         @media (prefers-reduced-motion: no-preference) {
-          .osb [data-osb-eyebrow], .osb [data-osb-word], .osb [data-osb-copy], .osb [data-osb-route], .osb [data-osb-stats] { visibility: hidden; }
+          .osb [data-osb-eyebrow], .osb [data-osb-word], .osb [data-osb-copy], .osb [data-osb-route], .osb [data-osb-stats], .osb [data-osb-plane] { visibility: hidden; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .osb .osb-ping { animation: none; opacity: 0; }
         }
       `}</style>
 
@@ -194,29 +190,34 @@ export default function Branches() {
           </div>
         </div>
 
-        {/* Route: head office outward */}
+        {/* Where we work: a dotted world with routes going out from home */}
         <div data-osb-route className="osb-route">
-          <ul className="osb-cities">
-            <li aria-hidden data-osb-rail className="osb-rail">
-              <span data-osb-fill className="osb-fill" />
-              <svg data-osb-plane viewBox="0 0 24 24" className="osb-plane" fill="currentColor">
-                <path d="M22 12 2 4l5 8-5 8 20-8Z" />
-              </svg>
-            </li>
-            {offices.map((o) => (
-              <li key={o.city} data-osb-stop className="osb-stop">
-                <span aria-hidden data-osb-dot className="osb-dot" />
-                <div data-osb-city>
-                  <p className={`${accentSerif.className} osb-name`}>{o.city}</p>
-                  <p className="mt-3 flex flex-wrap items-center gap-2.5 text-sm font-semibold">
-                    <ReactCountryFlag svg countryCode={o.code} aria-hidden style={{ width: "1.5rem", height: "1.1rem", borderRadius: "3px", objectFit: "cover" }} />
-                    {o.country}
-                    {o.hq && <span className="rounded-full bg-[#350C0E] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white">Head office</span>}
-                  </p>
-                </div>
-              </li>
+          <svg className="osb-map" viewBox={`0 0 ${WORLD_VIEWBOX.width} ${WORLD_VIEWBOX.height}`} role="img" aria-label="World map showing routes from our offices to study destinations">
+            <path data-osb-dots d={WORLD_DOTS} stroke="rgba(53,12,14,0.16)" strokeWidth="4.4" strokeLinecap="round" fill="none" />
+            <defs>
+              {ROUTES.map((d, i) => (
+                <mask key={i} id={`osb-route-${i}`} maskUnits="userSpaceOnUse" x="0" y="0" width={WORLD_VIEWBOX.width} height={WORLD_VIEWBOX.height}>
+                  <path data-osb-arc d={d} fill="none" stroke="#fff" strokeWidth="6" strokeLinecap="round" />
+                </mask>
+              ))}
+            </defs>
+            {ROUTES.map((d, i) => (
+              <path key={i} data-osb-path d={d} mask={`url(#osb-route-${i})`} fill="none" stroke="#3BAA35" strokeWidth="1.6" strokeDasharray="5 5" strokeLinecap="round" />
             ))}
-          </ul>
+            {POINTS.map((p, i) => (
+              <g key={i} data-osb-pin>
+                <circle className="osb-ping" cx={p.x} cy={p.y} r="4" fill="#3BAA35" style={{ animationDelay: `${i * 0.35}s` }} />
+                <circle cx={p.x} cy={p.y} r="4" fill="#3BAA35" stroke="#fff" strokeWidth="1.6" />
+              </g>
+            ))}
+            <g data-osb-home>
+              <circle className="osb-ping" cx={HOME.x} cy={HOME.y} r="6" fill="#F7931E" />
+              <circle cx={HOME.x} cy={HOME.y} r="6.5" fill="#F7931E" stroke="#fff" strokeWidth="2" />
+            </g>
+            <g data-osb-plane>
+              <path d="M10 0 L-6 -7 L-3 0 L-6 7 Z" fill="#350C0E" />
+            </g>
+          </svg>
         </div>
 
         {/* Stats */}

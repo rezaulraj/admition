@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessNewZealand from "@/views/countries/new-zealand/AdmissionVisaProcessNewZealand";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsNewZealand from "@/views/countries/new-zealand/EntryRequirementsNewZealand";
 import HeroNewZealand from "@/views/countries/new-zealand/HeroNewZealand";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsNewZealand />
       <AdmissionVisaProcessNewZealand />
       <UniversityPartner country="New Zealand" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

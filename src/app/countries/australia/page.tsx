@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcess from "@/views/countries/australia/AdmissionVisaProcess";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsAustralia from "@/views/countries/australia/EntryRequirementsAustralia";
 import HeroAustralia from "@/views/countries/australia/HeroAustralia";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsAustralia />
       <AdmissionVisaProcess />
       <UniversityPartner country="Australia" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

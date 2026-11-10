@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessGreece from "@/views/countries/greece/AdmissionVisaProcessGreece";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsGreece from "@/views/countries/greece/EntryRequirementsGreece";
 import HeroGreece from "@/views/countries/greece/HeroGreece";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsGreece />
       <AdmissionVisaProcessGreece />
       <UniversityPartner country="Greece" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

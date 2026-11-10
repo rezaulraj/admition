@@ -21,13 +21,13 @@ const defaultOffices: Office[] = [
     name: "Dhaka Office",
     address:
       "Plot-34, H M Plaza, 4th Floor, Sector-03, Uttara, Dhaka-1229, Bangladesh",
-    phone: "+88 01906 499741",
+    phone: "+88 01784 192780",
   },
   {
     slug: "sylhet-center-point",
     name: "Sylhet Office (Jail Road)",
     address: "3rd floor of Ananda Tower, Jail Road, Sylhet",
-    phone: "+88 01906 499741",
+    phone: "+88 01784 192780",
   },
 ];
 

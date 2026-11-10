@@ -233,6 +233,14 @@ const universities: University[] = [
     color: "#E4572E",
     logo: "/univercity-logo/mli.svg",
   },
+  {
+    slug: "ascencia-malta",
+    name: "Ascencia Malta",
+    country: "Malta",
+    initials: "AM",
+    color: "#CD0731",
+    logo: "/univercity-logo/Ascencia-Malta-Logo.svg",
+  },
 ];
 
 function UniversityLogo({ uni }: { uni: University }) {

@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessUK from "@/views/countries/united-kingdom/AdmissionVisaProcessUK";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsUK from "@/views/countries/united-kingdom/EntryRequirementsUK";
 import HeroUK from "@/views/countries/united-kingdom/HeroUK";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsUK />
       <AdmissionVisaProcessUK />
       <UniversityPartner country="United Kingdom" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessHungary from "@/views/countries/hungary/AdmissionVisaProcessHungary";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import HeroHungary from "@/views/countries/hungary/HeroHungary";
 import WhyHungary from "@/views/countries/hungary/WhyHungary";
 import EntryRequirementsHungary from "@/views/countries/hungary/EntryRequirementsHungary";
@@ -21,7 +21,7 @@ export default function page() {
       <EntryRequirementsHungary />
       <AdmissionVisaProcessHungary />
       <UniversityPartner country="Hungary" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

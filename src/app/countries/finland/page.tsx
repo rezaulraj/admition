@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessFinland from "@/views/countries/finland/AdmissionVisaProcessFinland";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsFinland from "@/views/countries/finland/EntryRequirementsFinland";
 import HeroFinland from "@/views/countries/finland/HeroFinland";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsFinland />
       <AdmissionVisaProcessFinland />
       <UniversityPartner country="Finland" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

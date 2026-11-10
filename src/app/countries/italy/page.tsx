@@ -1,5 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import HeroItaly from "@/views/countries/italy/HeroItaly";
 import WhyItaly from "@/views/countries/italy/WhyItaly";
 import EntryRequirementsItaly from "@/views/countries/italy/EntryRequirementsItaly";
@@ -21,7 +21,7 @@ export default function page() {
       <EntryRequirementsItaly />
       <AdmissionVisaProcessItaly />
       <UniversityPartner country="Italy" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

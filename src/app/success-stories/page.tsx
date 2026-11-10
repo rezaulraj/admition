@@ -1,11 +1,11 @@
 import { pageMetadata } from "@/lib/seo";
-import ContactCta from "@/components/common/ContactCta";
-import CtaBanner from "@/components/common/CtaBanner";
+// import ContactCta from "@/components/common/ContactCta";
+// import CtaBanner from "@/components/common/CtaBanner";
 import HeroSuccessStory from "@/views/success-stories/HeroSuccessStory";
 // import StudentTestimonials from "@/views/success-stories/StudentTestimonials";
 import StudentVideoStories from "@/views/success-stories/StudentVideoStories";
 import SuccessStoriesGallery from "@/components/common/SuccessStoriesGallery";
-import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
+// import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
 
 export const metadata = pageMetadata({
   title: "Student Success Stories",
@@ -19,10 +19,10 @@ export default function page() {
       <HeroSuccessStory />
       <SuccessStoriesGallery />
       {/* <StudentTestimonials /> */}
-      <CtaBanner />
+      {/* <CtaBanner /> */}
       {/* <VisaSuccessCarousel /> */}
       <StudentVideoStories />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

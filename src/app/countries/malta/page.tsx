@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessMalta from "@/views/countries/malta/AdmissionVisaProcessMalta";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsMalta from "@/views/countries/malta/EntryRequirementsMalta";
 import HeroMalta from "@/views/countries/malta/HeroMalta";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsMalta />
       <AdmissionVisaProcessMalta />
       <UniversityPartner country="Malta" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

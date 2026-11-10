@@ -26,7 +26,7 @@ const defaultOffices: Office[] = [
 //     slug: "sylhet-center-point",
 //     name: "Sylhet Office (Jail Road)",
 //     address: "3rd floor of Ananda Tower, Jail Road, Sylhet",
-//     phone: "+88 01906 499741",
+//     phone: "+88 01784 192780",
 //   },
 ];
 

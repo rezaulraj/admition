@@ -1,5 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import HeroServices from "@/views/services/HeroServices";
 import WhatWeOffer from "@/views/services/WhatWeOffer";
 
@@ -13,7 +13,7 @@ export default function page() {
     <div>
       <HeroServices />
       <WhatWeOffer />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

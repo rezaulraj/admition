@@ -76,7 +76,7 @@ const jsonLd = {
       image: `${SITE_URL}/logo.png`,
       description: SITE_DESCRIPTION,
       email: "ceo@admissiononboard.com",
-      telephone: "+8801906499741",
+      telephone: "+8801784192780",
       sameAs: SOCIAL_LINKS,
     },
     {

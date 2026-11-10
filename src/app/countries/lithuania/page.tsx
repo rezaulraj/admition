@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessLithuania from "@/views/countries/lithuania/AdmissionVisaProcessLithuania";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import HeroLithuania from "@/views/countries/lithuania/HeroLithuania";
 import WhyLithuania from "@/views/countries/lithuania/WhyLithuania";
 import EntryRequirementsLithuania from "@/views/countries/lithuania/EntryRequirementsLithunia";
@@ -20,7 +20,7 @@ export default function page() {
       <EntryRequirementsLithuania />
       <AdmissionVisaProcessLithuania />
       <UniversityPartner country="Lithuania" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

@@ -3,7 +3,7 @@ import EntryRequirementsCanada from "@/views/countries/canada/EntryRequirementsC
 import HeroCanada from "@/views/countries/canada/HeroCanada";
 import UniversityPartner from "@/components/common/UniversityPartner";
 import WhyCanada from "@/views/countries/canada/WhyCanada";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 export default function page() {
   return (
     <div>
@@ -12,7 +12,7 @@ export default function page() {
       <EntryRequirementsCanada />
       <AdmissionVisaProcessCanada />
       <UniversityPartner country="Canada" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

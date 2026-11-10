@@ -1,5 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import HeroNorway from "@/views/countries/norway/HeroNorway";
 import WhyNorway from "@/views/countries/norway/WhyNorway";
 import AdmissionVisaProcessNorway from "@/views/countries/norway/AdmissionVisaProcessNorway";
@@ -21,7 +21,7 @@ export default function page() {
       <EntryRequirementsNorway />
       <AdmissionVisaProcessNorway />
       <UniversityPartner country="Norway" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

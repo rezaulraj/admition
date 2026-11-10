@@ -58,7 +58,7 @@ const offices: Office[] = [
   //       "Sector-03, Uttara, Dhaka-1229",
   //       "Bangladesh",
   //     ],
-  //     phone: "+8801906499741",
+  //     phone: "+8801784192780",
   //     email: "dhaka@admissiononboard.com",
   //     accent: "#1366E0",
   //   },

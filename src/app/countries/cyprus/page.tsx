@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import AdmissionVisaProcessCyprus from "@/views/countries/cyprus/AdmissionVisaProcessCyprus";
-import ContactCta from "@/components/common/ContactCta";
+// import ContactCta from "@/components/common/ContactCta";
 import EntryRequirementsCyprus from "@/views/countries/cyprus/EntryRequirementsCypus";
 import HeroCyprus from "@/views/countries/cyprus/HeroCyprus";
 // import VisaSuccessCarousel from "@/views/success-stories/VisaSuccessCarousel";
@@ -22,7 +22,7 @@ export default function page() {
       <EntryRequirementsCyprus />
       <AdmissionVisaProcessCyprus />
       <UniversityPartner country="Cyprus" />
-      <ContactCta />
+      {/* <ContactCta /> */}
     </div>
   );
 }

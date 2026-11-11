@@ -98,7 +98,7 @@ export default function Login() {
             radial-gradient(45% 50% at 90% 10%, rgba(47,107,255,0.09), transparent 70%),
             radial-gradient(40% 45% at 4% 15%, rgba(247,147,30,0.15), transparent 70%),
             linear-gradient(180deg, #FFEFDD 0%, #FFF6EC 50%, #FFFEFA 100%); }
-        .lg .lg-wrap { max-width: 84rem; margin: 0 auto; padding: 8.25rem 1.5rem 3.5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: stretch; }
+        .lg .lg-wrap { max-width: var(--page-max); margin: 0 auto; padding: 8.25rem 1.5rem 3.5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: stretch; }
 
         /* Photo panel */
         .lg .lg-photo { position: relative; display: none; overflow: hidden; border-radius: 28px; isolation: isolate; background: #2a1a12; min-height: 34rem; }
@@ -179,7 +179,7 @@ export default function Login() {
           .lg .lg-body { padding: 1.9rem 2.25rem 2rem; }
         }
         @media (min-width: 1024px) {
-          .lg .lg-wrap { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 2rem; padding: 9rem 5.4vw 4.5rem; min-height: 100svh; }
+          .lg .lg-wrap { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 2rem; padding: 9rem var(--page-gutter) 4.5rem; min-height: 100svh; }
           .lg .lg-photo { display: block; }
           .lg .lg-card { max-width: 31rem; }
         }

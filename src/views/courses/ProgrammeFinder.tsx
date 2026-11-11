@@ -1478,7 +1478,7 @@ function ProgrammeFinderInner() {
             radial-gradient(45% 40% at 85% 4%, rgba(47,107,255,0.09), transparent 70%),
             radial-gradient(40% 36% at 6% 6%, rgba(247,147,30,0.14), transparent 70%),
             linear-gradient(180deg, #FFEFDD 0%, #FFF6EC 18%, #FFFEFA 34%); }
-        .pg .pg-wrap { max-width: 84rem; margin: 0 auto; padding: 9.5rem 1.5rem 5rem; }
+        .pg .pg-wrap { max-width: var(--page-max); margin: 0 auto; padding: 9.5rem 1.5rem 5rem; }
 
         /* Header */
         .pg .pg-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -1639,7 +1639,7 @@ function ProgrammeFinderInner() {
           .pg .pg-focus > div:nth-child(2) { flex: 1; min-width: 0; }
         }
         @media (min-width: 1024px) {
-          .pg .pg-wrap { padding: 10rem 5.4vw 7rem; }
+          .pg .pg-wrap { padding: 10rem var(--page-gutter) 7rem; }
           .pg .pg-title { font-size: clamp(3.2rem, 4.8vw, 4.6rem); }
           .pg .pg-filters { grid-template-columns: minmax(0, 1fr) 15rem 13.5rem; align-items: end; }
           .pg .pg-search { grid-column: auto; }

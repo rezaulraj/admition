@@ -163,7 +163,7 @@ export default function PartnerExpand() {
         .pz::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
           background-image: linear-gradient(rgba(53,12,14,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(53,12,14,0.05) 1px, transparent 1px);
           background-size: 56px 56px; -webkit-mask-image: radial-gradient(60% 70% at 70% 45%, #000 0%, transparent 75%); mask-image: radial-gradient(60% 70% at 70% 45%, #000 0%, transparent 75%); }
-        .pz .pz-wrap { position: relative; z-index: 1; max-width: 84rem; margin: 0 auto; padding: 9.5rem 1.5rem 5rem;
+        .pz .pz-wrap { position: relative; z-index: 1; max-width: var(--page-max); margin: 0 auto; padding: 9.5rem 1.5rem 5rem;
           display: grid; grid-template-columns: minmax(0, 1fr); gap: 3rem; align-items: center; }
 
         /* Text */
@@ -273,7 +273,7 @@ export default function PartnerExpand() {
           .pz .pz-copy { font-size: 1.05rem; }
         }
         @media (min-width: 1024px) {
-          .pz .pz-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(3rem, 5vw, 5.5rem); padding: 10rem 5.4vw 6.5rem; }
+          .pz .pz-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(3rem, 5vw, 5.5rem); padding: 10rem var(--page-gutter) 6.5rem; }
           .pz .pz-title { font-size: clamp(3rem, 4.4vw, 4.2rem); }
           .pz .pz-stage { width: min(100%, 37rem, calc(100svh - 7rem)); min-width: 25rem; margin-right: 0; }
         }

@@ -119,7 +119,7 @@ export default function CareerHero() {
     <section ref={root} className="ckh relative -mt-20 w-full lg:-mt-24">
       <style>{`
         .ckh { overflow: clip; color: #350C0E; background: radial-gradient(60% 45% at 90% 8%, rgba(247,147,30,0.2), transparent 70%), linear-gradient(180deg, #FFF0E1 0%, #FFF8F0 46%, #FFFEFA 100%); }
-        .ckh .ckh-wrap { max-width: 84rem; margin: 0 auto; padding: 7.5rem 1.5rem 4rem; }
+        .ckh .ckh-wrap { max-width: var(--page-max); margin: 0 auto; padding: 7.5rem 1.5rem 4rem; }
         .ckh .ckh-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
         .ckh .ckh-title { margin-top: 1.5rem; font-size: clamp(2.9rem, 13vw, 4.4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .ckh .ckh-mask { display: block; overflow: hidden; padding: 0 0.1em 0.12em 0; margin-bottom: -0.12em; }
@@ -136,7 +136,7 @@ export default function CareerHero() {
         ${OFFSETS.map((_, i) => `.ckh .ckh-slice-${i} { clip-path: ${slicePolygon(i, PHONE)}; }`).join("\n        ")}
 
         @media (min-width: 1024px) {
-          .ckh .ckh-wrap { padding: 9rem 5.4vw 5rem; }
+          .ckh .ckh-wrap { padding: 9rem var(--page-gutter) 5rem; }
           .ckh .ckh-head { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); align-items: end; gap: 4rem; }
           .ckh .ckh-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .ckh .ckh-frame { margin-top: 5.5rem; aspect-ratio: 2.05; }

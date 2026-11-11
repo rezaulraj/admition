@@ -90,7 +90,7 @@ export default function HeroOurStory() {
     <section ref={root} className="osh relative -mt-20 w-full lg:-mt-24">
       <style>{`
         .osh { overflow: clip; color: #350C0E; background: radial-gradient(60% 70% at 88% 18%, rgba(247,147,30,0.2), transparent 70%), linear-gradient(180deg, #FFF0E1 0%, #FFF8F0 58%, #FFFEFA 100%); }
-        .osh .osh-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.5rem; max-width: 84rem; margin: 0 auto; padding: 8rem 1.5rem 5.5rem; }
+        .osh .osh-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.5rem; max-width: var(--page-max); margin: 0 auto; padding: 8rem 1.5rem 5.5rem; }
         .osh .osh-title { font-size: clamp(2.9rem, 13vw, 4.4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .osh .osh-mask { display: block; overflow: hidden; padding: 0 0.1em 0.1em 0; margin-bottom: -0.1em; }
         .osh .osh-accent { font-size: 1.16em; line-height: 0.9; letter-spacing: -0.02em; font-weight: 400; font-stretch: normal; }
@@ -104,7 +104,7 @@ export default function HeroOurStory() {
         .osh .osh-panel:nth-child(3) { border-radius: 0 ${RADIUS}px ${RADIUS}px 0; }
         .osh .osh-badge { position: absolute; right: -0.5rem; bottom: -2.75rem; width: clamp(6.5rem, 9vw, 8.5rem); height: clamp(6.5rem, 9vw, 8.5rem); }
         @media (min-width: 1024px) {
-          .osh .osh-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(3rem, 5vw, 5.5rem); padding: 9.5rem 5.4vw 7rem; }
+          .osh .osh-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(3rem, 5vw, 5.5rem); padding: 9.5rem var(--page-gutter) 7rem; }
           .osh .osh-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
         }
         @media (prefers-reduced-motion: no-preference) {

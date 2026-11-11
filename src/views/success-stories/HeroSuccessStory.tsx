@@ -205,7 +205,7 @@ export default function HeroSuccessStory() {
         .ssh .ssh-btn { background: #350C0E; color: #fff; transition: background-color .3s ease, translate .3s ease; }
         .ssh .ssh-btn:hover, .ssh .ssh-btn:focus-visible { background: #F7931E; translate: 0 -2px; }
 
-        .ssh .ssh-holder { width: 100%; max-width: 84rem; display: flex; flex-direction: column; align-items: center; }
+        .ssh .ssh-holder { width: 100%; max-width: var(--page-inner); display: flex; flex-direction: column; align-items: center; }
         .ssh .ssh-frame { --vx: 1; --vy: 1; position: relative; z-index: 2; width: min(100%, calc((100svh - 9rem) * 1.7773)); aspect-ratio: 1365 / 768; }
         .ssh .ssh-whole { position: absolute; inset: 0; border-radius: ${RADIUS}px; background-size: cover; background-position: center bottom; }
         .ssh .ssh-pieces { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${COLS}, minmax(0, 1fr)); grid-template-rows: repeat(${ROWS}, minmax(0, 1fr)); }
@@ -226,7 +226,7 @@ export default function HeroSuccessStory() {
         }
 
         @media (min-width: 1024px) {
-          .ssh .ssh-stage { padding: 8rem 5.4vw 3rem; }
+          .ssh .ssh-stage { padding: 8rem var(--page-gutter) 3rem; }
           .ssh .ssh-h1 { font-size: min(4.2vw, 8vh, 4.5rem); }
           .ssh .ssh-glass { height: 4.75rem; padding: 0 1.75rem; }
           .ssh .ssh-value { font-size: 2.25rem; }
@@ -238,19 +238,19 @@ export default function HeroSuccessStory() {
           .ssh { height: 190svh; }
           .ssh .ssh-stage { position: sticky; top: 0; height: 100svh; justify-content: center; overflow: clip; gap: 0; padding-bottom: 1.5rem; }
           .ssh .ssh-holder { position: absolute; inset: 5.25rem 1.5rem 1.5rem; width: auto; max-width: none; justify-content: center; }
-          .ssh .ssh-frame { width: min(100%, 84rem, calc((100svh - 13rem) * 1.7773)); }
+          .ssh .ssh-frame { width: min(100%, var(--page-inner), calc((100svh - 13rem) * 1.7773)); }
           .ssh .ssh-text { position: absolute; left: 50%; top: calc(50% + 2.25rem); width: min(100% - 3rem, 46rem); translate: -50% -50%; }
           .ssh [data-piece-in], .ssh [data-w], .ssh [data-cta], .ssh [data-whole], .ssh [data-final] { visibility: hidden; }
         }
         @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
           .ssh { height: 200svh; }
-          .ssh .ssh-holder { inset: 6.25rem 5.4vw 1.25rem; }
-          .ssh .ssh-frame { width: min(100%, 84rem, calc((100svh - 7.5rem) * 1.7773)); }
+          .ssh .ssh-holder { inset: 6.25rem var(--page-edge) 1.25rem; }
+          .ssh .ssh-frame { width: min(100%, var(--page-inner), calc((100svh - 7.5rem) * 1.7773)); }
           .ssh .ssh-text { width: 46vw; top: calc(50% + 2.75rem); }
         }
         /* Short, wide screens: keep the full container width and crop the map off the top instead */
         @media (min-width: 1024px) and (min-aspect-ratio: 2 / 1) and (prefers-reduced-motion: no-preference) {
-          .ssh .ssh-frame { --vy: 0.68; aspect-ratio: 2.6; width: min(100%, 84rem, calc((100svh - 7.5rem) * 2.6)); }
+          .ssh .ssh-frame { --vy: 0.68; aspect-ratio: 2.6; width: min(100%, var(--page-inner), calc((100svh - 7.5rem) * 2.6)); }
         }
       `}</style>
 

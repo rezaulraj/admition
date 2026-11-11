@@ -113,7 +113,7 @@ export default function Branches() {
     <section ref={root} className="osb relative w-full">
       <style>{`
         .osb { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .osb .osb-wrap { max-width: 84rem; margin: 0 auto; padding: 1rem 1.5rem 5rem; }
+        .osb .osb-wrap { max-width: var(--page-max); margin: 0 auto; padding: 1rem 1.5rem 5rem; }
         .osb .osb-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
         .osb .osb-title { margin-top: 1.5rem; font-size: clamp(2.8rem, 12vw, 4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .osb .osb-mask { display: block; overflow: hidden; padding: 0 0.1em 0.12em 0; margin-bottom: -0.12em; }
@@ -135,7 +135,7 @@ export default function Branches() {
         .osb .osb-label { font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.66); }
 
         @media (min-width: 1024px) {
-          .osb .osb-wrap { padding: 1rem 5.4vw 7rem; }
+          .osb .osb-wrap { padding: 1rem var(--page-gutter) 7rem; }
           .osb .osb-head { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); align-items: end; gap: 4rem; }
           .osb .osb-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .osb .osb-route { margin-top: 4.5rem; padding: 2.5rem 3rem; }

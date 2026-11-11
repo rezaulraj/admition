@@ -127,7 +127,7 @@ export default function HeroContact() {
         .cth .cth-copy { max-width: 30rem; margin-top: 1.25rem; font-size: 1rem; line-height: 1.6; color: rgba(53,12,14,0.74); }
 
         .cth .cth-holder { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; }
-        .cth .cth-frame { position: relative; z-index: 2; width: 100%; max-width: 84rem; aspect-ratio: 4 / 5; overflow: hidden; border-radius: ${RADIUS}px; }
+        .cth .cth-frame { position: relative; z-index: 2; width: 100%; max-width: var(--page-inner); aspect-ratio: 4 / 5; overflow: hidden; border-radius: ${RADIUS}px; }
         .cth .cth-photo { object-fit: cover; object-position: 100% 28%; }
         .cth .cth-ken, .cth .cth-reveal { position: absolute; inset: 0; }
         .cth .cth-spots { position: absolute; inset: 0; }
@@ -154,9 +154,9 @@ export default function HeroContact() {
         }
         @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
           .cth .cth-blobs { display: block; }
-          .cth .cth-text { left: 5.4vw; right: auto; top: calc(50% + 2.5rem); width: 38vw; translate: 0 -50%; }
-          .cth .cth-holder { left: 5.4vw; right: 5.4vw; top: 6.5rem; bottom: 1.25rem; }
-          .cth .cth-frame { width: min(100%, 84rem); height: min(100%, calc(min(100vw - 10.8vw, 84rem) / 1.5)); aspect-ratio: auto; }
+          .cth .cth-text { left: var(--page-edge); right: auto; top: calc(50% + 2.5rem); width: 38vw; translate: 0 -50%; }
+          .cth .cth-holder { left: var(--page-edge); right: var(--page-edge); top: 6.5rem; bottom: 1.25rem; }
+          .cth .cth-frame { width: min(100%, var(--page-inner)); height: min(100%, calc(min(100vw - 2 * var(--page-gutter), var(--page-inner)) / 1.5)); aspect-ratio: auto; }
         }
       `}</style>
 

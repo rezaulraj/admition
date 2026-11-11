@@ -455,7 +455,7 @@ export default function Header() {
   const transparent = !scrolled && !mobileOpen;
 
   return (
-    <div className="sticky top-0 z-50 w-full px-4 pt-4 xl:px-[calc(5.4vw-1.75rem)]">
+    <div className="sticky top-0 z-50 w-full px-4 pt-4 xl:px-[calc(var(--page-gutter)-1.75rem)]">
       <style>{`
         .hdr-panel { visibility: hidden; opacity: 0; transform: translate(-50%, 10px) scale(0.97); transform-origin: top center;
           transition: opacity .22s ease, transform .32s cubic-bezier(.22,1,.36,1), visibility 0s linear .32s; }
@@ -471,7 +471,7 @@ export default function Header() {
       `}</style>
       {/* Desktop: logo sits at a 5.4vw inset to line up with the home hero text; from xl the pill itself is inset too so it doesn't stretch edge to edge */}
       <header
-        className={`mx-auto w-full rounded-[28px] border transition-all duration-300 sm:max-w-[40rem] md:max-w-3xl lg:max-w-none lg:rounded-full ${
+        className={`mx-auto w-full rounded-[28px] border transition-all duration-300 sm:max-w-[40rem] md:max-w-3xl lg:max-w-none xl:max-w-[110.5rem] lg:rounded-full ${
           transparent
             ? "border-transparent bg-transparent"
             : "border-black/5 bg-linear-to-b from-white/80 via-white/70 to-[#FFFEFA] shadow-lg shadow-black/5 backdrop-blur-xl"

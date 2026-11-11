@@ -108,7 +108,7 @@ export default function BlogArticle({ blog, related, minutes }: { blog: Blog; re
         .ba { overflow: clip; color: #350C0E; background: #FFFEFA; }
         .ba .ba-bar { position: fixed; z-index: 70; left: 0; right: 0; top: 0; height: 3px; background: #F7931E; transform: scaleX(0); transform-origin: 0 50%; }
         .ba .ba-hero { background: radial-gradient(60% 80% at 90% 10%, rgba(247,147,30,0.2), transparent 70%), linear-gradient(180deg, #FFF0E1 0%, #FFF8F0 62%, #FFFEFA 100%); }
-        .ba .ba-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.25rem; max-width: 84rem; margin: 0 auto; padding: 7.25rem 1.5rem 2.5rem; }
+        .ba .ba-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.25rem; max-width: var(--page-max); margin: 0 auto; padding: 7.25rem 1.5rem 2.5rem; }
         .ba .ba-back { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 600; color: rgba(53,12,14,0.72); transition: color .25s ease; }
         .ba .ba-back:hover { color: #D9651A; }
         .ba .ba-chip { display: inline-block; margin-top: 1.75rem; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
@@ -120,22 +120,22 @@ export default function BlogArticle({ blog, related, minutes }: { blog: Blog; re
         .ba .ba-cover-img { position: absolute; inset: 0; }
         .ba .ba-cover img { object-fit: cover; object-position: 50% 0; }
 
-        .ba .ba-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 84rem; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+        .ba .ba-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: var(--page-max); margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
         .ba .ba-side { display: none; }
         .ba .ba-intro { font-size: 1.5rem; line-height: 1.32; letter-spacing: -0.02em; font-weight: 500; }
         .ba .ba-para { margin-top: 1.5rem; font-size: 1.0625rem; line-height: 1.75; color: rgba(53,12,14,0.8); }
         .ba .ba-intro + .ba-para { margin-top: 2.25rem; }
 
-        .ba .ba-more { max-width: 84rem; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+        .ba .ba-more { max-width: var(--page-max); margin: 0 auto; padding: 1rem 1.5rem 3rem; }
         .ba .ba-more-title { font-size: clamp(2.5rem, 11vw, 3.5rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .ba .ba-more-accent { font-size: 1.16em; line-height: 0.9; letter-spacing: -0.02em; font-weight: 400; font-stretch: normal; color: #F7931E; }
         .ba .ba-more-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; margin-top: 2rem; }
         ${BLOG_CARD_CSS}
 
         @media (min-width: 1024px) {
-          .ba .ba-hero-grid { grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr); align-items: center; gap: clamp(3rem, 5vw, 5.5rem); padding: 8.5rem 5.4vw 4rem; }
+          .ba .ba-hero-grid { grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr); align-items: center; gap: clamp(3rem, 5vw, 5.5rem); padding: 8.5rem var(--page-gutter) 4rem; }
           .ba .ba-title { font-size: clamp(2.5rem, 3.75vw, 4rem); }
-          .ba .ba-layout { grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.5fr); align-items: start; gap: clamp(3rem, 6vw, 6.5rem); padding: 3rem 5.4vw 6rem; }
+          .ba .ba-layout { grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.5fr); align-items: start; gap: clamp(3rem, 6vw, 6.5rem); padding: 3rem var(--page-gutter) 6rem; }
           .ba .ba-side { display: block; position: sticky; top: 7.5rem; }
           .ba .ba-percent { font-size: 3.5rem; line-height: 1; letter-spacing: -0.04em; font-weight: 600; }
           .ba .ba-side-label { margin-top: 0.35rem; font-size: 0.875rem; font-weight: 500; color: rgba(53,12,14,0.66); }
@@ -144,7 +144,7 @@ export default function BlogArticle({ blog, related, minutes }: { blog: Blog; re
           .ba .ba-intro { font-size: clamp(1.75rem, 2.5vw, 2.5rem); line-height: 1.24; letter-spacing: -0.03em; }
           .ba .ba-para { max-width: 46rem; font-size: 1.1875rem; line-height: 1.75; }
           .ba .ba-intro + .ba-para { margin-top: 3rem; }
-          .ba .ba-more { padding: 1rem 5.4vw 4rem; }
+          .ba .ba-more { padding: 1rem var(--page-gutter) 4rem; }
           .ba .ba-more-title { font-size: clamp(3.2rem, 5vw, 5.3rem); }
           .ba .ba-more-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 3rem; }
         }

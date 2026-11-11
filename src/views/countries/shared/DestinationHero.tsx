@@ -131,7 +131,7 @@ export default function DestinationHero({ name, text, image, stats, panFrom = 0.
     <section ref={root} className={`aus relative -mt-20 w-full lg:-mt-24${stats.length > 3 ? " has-4" : ""}`} style={{ "--half": half, "--n": stats.length } as CSSProperties}>
       <style>{`
         .aus { color: #350C0E; background: linear-gradient(180deg, #FFF0E1 0, #FFF8F0 380px, ${PAGE} 760px); }
-        .aus .aus-stage { display: flex; flex-direction: column; gap: 1.5rem; max-width: 84rem; margin: 0 auto; padding: 7rem 1.5rem 3rem; }
+        .aus .aus-stage { display: flex; flex-direction: column; gap: 1.5rem; max-width: var(--page-max); margin: 0 auto; padding: 7rem 1.5rem 3rem; }
         .aus .aus-eyebrow { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
         .aus .aus-h1 { margin-top: 0.5rem; font-size: clamp(3rem, 14vw, 6.5rem); line-height: 1; letter-spacing: -0.045em; font-weight: 700; }
         .aus .aus-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
@@ -155,11 +155,11 @@ export default function DestinationHero({ name, text, image, stats, panFrom = 0.
         .aus .aus-stat-l { margin-top: 0.1rem; font-size: 0.8125rem; line-height: 1.3; color: rgba(53,12,14,0.68); }
 
         @media (min-width: 640px) { .aus .aus-frame { aspect-ratio: 16 / 10; } .aus .aus-copy { flex-direction: row; align-items: center; justify-content: space-between; } }
-        @media (min-width: 1024px) { .aus .aus-stage { padding: 8.5rem 5.4vw 3rem; } .aus .aus-frame { aspect-ratio: ${Math.max(ratio, 1.6)}; } .aus .aus-pan { width: 100%; } .aus .aus-stats { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .aus .aus-stage { padding: 8.5rem var(--page-gutter) 3rem; } .aus .aus-frame { aspect-ratio: ${Math.max(ratio, 1.6)}; } .aus .aus-pan { width: 100%; } .aus .aus-stats { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
 
         /* Desktop: a sticky stage. The frame's page-coloured cover has letter-shaped holes showing the photo behind */
         @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-          .aus { --w: calc(min(100vw, 84rem) - 10.8vw); /* same width as the sections below */ --mid: calc(50% + 2.5rem); height: 190svh; background: ${PAGE}; }
+          .aus { --w: min(100vw - 2 * var(--page-gutter), var(--page-inner)); /* same width as the sections below */ --mid: calc(50% + 2.5rem); height: 190svh; background: ${PAGE}; }
           .aus .aus-stage { position: sticky; top: 0; display: block; max-width: none; height: 100svh; padding: 0; overflow: clip; }
           .aus .aus-intro { display: contents; }
           .aus .aus-h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

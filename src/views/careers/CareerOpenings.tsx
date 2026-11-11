@@ -182,7 +182,7 @@ export default function CareerOpenings() {
     <section ref={root} id="careers-openings" className="cko relative w-full">
       <style>{`
         .cko { color: #350C0E; background: #FFFEFA; overflow: clip; }
-        .cko .cko-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; max-width: 84rem; margin: 0 auto; padding: 3.5rem 1.5rem 5.5rem; }
+        .cko .cko-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; max-width: var(--page-max); margin: 0 auto; padding: 3.5rem 1.5rem 5.5rem; }
         .cko .cko-title { margin-top: 1.5rem; font-size: clamp(2.9rem, 13vw, 4.4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .cko .cko-mask { display: block; overflow: hidden; padding: 0 0.1em 0.12em 0; margin-bottom: -0.12em; }
         .cko .cko-accent { font-size: 1.16em; line-height: 0.9; letter-spacing: -0.02em; font-weight: 400; font-stretch: normal; color: #F7931E; }
@@ -228,7 +228,7 @@ export default function CareerOpenings() {
           .cko .cko-btn { align-self: auto; }
         }
         @media (min-width: 1024px) {
-          .cko .cko-grid { grid-template-columns: minmax(0, 0.74fr) minmax(0, 1.26fr); align-items: start; gap: clamp(3rem, 5vw, 5.5rem); padding: 4rem 5.4vw 7.5rem; }
+          .cko .cko-grid { grid-template-columns: minmax(0, 0.74fr) minmax(0, 1.26fr); align-items: start; gap: clamp(3rem, 5vw, 5.5rem); padding: 4rem var(--page-gutter) 7.5rem; }
           .cko .cko-side { position: sticky; top: 7.5rem; }
           .cko .cko-title { font-size: clamp(3.2rem, 5vw, 5.3rem); }
           .cko .cko-progress { display: flex; }

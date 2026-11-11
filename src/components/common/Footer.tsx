@@ -125,7 +125,7 @@ export default function Footer() {
           .site-footer [data-f-cta], .site-footer [data-f-col] { visibility: hidden; }
         }
         /* Layout kept here so it never depends on Tailwind generating new class names */
-        .site-footer .f-shell { max-width: 84rem; margin: 0 auto; border-radius: 2.5rem; background: #F4F6FA; padding: 1rem; overflow: hidden; }
+        .site-footer .f-shell { max-width: var(--page-inner); margin: 0 auto; border-radius: 2.5rem; background: #F4F6FA; padding: 1rem; overflow: hidden; }
         .site-footer .f-cta { border-radius: 2rem; padding: 2.25rem 1.75rem; }
         .site-footer .f-cta-title { font-size: clamp(2rem, 5vw, 3.6rem); }
         .site-footer .f-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding: 3rem 1rem 1rem; }

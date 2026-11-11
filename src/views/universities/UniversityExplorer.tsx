@@ -400,7 +400,7 @@ export default function UniversityExplorer() {
             radial-gradient(45% 40% at 85% 6%, rgba(47,107,255,0.1), transparent 70%),
             radial-gradient(40% 36% at 4% 10%, rgba(247,147,30,0.15), transparent 70%),
             linear-gradient(180deg, #FFEFDD 0%, #FFF6EC 22%, #FFFEFA 42%); }
-        .ux .ux-wrap { position: relative; max-width: 84rem; margin: 0 auto; padding: 9.5rem 1.5rem 5rem; }
+        .ux .ux-wrap { position: relative; max-width: var(--page-max); margin: 0 auto; padding: 9.5rem 1.5rem 5rem; }
 
         /* Header */
         .ux .ux-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -476,7 +476,7 @@ export default function UniversityExplorer() {
           .ux .ux-field-dest { width: 14rem; flex: none; }
         }
         @media (min-width: 1024px) {
-          .ux .ux-wrap { padding: 10rem 5.4vw 7rem; }
+          .ux .ux-wrap { padding: 10rem var(--page-gutter) 7rem; }
           .ux .ux-title { font-size: clamp(3.2rem, 4.8vw, 4.7rem); }
           .ux .ux-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; }
         }

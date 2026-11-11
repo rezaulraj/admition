@@ -123,7 +123,7 @@ export default function HeroServices() {
             radial-gradient(36% 46% at 4% 20%, rgba(247,147,30,0.14), transparent 70%),
             linear-gradient(180deg, #FFEFDD 0%, #FFF6EC 55%, #FFFEFA 100%); }
         .hs::after { content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; height: 6rem; pointer-events: none; background: linear-gradient(180deg, rgba(255,254,250,0), #FFFEFA); }
-        .hs .hs-wrap { position: relative; max-width: 84rem; margin: 0 auto; padding: 9.5rem 1.5rem 2.5rem;
+        .hs .hs-wrap { position: relative; max-width: var(--page-max); margin: 0 auto; padding: 9.5rem 1.5rem 2.5rem;
           display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; align-items: center; }
 
         .hs .hs-eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.95rem 0.45rem 0.55rem; border-radius: 999px;
@@ -180,7 +180,7 @@ export default function HeroServices() {
           .hs .hs-copy { font-size: 1.06rem; }
         }
         @media (min-width: 1024px) {
-          .hs .hs-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2.5rem, 4vw, 4.5rem); padding: 10rem 5.4vw 3.5rem; }
+          .hs .hs-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2.5rem, 4vw, 4.5rem); padding: 10rem var(--page-gutter) 3.5rem; }
           .hs .hs-title { font-size: clamp(2.7rem, 3.6vw, 3.9rem); }
           .hs .hs-art-wrap { width: min(100%, 44rem, calc((100svh - 13rem) * 1.54)); margin-right: 0; }
           .hs .hs-band { padding-bottom: 5rem; }

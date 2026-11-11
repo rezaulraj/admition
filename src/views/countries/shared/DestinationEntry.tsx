@@ -210,7 +210,7 @@ export default function DestinationEntry({ destination, intro, programs }: Props
     <section ref={root} className="er relative w-full">
       <style>{`
         .er { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .er .er-wrap { max-width: 84rem; margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
+        .er .er-wrap { max-width: var(--page-max); margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
         .er .er-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.25rem; }
         .er .er-title { margin-top: 1.25rem; font-size: clamp(2.6rem, 11.5vw, 4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .er .er-mask { display: inline-block; overflow: hidden; padding: 0 0.08em 0.14em 0; margin-bottom: -0.14em; vertical-align: top; }
@@ -272,7 +272,7 @@ export default function DestinationEntry({ destination, intro, programs }: Props
           .er .er-panel { padding: 2rem; }
         }
         @media (min-width: 1024px) {
-          .er .er-wrap { padding: 2rem 5.4vw 7rem; }
+          .er .er-wrap { padding: 2rem var(--page-gutter) 7rem; }
           .er .er-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .er .er-rows { margin: 0.75rem 0 0; }
           .er .er-row { flex-wrap: wrap; padding: 0.15rem 0; overflow: visible; }

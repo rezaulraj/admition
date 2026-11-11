@@ -95,7 +95,7 @@ export default function About() {
     <section ref={root} id="about" className="osa relative w-full">
       <style>{`
         .osa { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .osa .osa-wrap { max-width: 84rem; margin: 0 auto; padding: 3rem 1.5rem 7rem; }
+        .osa .osa-wrap { max-width: var(--page-max); margin: 0 auto; padding: 3rem 1.5rem 7rem; }
         .osa .osa-statement { margin-top: 1.75rem; max-width: 74rem; font-size: clamp(2.05rem, 8.4vw, 3rem); line-height: 1.12; letter-spacing: -0.035em; font-weight: 600; }
         .osa .osa-accent { font-size: 1.14em; line-height: 0.9; letter-spacing: -0.02em; font-weight: 400; font-stretch: normal; }
         .osa .osa-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3rem; margin-top: 4rem; }
@@ -107,7 +107,7 @@ export default function About() {
         .osa .osa-btn { margin-top: 2.25rem; background: #350C0E; color: #fff; transition: background-color .3s ease, translate .3s ease; }
         .osa .osa-btn:hover, .osa .osa-btn:focus-visible { background: #F7931E; translate: 0 -2px; }
         @media (min-width: 1024px) {
-          .osa .osa-wrap { padding: 4rem 5.4vw 9rem; }
+          .osa .osa-wrap { padding: 4rem var(--page-gutter) 9rem; }
           .osa .osa-statement { font-size: clamp(3rem, 4.9vw, 5.1rem); line-height: 1.08; }
           .osa .osa-grid { grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); align-items: center; gap: clamp(3rem, 6vw, 6.5rem); margin-top: 6rem; }
           .osa .osa-bridge { position: absolute; left: -2.5rem; bottom: -3rem; width: 23rem; margin: 0; }

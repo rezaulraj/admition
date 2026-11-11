@@ -150,7 +150,7 @@ export default function DestinationVisaProcess({ destination, intro, image, step
     <section ref={root} className="av relative w-full">
       <style>{`
         .av { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .av .av-wrap { max-width: 84rem; margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
+        .av .av-wrap { max-width: var(--page-max); margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
         .av .av-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
         .av .av-title { margin-top: 1.25rem; font-size: clamp(2.6rem, 11.5vw, 4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .av .av-mask { display: inline-block; overflow: hidden; padding: 0 0.08em 0.14em 0; margin-bottom: -0.14em; vertical-align: top; }
@@ -180,7 +180,7 @@ export default function DestinationVisaProcess({ destination, intro, image, step
 
         @media (min-width: 640px) { .av .av-card { padding: 2rem; } }
         @media (min-width: 1024px) {
-          .av .av-wrap { padding: 2rem 5.4vw 7rem; }
+          .av .av-wrap { padding: 2rem var(--page-gutter) 7rem; }
           .av .av-head { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); align-items: end; gap: 4rem; }
           .av .av-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .av .av-grid { grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); align-items: start; gap: clamp(1.5rem, 3vw, 3rem); margin-top: 3.25rem; }

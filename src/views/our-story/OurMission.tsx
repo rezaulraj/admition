@@ -147,7 +147,7 @@ export default function OurMission() {
     <section ref={root} className="osm relative w-full">
       <style>{`
         .osm { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .osm .osm-wrap { max-width: 84rem; margin: 0 auto; padding: 1rem 1.5rem 5.5rem; }
+        .osm .osm-wrap { max-width: var(--page-max); margin: 0 auto; padding: 1rem 1.5rem 5.5rem; }
         .osm .osm-w { display: inline-block; overflow: hidden; padding: 0 0.04em 0.14em 0; margin-bottom: -0.14em; vertical-align: top; }
 
         .osm .osm-head { margin-top: 5rem; }
@@ -185,7 +185,7 @@ export default function OurMission() {
 
         @media (min-width: 640px) { .osm .osm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (min-width: 1024px) {
-          .osm .osm-wrap { padding: 1rem 5.4vw 7.5rem; }
+          .osm .osm-wrap { padding: 1rem var(--page-gutter) 7.5rem; }
           .osm .osm-head { margin-top: 7rem; }
           .osm .osm-h3 { font-size: clamp(3.2rem, 5vw, 5.3rem); }
           .osm .osm-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 3.25rem; }

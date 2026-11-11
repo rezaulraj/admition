@@ -1,8 +1,22 @@
 @import "tailwindcss";
 
 :root {
+  /* Page width. Sections fill the screen up to --page-max; the side gutter stops growing at 6.5rem,
+     so content gets wider on bigger screens instead of narrower. --page-inner = max minus both gutters. */
+  --page-max: 120rem;
+  --page-inner: 107rem;
+  --page-gutter: min(5.4vw, 6.5rem);
+  /* Distance from the screen edge to the content, for sections positioned against the full screen */
+  --page-edge: max(var(--page-gutter), calc((100vw - var(--page-inner)) / 2));
   --background: #fffefa;
   --foreground: #171717;
+}
+
+/* Older sections use Tailwind's container: on very large screens it matches the page width too */
+@utility container {
+  @media (width >= 120rem) {
+    max-width: var(--page-inner);
+  }
 }
 
 @theme inline {

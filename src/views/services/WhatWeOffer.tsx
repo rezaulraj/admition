@@ -137,7 +137,7 @@ export default function WhatWeOffer() {
       <style>{`
         .wo { color: #350C0E; overflow: clip;
           background: radial-gradient(40% 50% at 95% 15%, rgba(47,107,255,0.06), transparent 70%), radial-gradient(40% 50% at 0% 85%, rgba(247,147,30,0.08), transparent 70%), #FFFEFA; }
-        .wo .wo-wrap { max-width: 84rem; margin: 0 auto; padding: 4.5rem 1.5rem 5rem; }
+        .wo .wo-wrap { max-width: var(--page-max); margin: 0 auto; padding: 4.5rem 1.5rem 5rem; }
 
         .wo .wo-head { display: grid; gap: 1.25rem; }
         .wo .wo-eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.95rem 0.45rem 0.55rem; border-radius: 999px;
@@ -189,7 +189,7 @@ export default function WhatWeOffer() {
           .wo .wo-panel-inner { padding: 0 1.4rem 1.5rem 5.25rem; }
         }
         @media (min-width: 1024px) {
-          .wo .wo-wrap { padding: 6.5rem 5.4vw 7rem; }
+          .wo .wo-wrap { padding: 6.5rem var(--page-gutter) 7rem; }
           .wo .wo-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 3rem; }
           .wo .wo-title { font-size: clamp(3rem, 4.6vw, 4.5rem); }
           .wo .wo-sub { text-align: right; }

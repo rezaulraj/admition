@@ -147,7 +147,7 @@ export default function Register() {
             radial-gradient(45% 30% at 90% 6%, rgba(47,107,255,0.09), transparent 70%),
             radial-gradient(40% 30% at 4% 8%, rgba(247,147,30,0.15), transparent 70%),
             linear-gradient(180deg, #FFEFDD 0%, #FFF6EC 40%, #FFFEFA 100%); }
-        .rg .rg-wrap { max-width: 84rem; margin: 0 auto; padding: 8.25rem 1.5rem 3.5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+        .rg .rg-wrap { max-width: var(--page-max); margin: 0 auto; padding: 8.25rem 1.5rem 3.5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
 
         /* Photo panel */
         .rg .rg-photo { position: relative; display: none; overflow: hidden; border-radius: 28px; isolation: isolate; background: #2a1a12; }
@@ -256,7 +256,7 @@ export default function Register() {
           .rg .rg-body { padding: 1.8rem 2.25rem 2rem; }
         }
         @media (min-width: 1024px) {
-          .rg .rg-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; padding: 9rem 5.4vw 4.5rem; }
+          .rg .rg-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; padding: 9rem var(--page-gutter) 4.5rem; }
           /* The photo stays in view while the longer form scrolls */
           .rg .rg-photo { display: block; position: sticky; top: 7rem; height: calc(100svh - 9rem); min-height: 30rem; max-height: 46rem; }
           .rg .rg-card { max-width: 33rem; }

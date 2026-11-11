@@ -297,7 +297,7 @@ export default function RiseWithEveryStep() {
             radial-gradient(40% 45% at 86% 50%, rgba(247,147,30,0.1), transparent 70%),
             radial-gradient(40% 45% at 10% 30%, rgba(47,107,255,0.06), transparent 70%),
             #FFFEFA; }
-        .rs .rs-wrap { max-width: 84rem; margin: 0 auto; padding: 4.5rem 1.5rem 5rem; }
+        .rs .rs-wrap { max-width: var(--page-max); margin: 0 auto; padding: 4.5rem 1.5rem 5rem; }
 
         .rs .rs-head { display: grid; gap: 1.25rem; }
         .rs .rs-eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.95rem 0.45rem 0.55rem; border-radius: 999px;
@@ -349,7 +349,7 @@ export default function RiseWithEveryStep() {
 
         /* Desktop: a rising staircase */
         @media (min-width: 900px) {
-          .rs .rs-wrap { padding: 6rem 5.4vw 6.5rem; }
+          .rs .rs-wrap { padding: 6rem var(--page-gutter) 6.5rem; }
           .rs .rs-head { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: end; gap: 3rem; }
           .rs .rs-title { font-size: clamp(3rem, 4.8vw, 4.6rem); }
           .rs .rs-copy { justify-self: end; font-size: 1.05rem; }

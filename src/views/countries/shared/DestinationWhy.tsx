@@ -198,7 +198,7 @@ export default function DestinationWhy({
         @keyframes cf-ring { 0% { transform: scale(.8); opacity: .6 } 100% { transform: scale(1.8); opacity: 0 } }
 
         .wa { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .wa .wa-wrap { max-width: 84rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+        .wa .wa-wrap { max-width: var(--page-max); margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
         .wa .wa-title { margin-top: 1.5rem; font-size: clamp(2.8rem, 12vw, 4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .wa .wa-mask { display: inline-block; overflow: hidden; padding: 0 0.08em 0.14em 0; margin-bottom: -0.14em; vertical-align: top; }
         .wa .wa-accent { font-size: 1.16em; line-height: 0.9; letter-spacing: -0.02em; font-weight: 400; font-stretch: normal; color: #F7931E; }
@@ -251,7 +251,7 @@ export default function DestinationWhy({
           .wa .wa-full { grid-column: 1 / -1; }
         }
         @media (min-width: 1024px) {
-          .wa .wa-wrap { padding: 4rem 5.4vw 6.5rem; }
+          .wa .wa-wrap { padding: 4rem var(--page-gutter) 6.5rem; }
           .wa .wa-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .wa .wa-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: start; gap: clamp(2rem, 3.5vw, 3.5rem); margin-top: 3.25rem; }
           .wa .wa-list { padding-left: 2.75rem; }

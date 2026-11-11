@@ -132,7 +132,7 @@ export default function WhyPartnerWithUs() {
         .wp { overflow: clip; color: #350C0E;
           background: radial-gradient(40% 50% at 12% 20%, rgba(47,107,255,0.07), transparent 70%), radial-gradient(40% 50% at 92% 80%, rgba(247,147,30,0.09), transparent 70%), #FFFEFA; }
         .wp .wp-stage { position: relative; }
-        .wp .wp-wrap { max-width: 84rem; margin: 0 auto; padding: 4.5rem 1.5rem 5rem; }
+        .wp .wp-wrap { max-width: var(--page-max); margin: 0 auto; padding: 4.5rem 1.5rem 5rem; }
 
         .wp .wp-head { display: grid; gap: 1.25rem; }
         .wp .wp-eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.95rem 0.45rem 0.55rem; border-radius: 999px;
@@ -179,7 +179,7 @@ export default function WhyPartnerWithUs() {
           .wp .wp-num { font-size: 6rem; right: 1.5rem; top: 1rem; }
         }
         @media (min-width: 1024px) {
-          .wp .wp-wrap { padding: 6rem 5.4vw 6.5rem; }
+          .wp .wp-wrap { padding: 6rem var(--page-gutter) 6.5rem; }
           .wp .wp-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 3rem; }
           .wp .wp-title { font-size: clamp(3rem, 4.4vw, 4.3rem); }
           .wp .wp-sub { display: grid; justify-items: end; gap: 1.25rem; text-align: right; }
@@ -189,7 +189,7 @@ export default function WhyPartnerWithUs() {
         /* Sideways gallery */
         @media ${GALLERY} {
           .wp .wp-stage { height: 100svh; }
-          .wp .wp-wrap { height: 100%; display: flex; flex-direction: column; padding: 6.75rem 5.4vw 2rem; }
+          .wp .wp-wrap { height: 100%; display: flex; flex-direction: column; padding: 6.75rem var(--page-gutter) 2rem; }
           .wp .wp-progress { display: flex; align-items: center; gap: 1rem; font-weight: 600; }
           .wp .wp-progress b { font-size: 2.2rem; line-height: 1; letter-spacing: -0.04em; color: #F7931E; }
           .wp .wp-progress span { font-size: 0.95rem; color: rgba(53,12,14,0.5); }
@@ -198,7 +198,7 @@ export default function WhyPartnerWithUs() {
 
           .wp .wp-viewport { flex: 1; min-height: 0; margin-top: 2rem; }
           .wp .wp-track { display: flex; gap: 2rem; height: 100%; width: max-content; }
-          .wp .wp-panel { width: min(64rem, calc(100vw - 10.8vw - 12rem)); height: 100%; visibility: hidden;
+          .wp .wp-panel { width: min(84rem, calc(100vw - 2 * var(--page-gutter) - 12rem)); height: 100%; visibility: hidden;
             transition: opacity .6s ease, filter .6s ease; }
           .wp .wp-panel:not(.is-on) { opacity: 0.55; filter: saturate(0.7); }
           .wp .wp-frame { height: 100%; aspect-ratio: auto; transition: transform .7s cubic-bezier(.22,1,.36,1); }

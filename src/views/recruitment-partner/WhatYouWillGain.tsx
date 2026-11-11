@@ -259,7 +259,7 @@ export default function WhatYouWillGain() {
     <section ref={root} className="yg relative w-full">
       <style>{`
         .yg { color: #350C0E; background: #FFFEFA; }
-        .yg .yg-wrap { max-width: 84rem; margin: 0 auto; padding: 4.5rem 1.5rem 5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+        .yg .yg-wrap { max-width: var(--page-max); margin: 0 auto; padding: 4.5rem 1.5rem 5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
 
         .yg .yg-eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.95rem 0.45rem 0.55rem; border-radius: 999px;
           background: #fff; box-shadow: 0 0 0 1px rgba(53,12,14,0.08), 0 10px 26px -16px rgba(53,12,14,0.4); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; }
@@ -381,7 +381,7 @@ export default function WhatYouWillGain() {
           .yg .yg-num { right: auto; left: auto; right: calc(47% + 1rem); bottom: -2.6rem; }
         }
         @media (min-width: 1024px) {
-          .yg .yg-wrap { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: clamp(2.5rem, 5vw, 5rem); padding: 7rem 5.4vw 7rem; align-items: start; }
+          .yg .yg-wrap { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: clamp(2.5rem, 5vw, 5rem); padding: 7rem var(--page-gutter) 7rem; align-items: start; }
           .yg .yg-side { position: sticky; top: 7rem; }
           .yg .yg-title { font-size: clamp(3rem, 4.6vw, 4.4rem); }
           .yg .yg-count { display: flex; align-items: baseline; gap: 0.35rem; margin-top: 1.75rem; font-weight: 600; }

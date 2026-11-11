@@ -123,7 +123,7 @@ export default function PartnershipForm() {
       <style>{`
         .pf { overflow: clip; color: #350C0E; scroll-margin-top: 5rem;
           background: radial-gradient(40% 50% at 95% 20%, rgba(47,107,255,0.07), transparent 70%), radial-gradient(40% 50% at 0% 90%, rgba(247,147,30,0.09), transparent 70%), #FFFEFA; }
-        .pf .pf-wrap { max-width: 84rem; margin: 0 auto; padding: 4.5rem 1.5rem 5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+        .pf .pf-wrap { max-width: var(--page-max); margin: 0 auto; padding: 4.5rem 1.5rem 5rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
 
         /* Side panel */
         .pf .pf-panel { position: relative; overflow: hidden; isolation: isolate; border-radius: 28px; padding: 1.75rem 1.5rem;
@@ -229,7 +229,7 @@ export default function PartnershipForm() {
           .pf .pf-span { grid-column: 1 / -1; }
         }
         @media (min-width: 1024px) {
-          .pf .pf-wrap { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: 2rem; padding: 6.5rem 5.4vw 7rem; }
+          .pf .pf-wrap { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: 2rem; padding: 6.5rem var(--page-gutter) 7rem; }
           .pf .pf-panel { position: sticky; top: 6.5rem; padding: 2.5rem 2.25rem; }
           .pf .pf-title { font-size: clamp(2.8rem, 3.9vw, 3.8rem); }
           .pf .pf-checks { display: grid; gap: 0.35rem; margin-top: 1.1rem; }

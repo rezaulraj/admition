@@ -144,7 +144,7 @@ export default function StudentVideoStories() {
     <section ref={root} className="svs relative w-full">
       <style>{`
         .svs { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .svs .svs-wrap { max-width: 84rem; margin: 0 auto; padding: 5rem 1.5rem; }
+        .svs .svs-wrap { max-width: var(--page-max); margin: 0 auto; padding: 5rem 1.5rem; }
         .svs .svs-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
         .svs .svs-title { margin-top: 1.5rem; font-size: clamp(2.8rem, 12vw, 4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .svs .svs-mask { display: inline-block; overflow: hidden; padding: 0 0.08em 0.14em 0; margin-bottom: -0.14em; vertical-align: top; }
@@ -179,7 +179,7 @@ export default function StudentVideoStories() {
           .svs .svs-tag { left: 50%; bottom: 1rem; padding: 0.8rem 0.45rem; writing-mode: vertical-rl; rotate: 180deg; translate: 50% 0; }
         }
         @media (min-width: 1024px) {
-          .svs .svs-wrap { padding: 6.5rem 5.4vw; }
+          .svs .svs-wrap { padding: 6.5rem var(--page-gutter); }
           .svs .svs-head { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); align-items: end; gap: 4rem; }
           .svs .svs-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .svs .svs-stage { margin-top: 3.25rem; }

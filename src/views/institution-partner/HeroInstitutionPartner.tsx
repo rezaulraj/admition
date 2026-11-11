@@ -38,36 +38,159 @@ export default function HeroInstitutionPartner() {
       const arcs = q("[data-ih-arc]") as unknown as SVGPathElement[];
 
       /* Signals keep travelling out from the handshake along each reach line */
-      const signals = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 0.4 });
+      const signals = gsap.timeline({
+        paused: true,
+        repeat: -1,
+        repeatDelay: 0.4,
+      });
       q("[data-ih-signal]").forEach((dot, i) => {
         signals
           .set(dot, { autoAlpha: 1 }, i * 0.45)
-          .to(dot, { duration: 1.7, ease: "power1.inOut", motionPath: { path: arcs[i], align: arcs[i], alignOrigin: [0.5, 0.5] } }, i * 0.45)
+          .to(
+            dot,
+            {
+              duration: 1.7,
+              ease: "power1.inOut",
+              motionPath: {
+                path: arcs[i],
+                align: arcs[i],
+                alignOrigin: [0.5, 0.5],
+              },
+            },
+            i * 0.45,
+          )
           .to(dot, { autoAlpha: 0, duration: 0.25 }, i * 0.45 + 1.5);
       });
 
       gsap
         .timeline({ defaults: { ease: "expo.out" }, delay: 0.1 })
-        .fromTo(q("[data-ih-eyebrow]"), { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0)
-        .fromTo(q("[data-ih-word]"), { autoAlpha: 0, yPercent: 115, rotate: 5 }, { autoAlpha: 1, yPercent: 0, rotate: 0, duration: 1.3, stagger: 0.12 }, 0.1)
+        .fromTo(
+          q("[data-ih-eyebrow]"),
+          { autoAlpha: 0, y: 16 },
+          { autoAlpha: 1, y: 0, duration: 0.9 },
+          0,
+        )
+        .fromTo(
+          q("[data-ih-word]"),
+          { autoAlpha: 0, yPercent: 115, rotate: 5 },
+          {
+            autoAlpha: 1,
+            yPercent: 0,
+            rotate: 0,
+            duration: 1.3,
+            stagger: 0.12,
+          },
+          0.1,
+        )
         /* "Widen" literally widens */
-        .fromTo(q("[data-ih-widen]"), { letterSpacing: "-0.14em" }, { letterSpacing: "0.01em", duration: 1.8, ease: "expo.inOut" }, 0.45)
-        .fromTo(q("[data-ih-copy]"), { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 1 }, 0.55)
-        .fromTo(q("[data-ih-cta] > *"), { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.1 }, 0.7)
+        .fromTo(
+          q("[data-ih-widen]"),
+          { letterSpacing: "-0.14em" },
+          { letterSpacing: "0.01em", duration: 1.8, ease: "expo.inOut" },
+          0.45,
+        )
+        .fromTo(
+          q("[data-ih-copy]"),
+          { autoAlpha: 0, y: 22 },
+          { autoAlpha: 1, y: 0, duration: 1 },
+          0.55,
+        )
+        .fromTo(
+          q("[data-ih-cta] > *"),
+          { autoAlpha: 0, y: 20 },
+          { autoAlpha: 1, y: 0, duration: 1, stagger: 0.1 },
+          0.7,
+        )
         /* The photo opens from a narrow slit to the full frame */
-        .fromTo(q("[data-ih-frame]"), { clipPath: "inset(6% 45% 6% 45% round 999px)" }, { clipPath: "inset(0% 0% 0% 0% round 28px)", duration: 1.7, ease: "expo.inOut" }, 0.2)
-        .fromTo(q("[data-ih-zoom]"), { scale: 1.4 }, { scale: 1, duration: 2.2 }, 0.2)
-        .fromTo(q("[data-ih-back]"), { autoAlpha: 0, scale: 0.9, rotate: -6 }, { autoAlpha: 1, scale: 1, rotate: -3, duration: 1.6 }, 0.6)
+        .fromTo(
+          q("[data-ih-frame]"),
+          { clipPath: "inset(6% 45% 6% 45% round 999px)" },
+          {
+            clipPath: "inset(0% 0% 0% 0% round 28px)",
+            duration: 1.7,
+            ease: "expo.inOut",
+          },
+          0.2,
+        )
+        .fromTo(
+          q("[data-ih-zoom]"),
+          { scale: 1.4 },
+          { scale: 1, duration: 2.2 },
+          0.2,
+        )
+        .fromTo(
+          q("[data-ih-back]"),
+          { autoAlpha: 0, scale: 0.9, rotate: -6 },
+          { autoAlpha: 1, scale: 1, rotate: -3, duration: 1.6 },
+          0.6,
+        )
         /* Reach lines draw out across the map */
-        .fromTo(q("[data-ih-ring]"), { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 1, stagger: 0.12 }, 1.35)
-        .fromTo(arcs, { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.2, stagger: 0.1, ease: "power2.inOut" }, 1.5)
-        .fromTo(q("[data-ih-pin]"), { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: "back.out(2.5)", transformOrigin: "50% 50%" }, 2.3)
-        .fromTo(q("[data-ih-chip]"), { autoAlpha: 0, y: 26, scale: 0.92 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1, stagger: 0.15 }, 2.0)
+        .fromTo(
+          q("[data-ih-ring]"),
+          { autoAlpha: 0, scale: 0.3 },
+          { autoAlpha: 1, scale: 1, duration: 1, stagger: 0.12 },
+          1.35,
+        )
+        .fromTo(
+          arcs,
+          { drawSVG: "0%" },
+          {
+            drawSVG: "100%",
+            duration: 1.2,
+            stagger: 0.1,
+            ease: "power2.inOut",
+          },
+          1.5,
+        )
+        .fromTo(
+          q("[data-ih-pin]"),
+          { autoAlpha: 0, scale: 0 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "back.out(2.5)",
+            transformOrigin: "50% 50%",
+          },
+          2.3,
+        )
+        .fromTo(
+          q("[data-ih-chip]"),
+          { autoAlpha: 0, y: 26, scale: 0.92 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 1, stagger: 0.15 },
+          2.0,
+        )
         .add(() => signals.play(), 2.9);
 
       /* Gentle depth as the hero scrolls away */
-      gsap.to(q("[data-ih-zoom]"), { yPercent: 6, scale: 1.05, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.8 } });
-      gsap.to(q("[data-ih-chip]"), { y: (i) => (i ? -40 : -24), ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.8 } });
+      // Its own layer: sharing the load zoom's layer made the photo jump to the zoom's starting size
+      gsap.fromTo(
+        q("[data-ih-drift]"),
+        { yPercent: 0, scale: 1 },
+        {
+          yPercent: 3,
+          scale: 1.08,
+          immediateRender: false,
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        },
+      );
+      gsap.to(q("[data-ih-chip]"), {
+        y: (i) => (i ? -40 : -24),
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.8,
+        },
+      });
 
       return () => signals.kill();
     });
@@ -88,7 +211,7 @@ export default function HeroInstitutionPartner() {
           background-image: linear-gradient(rgba(53,12,14,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(53,12,14,0.05) 1px, transparent 1px);
           background-size: 56px 56px; -webkit-mask-image: radial-gradient(55% 65% at 72% 45%, #000, transparent 75%); mask-image: radial-gradient(55% 65% at 72% 45%, #000, transparent 75%); }
         .ih::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 7rem; pointer-events: none; background: linear-gradient(180deg, rgba(255,254,250,0), #FFFEFA); }
-        .ih .ih-wrap { position: relative; z-index: 1; max-width: 84rem; margin: 0 auto; padding: 9.5rem 1.5rem 4.5rem;
+        .ih .ih-wrap { position: relative; z-index: 1; max-width: var(--page-max); margin: 0 auto; padding: 9.5rem 1.5rem 4.5rem;
           display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; align-items: center; }
 
         .ih .ih-eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.95rem 0.45rem 0.55rem; border-radius: 999px;
@@ -118,6 +241,7 @@ export default function HeroInstitutionPartner() {
           background-image: radial-gradient(rgba(53,12,14,0.35) 1px, transparent 1.4px); background-size: 14px 14px; }
         .ih .ih-frame { position: relative; aspect-ratio: 6 / 5; border-radius: 28px; overflow: hidden; isolation: isolate; background: #F3E3D3;
           box-shadow: 0 40px 80px -40px rgba(53,12,14,0.6), 0 0 0 1px rgba(53,12,14,0.06); }
+        .ih .ih-drift,
         .ih .ih-zoom { position: absolute; inset: 0; transform-origin: 49% 80%; }
         /* Keep only the right side of the wide photo */
         .ih .ih-crop { position: absolute; right: 0; top: 0; height: 100%; aspect-ratio: 1918 / 820; }
@@ -157,7 +281,7 @@ export default function HeroInstitutionPartner() {
           .ih .ih-chip-b { right: -1.5rem; }
         }
         @media (min-width: 1024px) {
-          .ih .ih-wrap { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: clamp(3rem, 5vw, 5.5rem); padding: 10rem 5.4vw 6rem; }
+          .ih .ih-wrap { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: clamp(3rem, 5vw, 5.5rem); padding: 10rem var(--page-gutter) 6rem; }
           .ih .ih-title { font-size: clamp(2.9rem, 4.3vw, 4.4rem); }
           .ih .ih-stage { width: min(100%, 40rem, calc((100svh - 9.5rem) * 1.2)); margin-right: 0; }
           .ih .ih-chip-a { left: -2.5rem; }
@@ -175,7 +299,12 @@ export default function HeroInstitutionPartner() {
         <div>
           <span data-ih-eyebrow className="ih-eyebrow">
             <span aria-hidden>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="m12 2 10 5-10 5L2 7l10-5Zm-7 8.5 7 3.5 7-3.5V16l-7 3.5L5 16v-5.5Z" />
               </svg>
             </span>
@@ -189,7 +318,10 @@ export default function HeroInstitutionPartner() {
               </span>
             </span>
             <span className="ih-mask">
-              <span data-ih-word className={`${accentSerif.className} ih-accent inline-block origin-bottom-left`}>
+              <span
+                data-ih-word
+                className={`${accentSerif.className} ih-accent inline-block origin-bottom-left`}
+              >
                 <span data-ih-widen className="inline-block">
                   Widen
                 </span>{" "}
@@ -199,8 +331,9 @@ export default function HeroInstitutionPartner() {
           </h1>
 
           <p data-ih-copy className="ih-copy">
-            Become part of a trusted network of institutions and help even more students reach their international
-            education goals through meaningful, strategic collaboration.
+            Become part of a trusted network of institutions and help even more
+            students reach their international education goals through
+            meaningful, strategic collaboration.
           </p>
 
           <div data-ih-cta className="ih-actions">
@@ -208,7 +341,13 @@ export default function HeroInstitutionPartner() {
               Become An Institution Partner
               <span className="ih-btn-arrow" aria-hidden>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="M12 5v14M6 13l6 6 6-6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </span>
             </Link>
@@ -227,46 +366,108 @@ export default function HeroInstitutionPartner() {
         <div className="ih-stage">
           <span data-ih-back className="ih-back" aria-hidden />
           <div data-ih-frame className="ih-frame">
-            <div data-ih-zoom className="ih-zoom">
-              <div className="ih-crop">
-                <Image
-                  src="/partner-hand.png"
-                  alt="Two partners shaking hands in front of a world map"
-                  fill
-                  priority
-                  sizes="(max-width: 1023px) 220vw, 1400px"
-                />
+            <div data-ih-drift className="ih-drift">
+              <div data-ih-zoom className="ih-zoom">
+                <div className="ih-crop">
+                  <Image
+                    src="/partner-hand.png"
+                    alt="Two partners shaking hands in front of a world map"
+                    fill
+                    priority
+                    sizes="(max-width: 1023px) 220vw, 1400px"
+                  />
+                </div>
+                <span className="ih-shade" aria-hidden />
+                <span data-ih-ring className="ih-ring" aria-hidden />
+                <span data-ih-ring className="ih-ring" aria-hidden />
+                <span data-ih-ring className="ih-ring" aria-hidden />
+                <svg
+                  className="ih-svg"
+                  viewBox="0 0 120 100"
+                  preserveAspectRatio="xMidYMid slice"
+                  aria-hidden
+                >
+                  <defs>
+                    <linearGradient
+                      id="ih-arc-grad"
+                      gradientUnits="userSpaceOnUse"
+                      x1="0"
+                      y1="80"
+                      x2="0"
+                      y2="5"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor="#F7931E"
+                        stopOpacity="0.95"
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="#FFFFFF"
+                        stopOpacity="0.9"
+                      />
+                    </linearGradient>
+                  </defs>
+                  {TARGETS.map((t, i) => (
+                    <path
+                      key={i}
+                      data-ih-arc
+                      d={arc(t)}
+                      fill="none"
+                      stroke="url(#ih-arc-grad)"
+                      strokeWidth="0.45"
+                      strokeDasharray="1.6 1.1"
+                      strokeLinecap="round"
+                    />
+                  ))}
+                  {TARGETS.map((t, i) => (
+                    <g key={i} data-ih-pin>
+                      <circle
+                        cx={t.x}
+                        cy={t.y}
+                        r="2.6"
+                        fill="rgba(247,147,30,0.3)"
+                      />
+                      <circle
+                        cx={t.x}
+                        cy={t.y}
+                        r="1.3"
+                        fill="#fff"
+                        stroke="#F7931E"
+                        strokeWidth="0.6"
+                      />
+                    </g>
+                  ))}
+                  {TARGETS.map((_, i) => (
+                    <circle
+                      key={i}
+                      data-ih-signal
+                      r="1"
+                      fill="#fff"
+                      style={{ filter: "drop-shadow(0 0 1.5px #F7931E)" }}
+                    />
+                  ))}
+                </svg>
               </div>
             </div>
-            <span className="ih-shade" aria-hidden />
-            <span data-ih-ring className="ih-ring" aria-hidden />
-            <span data-ih-ring className="ih-ring" aria-hidden />
-            <span data-ih-ring className="ih-ring" aria-hidden />
-            <svg className="ih-svg" viewBox="0 0 120 100" preserveAspectRatio="xMidYMid slice" aria-hidden>
-              <defs>
-                <linearGradient id="ih-arc-grad" gradientUnits="userSpaceOnUse" x1="0" y1="80" x2="0" y2="5">
-                  <stop offset="0%" stopColor="#F7931E" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.9" />
-                </linearGradient>
-              </defs>
-              {TARGETS.map((t, i) => (
-                <path key={i} data-ih-arc d={arc(t)} fill="none" stroke="url(#ih-arc-grad)" strokeWidth="0.45" strokeDasharray="1.6 1.1" strokeLinecap="round" />
-              ))}
-              {TARGETS.map((t, i) => (
-                <g key={i} data-ih-pin>
-                  <circle cx={t.x} cy={t.y} r="2.6" fill="rgba(247,147,30,0.3)" />
-                  <circle cx={t.x} cy={t.y} r="1.3" fill="#fff" stroke="#F7931E" strokeWidth="0.6" />
-                </g>
-              ))}
-              {TARGETS.map((_, i) => (
-                <circle key={i} data-ih-signal r="1" fill="#fff" style={{ filter: "drop-shadow(0 0 1.5px #F7931E)" }} />
-              ))}
-            </svg>
           </div>
 
           <div data-ih-chip className="ih-chip ih-chip-a">
-            <span className="ih-chip-icon" style={{ background: "#3BAA35" }} aria-hidden>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <span
+              className="ih-chip-icon"
+              style={{ background: "#3BAA35" }}
+              aria-hidden
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z" />
                 <path d="m9 12 2 2 4-4" />
               </svg>
@@ -277,8 +478,21 @@ export default function HeroInstitutionPartner() {
             </span>
           </div>
           <div data-ih-chip className="ih-chip ih-chip-b">
-            <span className="ih-chip-icon" style={{ background: "#F7931E" }} aria-hidden>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <span
+              className="ih-chip-icon"
+              style={{ background: "#F7931E" }}
+              aria-hidden
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18M12 3c2.5 2.6 3.5 5.6 3.5 9s-1 6.4-3.5 9c-2.5-2.6-3.5-5.6-3.5-9s1-6.4 3.5-9Z" />
               </svg>

@@ -97,7 +97,7 @@ export default function OurBlogs() {
     <section ref={root} className="ob relative -mt-20 w-full lg:-mt-24">
       <style>{`
         .ob { overflow: clip; color: #350C0E; background: radial-gradient(60% 420px at 90% 60px, rgba(247,147,30,0.2), transparent 70%), linear-gradient(180deg, #FFF0E1 0, #FFF8F0 360px, #FFFEFA 720px); }
-        .ob .ob-wrap { max-width: 84rem; margin: 0 auto; padding: 7.5rem 1.5rem 5.5rem; }
+        .ob .ob-wrap { max-width: var(--page-max); margin: 0 auto; padding: 7.5rem 1.5rem 5.5rem; }
         .ob .ob-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
         .ob .ob-title { margin-top: 1.5rem; font-size: clamp(2.35rem, 10.6vw, 3.8rem); line-height: 1.04; letter-spacing: -0.04em; font-weight: 600; }
         .ob .ob-mask { display: block; overflow: hidden; padding: 0 0.1em 0.12em 0; margin-bottom: -0.12em; }
@@ -115,7 +115,7 @@ export default function OurBlogs() {
         ${BLOG_CARD_CSS}
 
         @media (min-width: 1024px) {
-          .ob .ob-wrap { padding: 9rem 5.4vw 7rem; }
+          .ob .ob-wrap { padding: 9rem var(--page-gutter) 7rem; }
           .ob .ob-head { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); align-items: end; gap: 4rem; }
           .ob .ob-title { font-size: clamp(3.2rem, 5vw, 5.3rem); }
           .ob .ob-pills { margin-top: 3rem; }

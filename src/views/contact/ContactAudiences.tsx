@@ -174,7 +174,7 @@ export default function ContactAudiences() {
     <section ref={root} className="cau relative w-full">
       <style>{`
         .cau { overflow: clip; color: #350C0E; background: #FFFEFA; }
-        .cau .cau-wrap { max-width: 84rem; margin: 0 auto; padding: 4.5rem 1.5rem 3rem; }
+        .cau .cau-wrap { max-width: var(--page-max); margin: 0 auto; padding: 4.5rem 1.5rem 3rem; }
         .cau .cau-title { margin-top: 1.5rem; font-size: clamp(2.8rem, 12vw, 4rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; }
         .cau .cau-mask { display: inline-block; overflow: hidden; padding: 0 0.08em 0.14em 0; margin-bottom: -0.14em; vertical-align: top; }
         .cau .cau-accent { font-size: 1.16em; line-height: 0.9; letter-spacing: -0.02em; font-weight: 400; font-stretch: normal; color: #F7931E; }
@@ -213,7 +213,7 @@ export default function ContactAudiences() {
         .cau .cau-gap { margin-top: 1rem; }
 
         @media (min-width: 1024px) {
-          .cau .cau-wrap { padding: 6rem 5.4vw 4rem; }
+          .cau .cau-wrap { padding: 6rem var(--page-gutter) 4rem; }
           .cau .cau-title { font-size: clamp(3.4rem, 5.5vw, 5.9rem); }
           .cau .cau-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; max-width: none; margin-top: 7rem; }
           .cau .cau-panel { padding: 1.75rem; }

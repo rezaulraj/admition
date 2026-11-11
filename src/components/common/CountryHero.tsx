@@ -99,7 +99,7 @@ export default function CountryHero() {
             radial-gradient(45% 40% at 88% 8%, rgba(47,107,255,0.1), transparent 70%),
             radial-gradient(40% 36% at 4% 8%, rgba(247,147,30,0.16), transparent 70%),
             linear-gradient(180deg, #FFEFDD 0%, #FFF6EC 45%, #FFFEFA 100%); }
-        .ch .ch-wrap { max-width: 84rem; margin: 0 auto; padding: 9.5rem 1.5rem 4.5rem; }
+        .ch .ch-wrap { max-width: var(--page-max); margin: 0 auto; padding: 9.5rem 1.5rem 4.5rem; }
 
         /* Heading */
         .ch .ch-head { display: grid; gap: 1.75rem; }
@@ -174,7 +174,7 @@ export default function CountryHero() {
           .ch .ch-cap { font-size: 0.8rem; }
         }
         @media (min-width: 1024px) {
-          .ch .ch-wrap { padding: 10rem 5.4vw 5.5rem; }
+          .ch .ch-wrap { padding: 10rem var(--page-gutter) 5.5rem; }
           .ch .ch-head { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: end; gap: 3rem; }
           .ch .ch-title { font-size: clamp(3rem, 4.6vw, 4.5rem); }
           .ch .ch-mosaic { gap: 0.9rem; --h: 104; --cy: 10; }

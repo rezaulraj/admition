@@ -484,7 +484,7 @@ export default function UniversityPartner({
         <div className="absolute -right-40 bottom-10 size-[26rem] rounded-full bg-[#F7931E]/[0.08] blur-3xl" />
       </div>
 
-      <div className="container relative mx-auto max-w-6xl">
+      <div className="container relative mx-auto max-w-6xl min-[120rem]:max-w-[var(--page-inner)]">
         {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
           <span data-eyebrow className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-[#2F6BFF]">

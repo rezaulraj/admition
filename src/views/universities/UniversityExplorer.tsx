@@ -259,14 +259,15 @@ const FLAGS: Record<string, string> = {
   Malta: "MT",
 };
 
-/* A soft tint per destination for the logo stage of each card */
-const TINTS: Record<string, { bg: string; accent: string }> = {
-  "United Kingdom": { bg: "linear-gradient(135deg, #EEF2FF 0%, #DCE5FF 100%)", accent: "#2F6BFF" },
-  Malta: { bg: "linear-gradient(135deg, #FFEDF2 0%, #FFDCE5 100%)", accent: "#E5486F" },
-  Hungary: { bg: "linear-gradient(135deg, #EBF8E7 0%, #D7F0D0 100%)", accent: "#3BAA35" },
-  Cyprus: { bg: "linear-gradient(135deg, #FFF6DD 0%, #FFEBC0 100%)", accent: "#E08A00" },
-};
-const DEFAULT_TINT = { bg: "linear-gradient(135deg, #FFEBD9 0%, #FFDCBF 100%)", accent: "#F7931E" };
+/* Each card gets its own colour scene, cycling through the brand palette */
+const SCENES = [
+  { a: "#FFC48A", b: "#FFE3C4", c: "#FFD3DE", base: "#FFF1E3", soft: "#FFF7EF", accent: "#F7931E" },
+  { a: "#A9C1FF", b: "#DCE6FF", c: "#BDEBFF", base: "#EEF2FF", soft: "#F4F7FF", accent: "#2F6BFF" },
+  { a: "#A8E09B", b: "#DDF3D6", c: "#FFEDAA", base: "#EEF9EA", soft: "#F3FBF0", accent: "#3BAA35" },
+  { a: "#FFB3C6", b: "#FFE0E8", c: "#E1D3FF", base: "#FFF0F4", soft: "#FFF5F8", accent: "#E5486F" },
+  { a: "#FFD777", b: "#FFF0C8", c: "#FFC9A0", base: "#FFF8E6", soft: "#FFFAF0", accent: "#E08A00" },
+  { a: "#CDB8FF", b: "#ECE4FF", c: "#BCE0FF", base: "#F4F0FF", soft: "#F8F5FF", accent: "#7A4FBF" },
+];
 
 /* Every logo once, for the moving band in the header */
 const BAND = universities.filter((u, i, all) => all.findIndex((x) => x.logo === u.logo) === i);
@@ -434,21 +435,44 @@ export default function UniversityExplorer() {
 
         /* Cards */
         .ux .ux-grid { margin-top: 1rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-        .ux .ux-card { position: relative; display: flex; flex-direction: column; padding: 0.6rem 0.6rem 1.1rem; border-radius: 26px; background: #fff; overflow: hidden;
+        .ux .ux-card { position: relative; display: flex; flex-direction: column; padding: 0.6rem 0.6rem 1.1rem; border-radius: 26px; overflow: hidden; isolation: isolate;
+          background: linear-gradient(180deg, #fff 45%, var(--soft) 100%);
           box-shadow: 0 0 0 1px rgba(53,12,14,0.06), 0 22px 44px -34px rgba(53,12,14,0.5);
           transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease; }
         .ux .ux-card[hidden] { display: none; }
         .ux .ux-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .4s ease;
-          background: radial-gradient(18rem circle at var(--mx, 50%) var(--my, 30%), rgba(247,147,30,0.1), transparent 60%); }
+          background: radial-gradient(18rem circle at var(--mx, 50%) var(--my, 30%), color-mix(in srgb, var(--acc) 14%, transparent), transparent 60%); }
         .ux .ux-card:hover { transform: translateY(-6px); box-shadow: 0 0 0 1px rgba(53,12,14,0.06), 0 34px 60px -34px rgba(53,12,14,0.6); }
         .ux .ux-card:hover::after { opacity: 1; }
-        .ux .ux-card:focus-visible { outline: 2px solid #F7931E; outline-offset: 3px; }
-        .ux .ux-stage { position: relative; display: grid; place-items: center; height: 9.5rem; padding-top: 1.9rem; border-radius: 20px; background: var(--bg); overflow: hidden; }
-        .ux .ux-stage::before { content: ""; position: absolute; inset: 0; opacity: 0.4;
-          background-image: radial-gradient(rgba(53,12,14,0.25) 1px, transparent 1.4px); background-size: 13px 13px;
-          -webkit-mask-image: linear-gradient(160deg, transparent 40%, #000 100%); mask-image: linear-gradient(160deg, transparent 40%, #000 100%); }
+        .ux .ux-card:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+        .ux .ux-stage { position: relative; isolation: isolate; display: grid; place-items: center; height: 10rem; padding-top: 1.9rem; border-radius: 20px; overflow: hidden;
+          background:
+            radial-gradient(65% 85% at 0% 0%, var(--a), transparent 62%),
+            radial-gradient(60% 80% at 100% 100%, var(--c), transparent 62%),
+            radial-gradient(55% 70% at 100% 0%, var(--b), transparent 60%),
+            var(--base); }
+        /* Fine dot texture and a soft light sweeping across */
+        .ux .ux-stage::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.45;
+          background-image: radial-gradient(rgba(255,255,255,0.95) 1.1px, transparent 1.5px); background-size: 14px 14px;
+          -webkit-mask-image: linear-gradient(160deg, transparent 30%, #000 100%); mask-image: linear-gradient(160deg, transparent 30%, #000 100%); }
+        .ux .ux-stage::after { content: ""; position: absolute; inset: -40% -60%; z-index: -1; pointer-events: none;
+          background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,0.55) 50%, transparent 58%); transform: translateX(-60%); transition: transform 1.1s cubic-bezier(.22,1,.36,1); }
+        .ux .ux-card:hover .ux-stage::after { transform: translateX(60%); }
+        /* A glowing blob that drifts, and rings radiating from behind the logo */
+        .ux .ux-aura { position: absolute; z-index: -1; width: 70%; aspect-ratio: 1; left: 15%; top: 18%; border-radius: 50%; background: var(--acc); opacity: 0.22; filter: blur(34px);
+          animation: ux-drift 9s ease-in-out infinite alternate; }
+        @keyframes ux-drift { 0% { transform: translate(-18%, -8%) scale(0.9); } 100% { transform: translate(18%, 10%) scale(1.1); } }
+        .ux .ux-rings { position: absolute; z-index: -1; left: 50%; top: calc(50% + 0.95rem); width: 0; height: 0; }
+        .ux .ux-rings i { position: absolute; left: 50%; top: 50%; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.75); translate: -50% -50%;
+          transition: transform .8s cubic-bezier(.22,1,.36,1), opacity .5s ease; }
+        .ux .ux-rings i:nth-child(1) { width: 12rem; height: 12rem; }
+        .ux .ux-rings i:nth-child(2) { width: 17rem; height: 17rem; opacity: 0.65; }
+        .ux .ux-rings i:nth-child(3) { width: 22rem; height: 22rem; opacity: 0.35; border-style: dashed; animation: ux-spin 40s linear infinite; }
+        @keyframes ux-spin { to { rotate: 360deg; } }
+        .ux .ux-card:hover .ux-rings i { transform: scale(1.08); }
+        @media (prefers-reduced-motion: reduce) { .ux .ux-aura, .ux .ux-rings i { animation: none; } }
         .ux .ux-logo { position: relative; width: 9.5rem; height: 5rem; padding: 0.55rem 0.8rem; border-radius: 16px; background: #fff;
-          box-shadow: 0 16px 30px -18px rgba(53,12,14,0.5); transition: transform .6s cubic-bezier(.22,1,.36,1); }
+          box-shadow: 0 0 0 5px rgba(255,255,255,0.45), 0 18px 34px -16px color-mix(in srgb, var(--acc) 55%, rgba(53,12,14,0.6)); transition: transform .6s cubic-bezier(.22,1,.36,1); }
         .ux .ux-card:hover .ux-logo { transform: scale(1.07) rotate(-1.5deg); }
         .ux .ux-where { position: absolute; left: 0.7rem; top: 0.7rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem 0.3rem 0.4rem;
           border-radius: 999px; background: rgba(255,255,255,0.88); font-size: 0.72rem; font-weight: 600; }
@@ -459,7 +483,7 @@ export default function UniversityExplorer() {
         .ux .ux-go { margin-top: auto; padding-top: 1.1rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.86rem; font-weight: 600; }
         .ux .ux-go i { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 999px; box-shadow: inset 0 0 0 1.5px rgba(53,12,14,0.18);
           transition: background .35s ease, color .35s ease, transform .5s cubic-bezier(.22,1,.36,1), box-shadow .35s ease; }
-        .ux .ux-card:hover .ux-go i { background: #F7931E; color: #fff; box-shadow: none; transform: rotate(-45deg); }
+        .ux .ux-card:hover .ux-go i { background: var(--acc); color: #fff; box-shadow: none; transform: rotate(-45deg); }
 
         .ux .ux-empty { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 3.5rem 1rem; border-radius: 26px;
           background: #FFF6EC; text-align: center; color: rgba(53,12,14,0.7); }
@@ -556,8 +580,8 @@ export default function UniversityExplorer() {
 
         {/* Results */}
         <div className="ux-grid">
-          {universities.map((uni) => {
-            const tint = TINTS[uni.country] ?? DEFAULT_TINT;
+          {universities.map((uni, index) => {
+            const scene = SCENES[index % SCENES.length];
             return (
               <Link
                 key={uni.slug}
@@ -566,10 +590,16 @@ export default function UniversityExplorer() {
                 href={`/courses?university=${uni.slug}`}
                 aria-label={`View courses at ${uni.name}`}
                 className="ux-card"
-                style={{ "--bg": tint.bg } as CSSProperties}
+                style={{ "--a": scene.a, "--b": scene.b, "--c": scene.c, "--base": scene.base, "--soft": scene.soft, "--acc": scene.accent } as CSSProperties}
                 onPointerMove={trackPointer}
               >
                 <div className="ux-stage">
+                  <span className="ux-aura" aria-hidden />
+                  <span className="ux-rings" aria-hidden>
+                    <i />
+                    <i />
+                    <i />
+                  </span>
                   <span className="ux-where">
                     <span className="ux-flag" aria-hidden>
                       <ReactCountryFlag countryCode={FLAGS[uni.country] ?? "UN"} svg style={{ width: "1.2em", height: "0.88em", display: "block", objectFit: "cover" }} />

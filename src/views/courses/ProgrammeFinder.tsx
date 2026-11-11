@@ -1188,6 +1188,16 @@ function namesFromParam(param: string | null) {
 
 /* ───────────────────────── Small pieces ───────────────────────── */
 
+/* Each programme card gets its own colour scene, cycling through the brand palette */
+const SCENES = [
+  { a: "#FFC48A", b: "#FFE3C4", c: "#FFD3DE", base: "#FFF3E6", accent: "#F7931E" },
+  { a: "#A9C1FF", b: "#DCE6FF", c: "#BDEBFF", base: "#F0F4FF", accent: "#2F6BFF" },
+  { a: "#A8E09B", b: "#DDF3D6", c: "#FFEDAA", base: "#F0FAEC", accent: "#3BAA35" },
+  { a: "#FFB3C6", b: "#FFE0E8", c: "#E1D3FF", base: "#FFF2F6", accent: "#E5486F" },
+  { a: "#FFD777", b: "#FFF0C8", c: "#FFC9A0", base: "#FFF9EA", accent: "#E08A00" },
+  { a: "#CDB8FF", b: "#ECE4FF", c: "#BCE0FF", base: "#F6F2FF", accent: "#7A4FBF" },
+];
+
 function Flag({ country }: { country: string }) {
   const code = countryCodes[country];
   if (!code) return null;
@@ -1559,38 +1569,57 @@ function ProgrammeFinderInner() {
 
         /* Programme cards */
         .pg .pg-grid { margin-top: 1.1rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-        .pg .pg-card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 22px; background: #fff;
-          border: 1px solid rgba(53,12,14,0.08); transition: border-color .35s ease, transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease; }
-        .pg .pg-card:hover { border-color: rgba(247,147,30,0.45); transform: translateY(-4px); box-shadow: 0 14px 28px -24px rgba(53,12,14,0.45); }
-        .pg .pg-card-top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.9rem 0.9rem 0.9rem 0.9rem;
-          background: var(--tint); }
-        .pg .pg-card-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--lvl); transform: scaleX(0); transform-origin: 0 50%;
+        /* The whole card is a soft colour scene: three blended shades, a dot texture and a drifting glow */
+        .pg .pg-card { position: relative; isolation: isolate; display: flex; flex-direction: column; overflow: hidden; border-radius: 22px;
+          background:
+            radial-gradient(80% 55% at 0% 0%, var(--a), transparent 65%),
+            radial-gradient(70% 50% at 100% 100%, var(--c), transparent 65%),
+            radial-gradient(60% 45% at 100% 0%, var(--b), transparent 62%),
+            var(--base);
+          border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 0 0 1px rgba(53,12,14,0.05);
+          transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease; }
+        .pg .pg-card::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.5; pointer-events: none;
+          background-image: radial-gradient(rgba(255,255,255,0.95) 1.1px, transparent 1.5px); background-size: 14px 14px;
+          -webkit-mask-image: linear-gradient(170deg, #000 0%, transparent 45%); mask-image: linear-gradient(170deg, #000 0%, transparent 45%); }
+        .pg .pg-card::after { content: ""; position: absolute; inset: -30% -60%; z-index: -1; pointer-events: none;
+          background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,0.5) 50%, transparent 58%); transform: translateX(-70%);
+          transition: transform 1.1s cubic-bezier(.22,1,.36,1); }
+        .pg .pg-card:hover { transform: translateY(-5px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 35%, transparent), 0 24px 44px -28px color-mix(in srgb, var(--acc) 60%, rgba(53,12,14,0.5)); }
+        .pg .pg-card:hover::after { transform: translateX(70%); }
+        .pg .pg-glow { position: absolute; z-index: -1; right: -20%; top: -18%; width: 65%; aspect-ratio: 1; border-radius: 50%; background: var(--acc); opacity: 0.18;
+          filter: blur(40px); pointer-events: none; animation: pg-drift 10s ease-in-out infinite alternate; }
+        @keyframes pg-drift { 0% { transform: translate(0, 0) scale(0.9); } 100% { transform: translate(-30%, 25%) scale(1.15); } }
+        @media (prefers-reduced-motion: reduce) { .pg .pg-glow { animation: none; } }
+        .pg .pg-card-top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.9rem; }
+        .pg .pg-card-top::after { content: ""; position: absolute; left: 1.1rem; right: 1.1rem; bottom: 0; height: 2px; border-radius: 2px; background: var(--acc); transform: scaleX(0); transform-origin: 0 50%;
           transition: transform .6s cubic-bezier(.22,1,.36,1); }
         .pg .pg-card:hover .pg-card-top::after { transform: scaleX(1); }
-        .pg .pg-card-top .pg-logo { width: 7rem; height: 3.5rem; transition: transform .5s cubic-bezier(.22,1,.36,1); }
+        .pg .pg-card-top .pg-logo { width: 7rem; height: 3.5rem; border: 0; box-shadow: 0 0 0 4px rgba(255,255,255,0.5), 0 12px 24px -14px color-mix(in srgb, var(--acc) 60%, rgba(53,12,14,0.5)); transition: transform .5s cubic-bezier(.22,1,.36,1); }
         .pg .pg-card:hover .pg-card-top .pg-logo { transform: scale(1.04); }
-        .pg .pg-card-flag { display: flex; width: 2rem; height: 2rem; flex: none; overflow: hidden; border-radius: 999px; box-shadow: 0 0 0 2px #fff; }
+        .pg .pg-card-flag { display: flex; width: 2rem; height: 2rem; flex: none; overflow: hidden; border-radius: 999px; box-shadow: 0 0 0 3px rgba(255,255,255,0.85), 0 6px 14px -6px rgba(53,12,14,0.5); }
         .pg .pg-card-body { display: flex; flex: 1; flex-direction: column; padding: 1rem 1.1rem 1.1rem; }
-        .pg .pg-uni { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(53,12,14,0.5); }
+        .pg .pg-uni { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--acc) 55%, #350C0E); }
         .pg .pg-card h3 { margin-top: 0.3rem; font-size: 1.02rem; line-height: 1.3; letter-spacing: -0.015em; font-weight: 600; }
         .pg .pg-tags { margin-top: 0.7rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
         .pg .pg-tag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; }
-        .pg .pg-tag-time { background: #F6F2EC; color: rgba(53,12,14,0.7); }
-        .pg .pg-award { margin-top: 0.5rem; font-size: 0.76rem; color: rgba(53,12,14,0.5); }
-        .pg .pg-facts { margin-top: 0.8rem; display: grid; gap: 0.4rem; padding: 0.7rem 0.8rem; border-radius: 14px; background: #FFF8F0; font-size: 0.78rem; }
+        .pg .pg-tag-time { background: rgba(255,255,255,0.7); color: rgba(53,12,14,0.75); }
+        .pg .pg-card .pg-tag:not(.pg-tag-time) { background: rgba(255,255,255,0.8); }
+        .pg .pg-award { margin-top: 0.5rem; font-size: 0.76rem; color: rgba(53,12,14,0.6); }
+        .pg .pg-facts { margin-top: 0.8rem; display: grid; gap: 0.4rem; padding: 0.7rem 0.8rem; border-radius: 14px; background: rgba(255,255,255,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.9); font-size: 0.78rem; }
         .pg .pg-facts p { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem; }
         .pg .pg-facts p > span:first-child { flex: none; color: rgba(53,12,14,0.6); }
         .pg .pg-facts p > span:last-child { text-align: right; font-weight: 600; }
         .pg .pg-facts s { margin-right: 0.35rem; font-weight: 400; color: rgba(53,12,14,0.4); }
         .pg .pg-facts .pg-save { color: #2E8F29; }
         .pg .pg-card-foot { margin-top: auto; padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-        .pg .pg-free { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem; color: rgba(53,12,14,0.55); }
+        .pg .pg-free { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.76rem; color: rgba(53,12,14,0.65); }
         .pg .pg-free i { width: 0.45rem; height: 0.45rem; border-radius: 999px; background: #3BAA35; }
         .pg .pg-enquire { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.35rem 0.35rem 0.95rem; border-radius: 999px; background: #350C0E; color: #fff;
           font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background .3s ease; }
         .pg .pg-enquire span { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 999px; background: rgba(255,255,255,0.16);
           transition: transform .4s cubic-bezier(.22,1,.36,1); }
-        .pg .pg-enquire:hover { background: #F7931E; }
+        .pg .pg-enquire:hover, .pg .pg-card:hover .pg-enquire { background: var(--acc); }
         .pg .pg-enquire:hover span { transform: rotate(-45deg); }
 
         .pg .pg-logo { display: flex; flex: none; align-items: center; justify-content: center; overflow: hidden; border-radius: 12px; background: #fff; border: 1px solid rgba(53,12,14,0.06); }
@@ -1807,13 +1836,16 @@ function ProgrammeFinderInner() {
             )}
 
             <div className="pg-grid">
-              {filtered.map((programme) => (
+              {filtered.map((programme, index) => {
+                const scene = SCENES[index % SCENES.length];
+                return (
                 <article
                   key={`${programme.university}-${programme.title}`}
                   data-pg-card
                   className="pg-card"
-                  style={{ "--lvl": levelDots[programme.level], "--tint": `${levelDots[programme.level]}12` } as CSSProperties}
+                  style={{ "--lvl": levelDots[programme.level], "--a": scene.a, "--b": scene.b, "--c": scene.c, "--base": scene.base, "--acc": scene.accent } as CSSProperties}
                 >
+                  <span className="pg-glow" aria-hidden />
                   <div className="pg-card-top">
                     <UniLogo name={programme.university} />
                     <span title={programme.country} aria-label={programme.country} className="pg-card-flag">
@@ -1896,7 +1928,8 @@ function ProgrammeFinderInner() {
                     </div>
                   </div>
                 </article>
-              ))}
+                );
+              })}
 
               {filtered.length === 0 && (
                 <div className="pg-empty">
